@@ -83,6 +83,11 @@ final class AI {
                     continue;
                 }
 
+                if (node.children.isEmpty()) {
+                    node.bewertung = node.brett.getBewertung(spieler);
+                    continue;
+                }
+
                 Node<B, Z, S> bestChild = null;
                 for (Node<B, Z, S> child : node.children) {
                     if (bestChild == null) {
