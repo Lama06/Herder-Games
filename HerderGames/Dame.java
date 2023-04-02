@@ -5,33 +5,33 @@ import java.util.*;
 final class Dame {
     private Dame() {}
 
-    enum RichtungHorizontal {
+    private enum RichtungHorizontal {
         LINKS(-1),
         RECHTS(1);
 
-        final int offset;
+        private final int offset;
 
         RichtungHorizontal(int offset) {
             this.offset = offset;
         }
     }
 
-    enum RichtungVertikal {
+    private enum RichtungVertikal {
         OBEN(-1),
         UNTEN(1);
 
-        final int offset;
+        private final int offset;
 
         RichtungVertikal(int offset) {
             this.offset = offset;
         }
     }
 
-    enum Spieler {
+    private enum Spieler {
         SPIELER_OBEN,
         SPIELER_UNTEN;
 
-        Stein getStein() {
+        private Stein getStein() {
             switch (this) {
                 case SPIELER_OBEN:
                     return Stein.STEIN_SPIELER_1;
@@ -42,7 +42,7 @@ final class Dame {
             }
         }
 
-        Stein getDame() {
+        private Stein getDame() {
             switch (this) {
                 case SPIELER_OBEN:
                     return Stein.DAME_SPIELER_1;
@@ -53,7 +53,7 @@ final class Dame {
             }
         }
 
-        RichtungVertikal getMoveDirection() {
+        private RichtungVertikal getMoveDirection() {
             switch (this) {
                 case SPIELER_OBEN:
                     return RichtungVertikal.UNTEN;
@@ -64,7 +64,7 @@ final class Dame {
             }
         }
 
-        int getDameZeile() {
+        private int getDameZeile() {
             switch (this) {
                 case SPIELER_OBEN:
                     return 7;
@@ -75,7 +75,7 @@ final class Dame {
             }
         }
 
-        Spieler getGegner() {
+        private Spieler getGegner() {
             switch (this) {
                 case SPIELER_OBEN:
                     return SPIELER_UNTEN;
@@ -87,13 +87,13 @@ final class Dame {
         }
     }
 
-    enum Stein {
+    private enum Stein {
         STEIN_SPIELER_1,
         STEIN_SPIELER_2,
         DAME_SPIELER_1,
         DAME_SPIELER_2;
 
-        boolean isDame() {
+        private boolean isDame() {
             return this == DAME_SPIELER_1 || this == DAME_SPIELER_2;
         }
 
@@ -101,7 +101,7 @@ final class Dame {
             return this == STEIN_SPIELER_1 || this == STEIN_SPIELER_2;
         }
 
-        Spieler getSpieler() {
+        private Spieler getSpieler() {
             switch (this) {
                 case STEIN_SPIELER_1:
                 case DAME_SPIELER_1:
@@ -114,7 +114,7 @@ final class Dame {
             }
         }
 
-        int getColor(PApplet applet) {
+        private int getColor(PApplet applet) {
             switch (this) {
                 case STEIN_SPIELER_1:
                     return applet.color(66, 176, 245);
@@ -130,11 +130,11 @@ final class Dame {
         }
     }
 
-    static final class Brett {
-        static final int SIZE = 8;
+    private static final class Brett {
+        private static final int SIZE = 8;
 
-        static final Brett EMPTY = createEmpty();
-        static final Brett ANFANG = createAnfang();
+        private static final Brett EMPTY = createEmpty();
+        private static final Brett ANFANG = createAnfang();
 
         static Brett createEmpty() {
             List<List<Optional<Stein>>> zeilen = new ArrayList<>();
@@ -182,9 +182,9 @@ final class Dame {
             ));
         }
 
-        final List<List<Optional<Stein>>> zeilen;
+        private final List<List<Optional<Stein>>> zeilen;
 
-        Brett(List<List<Optional<Stein>>> zeilen) {
+        private Brett(List<List<Optional<Stein>>> zeilen) {
             if (zeilen.size() != SIZE) {
                 throw new IllegalArgumentException();
             }
@@ -203,11 +203,11 @@ final class Dame {
             this.zeilen = List.copyOf(zeilenKopien);
         }
 
-        Optional<Stein> getStein(Position position) {
+        private Optional<Stein> getStein(Position position) {
             return zeilen.get(position.zeile).get(position.spalte/2);
         }
 
-        Brett withSteinen(Map<Position, Optional<Stein>> neueFelder) {
+        private Brett withSteinen(Map<Position, Optional<Stein>> neueFelder) {
             List<List<Optional<Stein>>> neueZeilen = new ArrayList<>();
             for (int zeile = 0; zeile < SIZE; zeile++) {
                 List<Optional<Stein>> neueZeile = new ArrayList<>(zeilen.get(zeile));
@@ -221,7 +221,7 @@ final class Dame {
             return new Brett(neueZeilen);
         }
 
-        List<Zug> getPossibleSteinBewgenZuege(Position position) {
+        private List<Zug> getPossibleSteinBewgenZuege(Position position) {
             Optional<Stein> stein = getStein(position);
             if (stein.isEmpty() || !stein.get().isStein()) {
                 return Collections.emptyList();
@@ -250,7 +250,7 @@ final class Dame {
             return result;
         }
 
-        List<Zug> getPossibleSteinSchlagenZuege(Position position, boolean backwards) {
+        private List<Zug> getPossibleSteinSchlagenZuege(Position position, boolean backwards) {
             Optional<Stein> stein = getStein(position);
             if (stein.isEmpty() || !stein.get().isStein()) {
                 return Collections.emptyList();
@@ -309,15 +309,15 @@ final class Dame {
             return result;
         }
 
-        List<Zug> getPossibleDameBewegenZuege(Position position) {
+        private List<Zug> getPossibleDameBewegenZuege(Position position) {
             return Collections.emptyList(); // TODO
         }
 
-        List<Zug> getPossibleDameSchlagenZuege(Position position) {
+        private List<Zug> getPossibleDameSchlagenZuege(Position position) {
             return Collections.emptyList(); // TODO
         }
 
-        List<Zug> getPossibleZuegeForSpieler(Spieler spieler) {
+        private List<Zug> getPossibleZuegeForSpieler(Spieler spieler) {
             List<Zug> result = new ArrayList<>();
 
             for (int zeile = 0; zeile < SIZE; zeile++) {
@@ -359,7 +359,7 @@ final class Dame {
             return result;
         }
 
-        List<Zug> getPossibleZuegeForPosition(Position position) {
+        private List<Zug> getPossibleZuegeForPosition(Position position) {
             Optional<Stein> stein = getStein(position);
             if (stein.isEmpty()) {
                 return Collections.emptyList();
@@ -377,31 +377,31 @@ final class Dame {
             return result;
         }
 
-        static int calculateSize(PApplet applet) {
+        private static int calculateSize(PApplet applet) {
             return Math.min(applet.width, applet.height);
         }
 
-        static int calculateFeldSize(PApplet applet) {
+        private static int calculateFeldSize(PApplet applet) {
             return calculateSize(applet) / SIZE;
         }
 
-        static int calculateSteinSize(PApplet applet) {
+        private static int calculateSteinSize(PApplet applet) {
             return (calculateFeldSize(applet) / 3) * 2;
         }
 
-        static int calculateSteinAbstand(PApplet applet) {
+        private static int calculateSteinAbstand(PApplet applet) {
             return (calculateFeldSize(applet) - calculateSteinSize(applet)) / 2;
         }
 
-        static int calculateAbstandX(PApplet applet) {
+        private static int calculateAbstandX(PApplet applet) {
             return (applet.width-calculateSize(applet)) / 2;
         }
 
-        static int calculateAbstandY(PApplet applet) {
+        private static int calculateAbstandY(PApplet applet) {
             return (applet.height-calculateSize(applet)) / 2;
         }
 
-        void draw(PApplet applet, Optional<Position> selectedPositon) {
+        private void draw(PApplet applet, Optional<Position> selectedPositon) {
             applet.pushStyle();
 
             Set<Position> possibleMovePositions = new HashSet<>();
@@ -452,12 +452,12 @@ final class Dame {
         }
     }
 
-    static final class Position {
-        static boolean isValid(int zeile, int spalte) {
+    private static final class Position {
+        private static boolean isValid(int zeile, int spalte) {
             return zeile >= 0 && zeile < Brett.SIZE && spalte >= 0 && spalte < Brett.SIZE && zeile%2 == spalte%2;
         }
 
-        static Optional<Position> fromMousePosition(PApplet applet) {
+        private static Optional<Position> fromMousePosition(PApplet applet) {
             int mouseXOffset = applet.mouseX - Brett.calculateAbstandX(applet);
             int mouseYOffset = applet.mouseY - Brett.calculateAbstandY(applet);
             int feldSize = Brett.calculateFeldSize(applet);
@@ -469,10 +469,10 @@ final class Dame {
             return Optional.of(new Position(zeile, spalte));
         }
 
-        final int zeile;
-        final int spalte;
+        private final int zeile;
+        private final int spalte;
 
-        Position(int zeile, int spalte) {
+        private Position(int zeile, int spalte) {
             if (!isValid(zeile, spalte)) {
                 throw new IllegalArgumentException();
             }
@@ -481,7 +481,7 @@ final class Dame {
             this.spalte = spalte;
         }
 
-        Optional<Position> add(int zeilen, int spalten) {
+        private Optional<Position> add(int zeilen, int spalten) {
             if (!isValid(zeile + zeilen, spalte + spalten)) {
                 return Optional.empty();
             }
@@ -502,12 +502,12 @@ final class Dame {
         }
     }
 
-    static final class Zug {
-        final Position von;
-        final Position nach;
-        final List<Brett> schritte;
+    private static final class Zug {
+        private final Position von;
+        private final Position nach;
+        private final List<Brett> schritte;
 
-        Zug(Position von, Position nach, List<Brett> schritte) {
+        private Zug(Position von, Position nach, List<Brett> schritte) {
             if (schritte.isEmpty()) {
                 throw new IllegalArgumentException();
             }
@@ -517,7 +517,7 @@ final class Dame {
             this.schritte = List.copyOf(schritte);
         }
 
-        Brett getResult() {
+        private Brett getResult() {
             return schritte.get(schritte.size()-1);
         }
     }
@@ -531,7 +531,7 @@ final class Dame {
             super(applet);
         }
 
-        void selectNewField() {
+        private void selectNewField() {
             if (!applet.mousePressed) {
                 return;
             }
@@ -550,7 +550,7 @@ final class Dame {
             selectedPosition = position;
         }
 
-        void zugMachen() {
+        private void zugMachen() {
             if (!applet.mousePressed) {
                 return;
             }
