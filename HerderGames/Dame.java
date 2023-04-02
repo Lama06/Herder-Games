@@ -27,7 +27,7 @@ final class Dame {
         }
     }
 
-    private enum Spieler {
+    private enum Spieler implements AI.Spieler<Spieler> {
         SPIELER_OBEN,
         SPIELER_UNTEN;
 
@@ -75,7 +75,8 @@ final class Dame {
             }
         }
 
-        private Spieler getGegner() {
+        @Override
+        public Spieler getGegner() {
             switch (this) {
                 case SPIELER_OBEN:
                     return SPIELER_UNTEN;
@@ -130,7 +131,7 @@ final class Dame {
         }
     }
 
-    private static final class Brett {
+    private static final class Brett implements AI.Brett<Brett, Zug, Spieler> {
         private static final int SIZE = 8;
 
         private static final Brett ANFANG = createAnfang();
@@ -391,8 +392,8 @@ final class Dame {
             return result;
         }
 
-        private List<Zug> getPossibleZuegeForSpieler(Spieler spieler) {
-            List<Zug> result = new ArrayList<>();
+        public Set<Zug> getPossibleZuegeForSpieler(Spieler spieler) {
+            Set<Zug> result = new HashSet<>();
 
             for (int zeile = 0; zeile < SIZE; zeile++) {
                 for (int spalte = 0; spalte < SIZE; spalte++) {
@@ -433,14 +434,14 @@ final class Dame {
             return result;
         }
 
-        private List<Zug> getPossibleZuegeForPosition(Position position) {
+        private Set<Zug> getPossibleZuegeForPosition(Position position) {
             Optional<Stein> stein = getStein(position);
             if (stein.isEmpty()) {
-                return Collections.emptyList();
+                return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            List<Zug> result = new ArrayList<>();
+            Set<Zug> result = new HashSet<>();
             for (Zug zug : getPossibleZuegeForSpieler(spieler)) {
                 if (!zug.von.equals(position)) {
                     continue;
@@ -449,6 +450,47 @@ final class Dame {
                 result.add(zug);
             }
             return result;
+        }
+
+        private int countSteine(Stein gesucht) {
+            int result = 0;
+            for (List<Optional<Stein>> zeile : zeilen) {
+                for (Optional<Stein> stein : zeile) {
+                    if (stein.isPresent() && stein.get() == gesucht) {
+                        result++;
+                    }
+                }
+            }
+            return result;
+        }
+
+        private int getAbsoluteBewertung(Spieler perspektive) {
+            if (hatVerloren(perspektive)) {
+                return -1000;
+            }
+
+            int steine = countSteine(perspektive.getStein());
+            int damen = countSteine(perspektive.getDame());
+
+            return steine + damen * 2;
+        }
+
+        @Override
+        public int getBewertung(Spieler perspektive) {
+            switch (perspektive) {
+                case SPIELER_OBEN:
+                    return getAbsoluteBewertung(Spieler.SPIELER_OBEN) - getAbsoluteBewertung(Spieler.SPIELER_UNTEN);
+                case SPIELER_UNTEN:
+                    return getAbsoluteBewertung(Spieler.SPIELER_UNTEN) - getAbsoluteBewertung(Spieler.SPIELER_OBEN);
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        private boolean hatVerloren(Spieler spieler) {
+            int steine = countSteine(spieler.getStein());
+            int damen = countSteine(spieler.getDame());
+            return steine == 0 && damen == 0;
         }
 
         private static int calculateSize(PApplet applet) {
@@ -576,7 +618,7 @@ final class Dame {
         }
     }
 
-    private static final class Zug {
+    private static final class Zug implements AI.Zug<Brett> {
         private final Position von;
         private final Position nach;
         private final List<Brett> schritte;
@@ -591,7 +633,8 @@ final class Dame {
             this.schritte = List.copyOf(schritte);
         }
 
-        private Brett getResult() {
+        @Override
+        public Brett getResult() {
             return schritte.get(schritte.size()-1);
         }
 
@@ -609,12 +652,12 @@ final class Dame {
         }
     }
 
-    static final class SpielSpielerGegenSpieler extends MiniSpiel {
+    static final class SpielerGegenSpielerSpiel extends MiniSpiel {
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> selectedPosition = Optional.empty();
         private Spieler amZug;
 
-        SpielSpielerGegenSpieler(PApplet applet) {
+        SpielerGegenSpielerSpiel(PApplet applet) {
             super(applet);
             amZug = applet.random(1) > 0.5 ? Spieler.SPIELER_UNTEN : Spieler.SPIELER_OBEN;
         }
@@ -652,7 +695,7 @@ final class Dame {
                 return;
             }
 
-            List<Zug> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
+            Set<Zug> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
             for (Zug possibleZug : possibleZuege) {
                 if (possibleZug.nach.equals(position.get())) {
                     aktuellesBrett = possibleZug.getResult();
@@ -661,6 +704,71 @@ final class Dame {
                     return;
                 }
             }
+        }
+
+        @Override
+        void draw() {
+            zugMachen();
+            selectNewField();
+
+            applet.background(applet.color(0));
+            aktuellesBrett.draw(applet, selectedPosition);
+        }
+    }
+
+    static final class SpielerGegenAISpiel extends MiniSpiel {
+        private static final Spieler COMPUTER = Spieler.SPIELER_OBEN;
+        private static final Spieler MENSCH = Spieler.SPIELER_UNTEN;
+        private Brett aktuellesBrett = Brett.ANFANG;
+        private Optional<Position> selectedPosition = Optional.empty();
+
+        private void selectNewField() {
+            if (!applet.mousePressed) {
+                return;
+            }
+
+            Optional<Position> position = Position.fromMousePosition(applet);
+            if (position.isEmpty()) {
+                selectedPosition = Optional.empty();
+                return;
+            }
+            Optional<Stein> stein = aktuellesBrett.getStein(position.get());
+            if (stein.isEmpty() || stein.get().getSpieler() != MENSCH) {
+                selectedPosition = Optional.empty();
+                return;
+            }
+
+            selectedPosition = position;
+        }
+
+        private void zugMachen() {
+            if (!applet.mousePressed) {
+                return;
+            }
+
+            if (selectedPosition.isEmpty()) {
+                return;
+            }
+
+            Optional<Position> position = Position.fromMousePosition(applet);
+            if (position.isEmpty()) {
+                return;
+            }
+
+            Set<Zug> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
+            for (Zug possibleZug : possibleZuege) {
+                if (possibleZug.nach.equals(position.get())) {
+                    Zug antowrt = AI.calculateBestZug(possibleZug.getResult(), COMPUTER, 5);
+
+                    aktuellesBrett = antowrt.getResult();
+                    selectedPosition = Optional.empty();
+                    return;
+                }
+            }
+        }
+
+        SpielerGegenAISpiel(PApplet applet) {
+            super(applet);
         }
 
         @Override

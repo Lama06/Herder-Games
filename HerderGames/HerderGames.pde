@@ -1,4 +1,4 @@
-MiniSpiel currentSpiel = new Dame.SpielSpielerGegenSpieler(this);
+MiniSpiel currentSpiel = new Dame.SpielerGegenAISpiel(this);
 
 void setup() {
     fullScreen();
