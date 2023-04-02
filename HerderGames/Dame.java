@@ -133,20 +133,7 @@ final class Dame {
     private static final class Brett {
         private static final int SIZE = 8;
 
-        private static final Brett EMPTY = createEmpty();
         private static final Brett ANFANG = createAnfang();
-
-        static Brett createEmpty() {
-            List<List<Optional<Stein>>> zeilen = new ArrayList<>();
-            for (int zeileIndex = 0; zeileIndex < SIZE; zeileIndex++) {
-                List<Optional<Stein>> zeile = new ArrayList<>();
-                for (int spalte = 0; spalte < SIZE/2; spalte++) {
-                    zeile.add(Optional.empty());
-                }
-                zeilen.add(zeile);
-            }
-            return new Brett(zeilen);
-        }
 
         static Brett createAnfang() {
             List<Optional<Stein>> zeileSpieler1 = List.of(
@@ -221,17 +208,17 @@ final class Dame {
             return new Brett(neueZeilen);
         }
 
-        private List<Zug> getPossibleSteinBewgenZuege(Position position) {
-            Optional<Stein> stein = getStein(position);
+        private Set<Zug> getPossibleSteinBewgenZuege(Position startPposition) {
+            Optional<Stein> stein = getStein(startPposition);
             if (stein.isEmpty() || !stein.get().isStein()) {
-                return Collections.emptyList();
+                return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            List<Zug> result = new ArrayList<>();
+            Set<Zug> result = new HashSet<>();
 
             for (RichtungHorizontal richtungHorizontal : RichtungHorizontal.values()) {
-                Optional<Position> neuePosition = position.add(spieler.getMoveDirection().offset, richtungHorizontal.offset);
+                Optional<Position> neuePosition = startPposition.add(spieler.getMoveDirection().offset, richtungHorizontal.offset);
                 if (neuePosition.isEmpty()) {
                     continue;
                 }
@@ -241,23 +228,23 @@ final class Dame {
                 Stein neuerStein = neuePosition.get().zeile == spieler.getDameZeile() ? spieler.getDame() : spieler.getStein();
 
                 Brett neuesBrett = withSteinen(Map.of(
-                        position, Optional.empty(),
+                        startPposition, Optional.empty(),
                         neuePosition.get(), Optional.of(neuerStein)
                 ));
-                result.add(new Zug(position, neuePosition.get(), List.of(neuesBrett)));
+                result.add(new Zug(startPposition, neuePosition.get(), List.of(neuesBrett)));
             }
 
             return result;
         }
 
-        private List<Zug> getPossibleSteinSchlagenZuege(Position position, boolean backwards) {
-            Optional<Stein> stein = getStein(position);
+        private Set<Zug> getPossibleSteinSchlagenZuege(Position startPosition, boolean backwards) {
+            Optional<Stein> stein = getStein(startPosition);
             if (stein.isEmpty() || !stein.get().isStein()) {
-                return Collections.emptyList();
+                return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            List<Zug> result = new ArrayList<>();
+            Set<Zug> result = new HashSet<>();
 
             RichtungVertikal[] richtungenVertikal;
             if (backwards) {
@@ -268,7 +255,7 @@ final class Dame {
 
             for (RichtungVertikal richtungVertikal : richtungenVertikal) {
                 for (RichtungHorizontal richtungHorizontal : RichtungHorizontal.values()) {
-                    Optional<Position> schlagenPosition = position.add(richtungVertikal.offset, richtungHorizontal.offset);
+                    Optional<Position> schlagenPosition = startPosition.add(richtungVertikal.offset, richtungHorizontal.offset);
                     if (schlagenPosition.isEmpty()) {
                         continue;
                     }
@@ -277,7 +264,7 @@ final class Dame {
                         continue;
                     }
 
-                    Optional<Position> neuePosition = position.add(richtungVertikal.offset*2, richtungHorizontal.offset*2);
+                    Optional<Position> neuePosition = startPosition.add(richtungVertikal.offset*2, richtungHorizontal.offset*2);
                     if (neuePosition.isEmpty()) {
                         continue;
                     }
@@ -287,20 +274,20 @@ final class Dame {
                     Stein neuerStein = neuePosition.get().zeile == spieler.getDameZeile() ? spieler.getDame() : spieler.getStein();
 
                     Brett neuesBrett = withSteinen(Map.of(
-                            position, Optional.empty(),
+                            startPosition, Optional.empty(),
                             schlagenPosition.get(), Optional.empty(),
                             neuePosition.get(), Optional.of(neuerStein)
                     ));
 
-                    List<Zug> folgendeZuege = neuesBrett.getPossibleSteinSchlagenZuege(neuePosition.get(), true);
+                    Set<Zug> folgendeZuege = neuesBrett.getPossibleSteinSchlagenZuege(neuePosition.get(), true);
                     if (folgendeZuege.isEmpty()) {
-                        result.add(new Zug(position, neuePosition.get(), List.of(neuesBrett)));
+                        result.add(new Zug(startPosition, neuePosition.get(), List.of(neuesBrett)));
                     } else {
                         for (Zug folgenderZug : folgendeZuege) {
                             List<Brett> schritte = new ArrayList<>();
                             schritte.add(neuesBrett);
                             schritte.addAll(folgenderZug.schritte);
-                            result.add(new Zug(position, folgenderZug.nach, schritte));
+                            result.add(new Zug(startPosition, folgenderZug.nach, schritte));
                         }
                     }
                 }
@@ -309,12 +296,99 @@ final class Dame {
             return result;
         }
 
-        private List<Zug> getPossibleDameBewegenZuege(Position position) {
-            return Collections.emptyList(); // TODO
+        private Set<Zug> getPossibleDameBewegenZuege(Position startPosition) {
+            Optional<Stein> stein = getStein(startPosition);
+            if (stein.isEmpty() || !stein.get().isDame()) {
+                return Collections.emptySet();
+            }
+            Spieler spieler = stein.get().getSpieler();
+
+            Set<Zug> result = new HashSet<>();
+
+            for (RichtungVertikal richtungVertikal : RichtungVertikal.values()) {
+                richtungHorizontal:
+                for (RichtungHorizontal richtungHorizontal : RichtungHorizontal.values()) {
+                    for (int anzahlFelder = 1; anzahlFelder < SIZE; anzahlFelder++) {
+                        Optional<Position> neuePosition = startPosition.add(
+                                richtungVertikal.offset*anzahlFelder,
+                                richtungHorizontal.offset*anzahlFelder
+                        );
+                        if (neuePosition.isEmpty()) {
+                            continue;
+                        }
+                        if (getStein(neuePosition.get()).isPresent()) {
+                            continue richtungHorizontal;
+                        }
+
+                        Brett neuesBrett = withSteinen(Map.of(
+                                startPosition, Optional.empty(),
+                                neuePosition.get(), Optional.of(spieler.getDame())
+                        ));
+                        result.add(new Zug(startPosition, neuePosition.get(), List.of(neuesBrett)));
+                    }
+                }
+            }
+
+            return result;
         }
 
-        private List<Zug> getPossibleDameSchlagenZuege(Position position) {
-            return Collections.emptyList(); // TODO
+        private Set<Zug> getPossibleDameSchlagenZuege(Position startPosition) {
+            Optional<Stein> stein = getStein(startPosition);
+            if (stein.isEmpty() || !stein.get().isDame()) {
+                return Collections.emptySet();
+            }
+            Spieler spieler = stein.get().getSpieler();
+
+            Set<Zug> result = new HashSet<>();
+
+            for (RichtungVertikal richtungVertikal : RichtungVertikal.values()) {
+                richtungHorizontal:
+                for (RichtungHorizontal richtungHorizontal : RichtungHorizontal.values()) {
+                    for (int anzahlFelder = 1; anzahlFelder < SIZE; anzahlFelder++) {
+                        Optional<Position> schlagenPosition = startPosition.add(
+                                richtungVertikal.offset*anzahlFelder,
+                                richtungHorizontal.offset*anzahlFelder
+                        );
+                        if (schlagenPosition.isEmpty()) {
+                            continue;
+                        }
+                        Optional<Stein> schlagenStein = getStein(schlagenPosition.get());
+                        if (schlagenStein.isEmpty()) {
+                            continue;
+                        }
+                        if (schlagenStein.get().getSpieler() == spieler) {
+                            break richtungHorizontal;
+                        }
+
+                        Optional<Position> neuePosition = schlagenPosition.get().add(richtungVertikal.offset, richtungHorizontal.offset);
+                        if (neuePosition.isEmpty()) {
+                            continue;
+                        }
+                        if (getStein(neuePosition.get()).isPresent()) {
+                            continue richtungHorizontal;
+                        }
+
+                        Brett neuesBrett = withSteinen(Map.of(
+                                startPosition, Optional.empty(),
+                                schlagenPosition.get(), Optional.empty(),
+                                neuePosition.get(), Optional.of(spieler.getDame())
+                        ));
+                        Set<Zug> folgendeZuege = neuesBrett.getPossibleDameSchlagenZuege(neuePosition.get());
+                        if (folgendeZuege.isEmpty()) {
+                            result.add(new Zug(startPosition, neuePosition.get(), List.of(neuesBrett)));
+                        } else {
+                            for (Zug folgenderZug : folgendeZuege) {
+                                List<Brett> schritte = new ArrayList<>();
+                                schritte.add(neuesBrett);
+                                schritte.addAll(folgenderZug.schritte);
+                                result.add(new Zug(startPosition, folgenderZug.nach, schritte));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         private List<Zug> getPossibleZuegeForSpieler(Spieler spieler) {
@@ -508,7 +582,7 @@ final class Dame {
         private final List<Brett> schritte;
 
         private Zug(Position von, Position nach, List<Brett> schritte) {
-            if (schritte.isEmpty()) {
+            if (von == null || nach == null || schritte == null || schritte.isEmpty()) {
                 throw new IllegalArgumentException();
             }
 
@@ -520,15 +594,29 @@ final class Dame {
         private Brett getResult() {
             return schritte.get(schritte.size()-1);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Zug zug = (Zug) o;
+            return Objects.equals(von, zug.von) && Objects.equals(nach, zug.nach) && Objects.equals(schritte, zug.schritte);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(von, nach, schritte);
+        }
     }
 
-    static final class SpielSpielerGegenSpieler extends Spiel {
+    static final class SpielSpielerGegenSpieler extends MiniSpiel {
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> selectedPosition = Optional.empty();
-        private Spieler amZug = Spieler.SPIELER_OBEN;
+        private Spieler amZug;
 
         SpielSpielerGegenSpieler(PApplet applet) {
             super(applet);
+            amZug = applet.random(1) > 0.5 ? Spieler.SPIELER_UNTEN : Spieler.SPIELER_OBEN;
         }
 
         private void selectNewField() {
@@ -580,7 +668,7 @@ final class Dame {
             zugMachen();
             selectNewField();
 
-            applet.background(applet.color(255));
+            applet.background(applet.color(0));
             aktuellesBrett.draw(applet, selectedPosition);
         }
     }
