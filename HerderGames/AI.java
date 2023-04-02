@@ -1,10 +1,8 @@
 import java.util.*;
 
-final class AI {
-    interface Spieler<Self extends Spieler<Self>> {
-        Self getGegner();
-    }
+// https://www.youtube.com/watch?v=l-hh51ncgDI
 
+final class AI {
     interface Brett<Self extends Brett<Self, Z, S>, Z extends Zug<Self>, S extends Spieler<S>> {
         Set<Z> getPossibleZuegeForSpieler(S spieler);
 
@@ -13,6 +11,10 @@ final class AI {
 
     interface Zug<B extends Brett<B, ?, ?>> {
         B getResult();
+    }
+
+    interface Spieler<Self extends Spieler<Self>> {
+        Self getGegner();
     }
 
     private static class Node<B extends Brett<B, Z, S>, Z extends Zug<B>, S extends Spieler<S>> {
@@ -27,7 +29,6 @@ final class AI {
 
     static <B extends Brett<B, Z, S>, Z extends Zug<B>, S extends Spieler<S>> Z calculateBestZug(B brett, S spieler, int maxDepth) {
         List<Node<B, Z, S>> nodes = new ArrayList<>();
-        Set<Node<B, Z, S>> toteEnden = new HashSet<>();
 
         Node<B, Z, S> startNode = new Node<>();
         startNode.depth = 0;
@@ -50,10 +51,6 @@ final class AI {
                 }
 
                 Set<Z> possibleZuege = parent.brett.getPossibleZuegeForSpieler(parent.spielerAmZug);
-                if (possibleZuege.size() == 0) {
-                    toteEnden.add(parent);
-                }
-
                 for (Z possibleZug : possibleZuege) {
                     Node<B, Z, S> child = new Node<>();
                     child.depth = depth;
@@ -76,9 +73,6 @@ final class AI {
                 continue;
             }
 
-            node.bewertung = node.brett.getBewertung(spieler);
-        }
-        for (Node<B, Z, S> node : toteEnden) {
             node.bewertung = node.brett.getBewertung(spieler);
         }
 

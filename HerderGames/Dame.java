@@ -209,14 +209,14 @@ final class Dame {
             return new Brett(neueZeilen);
         }
 
-        private Set<Zug> getPossibleSteinBewgenZuege(Position startPposition) {
+        private Set<Zug.Bewegen> getPossibleSteinBewgenZuege(Position startPposition) {
             Optional<Stein> stein = getStein(startPposition);
             if (stein.isEmpty() || !stein.get().isStein()) {
                 return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            Set<Zug> result = new HashSet<>();
+            Set<Zug.Bewegen> result = new HashSet<>();
 
             for (RichtungHorizontal richtungHorizontal : RichtungHorizontal.values()) {
                 Optional<Position> neuePosition = startPposition.add(spieler.getMoveDirection().offset, richtungHorizontal.offset);
@@ -232,20 +232,20 @@ final class Dame {
                         startPposition, Optional.empty(),
                         neuePosition.get(), Optional.of(neuerStein)
                 ));
-                result.add(new Zug(startPposition, neuePosition.get(), List.of(neuesBrett)));
+                result.add(new Zug.Bewegen(startPposition, neuePosition.get(), List.of(neuesBrett)));
             }
 
             return result;
         }
 
-        private Set<Zug> getPossibleSteinSchlagenZuege(Position startPosition, boolean backwards) {
+        private Set<Zug.Bewegen> getPossibleSteinSchlagenZuege(Position startPosition, boolean backwards) {
             Optional<Stein> stein = getStein(startPosition);
             if (stein.isEmpty() || !stein.get().isStein()) {
                 return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            Set<Zug> result = new HashSet<>();
+            Set<Zug.Bewegen> result = new HashSet<>();
 
             RichtungVertikal[] richtungenVertikal;
             if (backwards) {
@@ -280,15 +280,15 @@ final class Dame {
                             neuePosition.get(), Optional.of(neuerStein)
                     ));
 
-                    Set<Zug> folgendeZuege = neuesBrett.getPossibleSteinSchlagenZuege(neuePosition.get(), true);
+                    Set<Zug.Bewegen> folgendeZuege = neuesBrett.getPossibleSteinSchlagenZuege(neuePosition.get(), true);
                     if (folgendeZuege.isEmpty()) {
-                        result.add(new Zug(startPosition, neuePosition.get(), List.of(neuesBrett)));
+                        result.add(new Zug.Bewegen(startPosition, neuePosition.get(), List.of(neuesBrett)));
                     } else {
-                        for (Zug folgenderZug : folgendeZuege) {
+                        for (Zug.Bewegen folgenderZug : folgendeZuege) {
                             List<Brett> schritte = new ArrayList<>();
                             schritte.add(neuesBrett);
                             schritte.addAll(folgenderZug.schritte);
-                            result.add(new Zug(startPosition, folgenderZug.nach, schritte));
+                            result.add(new Zug.Bewegen(startPosition, folgenderZug.nach, schritte));
                         }
                     }
                 }
@@ -297,14 +297,14 @@ final class Dame {
             return result;
         }
 
-        private Set<Zug> getPossibleDameBewegenZuege(Position startPosition) {
+        private Set<Zug.Bewegen> getPossibleDameBewegenZuege(Position startPosition) {
             Optional<Stein> stein = getStein(startPosition);
             if (stein.isEmpty() || !stein.get().isDame()) {
                 return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            Set<Zug> result = new HashSet<>();
+            Set<Zug.Bewegen> result = new HashSet<>();
 
             for (RichtungVertikal richtungVertikal : RichtungVertikal.values()) {
                 richtungHorizontal:
@@ -325,7 +325,7 @@ final class Dame {
                                 startPosition, Optional.empty(),
                                 neuePosition.get(), Optional.of(spieler.getDame())
                         ));
-                        result.add(new Zug(startPosition, neuePosition.get(), List.of(neuesBrett)));
+                        result.add(new Zug.Bewegen(startPosition, neuePosition.get(), List.of(neuesBrett)));
                     }
                 }
             }
@@ -333,14 +333,14 @@ final class Dame {
             return result;
         }
 
-        private Set<Zug> getPossibleDameSchlagenZuege(Position startPosition) {
+        private Set<Zug.Bewegen> getPossibleDameSchlagenZuege(Position startPosition) {
             Optional<Stein> stein = getStein(startPosition);
             if (stein.isEmpty() || !stein.get().isDame()) {
                 return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            Set<Zug> result = new HashSet<>();
+            Set<Zug.Bewegen> result = new HashSet<>();
 
             for (RichtungVertikal richtungVertikal : RichtungVertikal.values()) {
                 richtungHorizontal:
@@ -374,15 +374,15 @@ final class Dame {
                                 schlagenPosition.get(), Optional.empty(),
                                 neuePosition.get(), Optional.of(spieler.getDame())
                         ));
-                        Set<Zug> folgendeZuege = neuesBrett.getPossibleDameSchlagenZuege(neuePosition.get());
+                        Set<Zug.Bewegen> folgendeZuege = neuesBrett.getPossibleDameSchlagenZuege(neuePosition.get());
                         if (folgendeZuege.isEmpty()) {
-                            result.add(new Zug(startPosition, neuePosition.get(), List.of(neuesBrett)));
+                            result.add(new Zug.Bewegen(startPosition, neuePosition.get(), List.of(neuesBrett)));
                         } else {
-                            for (Zug folgenderZug : folgendeZuege) {
+                            for (Zug.Bewegen folgenderZug : folgendeZuege) {
                                 List<Brett> schritte = new ArrayList<>();
                                 schritte.add(neuesBrett);
                                 schritte.addAll(folgenderZug.schritte);
-                                result.add(new Zug(startPosition, folgenderZug.nach, schritte));
+                                result.add(new Zug.Bewegen(startPosition, folgenderZug.nach, schritte));
                             }
                         }
                     }
@@ -392,6 +392,7 @@ final class Dame {
             return result;
         }
 
+        @Override
         public Set<Zug> getPossibleZuegeForSpieler(Spieler spieler) {
             Set<Zug> result = new HashSet<>();
 
@@ -431,23 +432,31 @@ final class Dame {
                 }
             }
 
+            if (result.isEmpty()) {
+                return Set.of(new Zug.Aussetzen(this));
+            }
+
             return result;
         }
 
-        private Set<Zug> getPossibleZuegeForPosition(Position position) {
+        private Set<Zug.Bewegen> getPossibleZuegeForPosition(Position position) {
             Optional<Stein> stein = getStein(position);
             if (stein.isEmpty()) {
                 return Collections.emptySet();
             }
             Spieler spieler = stein.get().getSpieler();
 
-            Set<Zug> result = new HashSet<>();
+            Set<Zug.Bewegen> result = new HashSet<>();
             for (Zug zug : getPossibleZuegeForSpieler(spieler)) {
-                if (!zug.von.equals(position)) {
+                if (!(zug instanceof Zug.Bewegen)) {
                     continue;
                 }
 
-                result.add(zug);
+                if (!((Zug.Bewegen) zug).von.equals(position)) {
+                    continue;
+                }
+
+                result.add((Zug.Bewegen) zug);
             }
             return result;
         }
@@ -522,7 +531,7 @@ final class Dame {
 
             Set<Position> possibleMovePositions = new HashSet<>();
             if (selectedPositon.isPresent()) {
-                for (Zug zug : getPossibleZuegeForPosition(selectedPositon.get())) {
+                for (Zug.Bewegen zug : getPossibleZuegeForPosition(selectedPositon.get())) {
                     possibleMovePositions.add(zug.nach);
                 }
             }
@@ -618,37 +627,65 @@ final class Dame {
         }
     }
 
-    private static final class Zug implements AI.Zug<Brett> {
-        private final Position von;
-        private final Position nach;
-        private final List<Brett> schritte;
+    private static abstract class Zug implements AI.Zug<Brett> {
+        private static final class Bewegen extends Zug {
+            private final Position von;
+            private final Position nach;
+            private final List<Brett> schritte;
 
-        private Zug(Position von, Position nach, List<Brett> schritte) {
-            if (von == null || nach == null || schritte == null || schritte.isEmpty()) {
-                throw new IllegalArgumentException();
+            private Bewegen(Position von, Position nach, List<Brett> schritte) {
+                if (von == null || nach == null || schritte == null || schritte.isEmpty()) {
+                    throw new IllegalArgumentException();
+                }
+
+                this.von = von;
+                this.nach = nach;
+                this.schritte = List.copyOf(schritte);
             }
 
-            this.von = von;
-            this.nach = nach;
-            this.schritte = List.copyOf(schritte);
+            @Override
+            public Brett getResult() {
+                return schritte.get(schritte.size()-1);
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                Bewegen zug = (Bewegen) o;
+                return Objects.equals(von, zug.von) && Objects.equals(nach, zug.nach) && Objects.equals(schritte, zug.schritte);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(von, nach, schritte);
+            }
         }
 
-        @Override
-        public Brett getResult() {
-            return schritte.get(schritte.size()-1);
-        }
+        private static final class Aussetzen extends Zug {
+            private final Brett brett;
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Zug zug = (Zug) o;
-            return Objects.equals(von, zug.von) && Objects.equals(nach, zug.nach) && Objects.equals(schritte, zug.schritte);
-        }
+            public Aussetzen(Brett brett) {
+                this.brett = brett;
+            }
 
-        @Override
-        public int hashCode() {
-            return Objects.hash(von, nach, schritte);
+            @Override
+            public Brett getResult() {
+                return brett;
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+                Aussetzen aussetzen = (Aussetzen) o;
+                return Objects.equals(brett, aussetzen.brett);
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(brett);
+            }
         }
     }
 
@@ -695,8 +732,8 @@ final class Dame {
                 return;
             }
 
-            Set<Zug> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
-            for (Zug possibleZug : possibleZuege) {
+            Set<Zug.Bewegen> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
+            for (Zug.Bewegen possibleZug : possibleZuege) {
                 if (possibleZug.nach.equals(position.get())) {
                     aktuellesBrett = possibleZug.getResult();
                     amZug = amZug.getGegner();
@@ -755,10 +792,10 @@ final class Dame {
                 return;
             }
 
-            Set<Zug> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
-            for (Zug possibleZug : possibleZuege) {
+            Set<Zug.Bewegen> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
+            for (Zug.Bewegen possibleZug : possibleZuege) {
                 if (possibleZug.nach.equals(position.get())) {
-                    Zug antowrt = AI.calculateBestZug(possibleZug.getResult(), COMPUTER, 5);
+                    Zug antowrt = AI.calculateBestZug(possibleZug.getResult(), COMPUTER, 6);
 
                     aktuellesBrett = antowrt.getResult();
                     selectedPosition = Optional.empty();
