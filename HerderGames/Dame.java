@@ -28,27 +28,59 @@ final class Dame {
     }
 
     enum Spieler {
-        SPIELER_1(Stein.STEIN_SPIELER_1, Stein.DAME_SPIELER_1, RichtungVertikal.UNTEN, 7),
-        SPIELER_2(Stein.STEIN_SPIELER_2, Stein.DAME_SPIELER_2, RichtungVertikal.OBEN, 0);
+        SPIELER_OBEN,
+        SPIELER_UNTEN;
 
-        final Stein stein;
-        final Stein dame;
-        final RichtungVertikal moveDirection;
-        final int dameZeile;
+        Stein getStein() {
+            switch (this) {
+                case SPIELER_OBEN:
+                    return Stein.STEIN_SPIELER_1;
+                case SPIELER_UNTEN:
+                    return Stein.STEIN_SPIELER_2;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
 
-        Spieler(Stein stein, Stein dame, RichtungVertikal moveDirection, int dameZeile) {
-            this.stein = stein;
-            this.dame = dame;
-            this.moveDirection = moveDirection;
-            this.dameZeile = dameZeile;
+        Stein getDame() {
+            switch (this) {
+                case SPIELER_OBEN:
+                    return Stein.DAME_SPIELER_1;
+                case SPIELER_UNTEN:
+                    return Stein.DAME_SPIELER_2;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        RichtungVertikal getMoveDirection() {
+            switch (this) {
+                case SPIELER_OBEN:
+                    return RichtungVertikal.UNTEN;
+                case SPIELER_UNTEN:
+                    return RichtungVertikal.OBEN;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        int getDameZeile() {
+            switch (this) {
+                case SPIELER_OBEN:
+                    return 7;
+                case SPIELER_UNTEN:
+                    return 0;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
 
         Spieler getGegner() {
             switch (this) {
-                case SPIELER_1:
-                    return SPIELER_2;
-                case SPIELER_2:
-                    return SPIELER_1;
+                case SPIELER_OBEN:
+                    return SPIELER_UNTEN;
+                case SPIELER_UNTEN:
+                    return SPIELER_OBEN;
                 default:
                     throw new IllegalArgumentException();
             }
@@ -56,16 +88,10 @@ final class Dame {
     }
 
     enum Stein {
-        STEIN_SPIELER_1(Spieler.SPIELER_1),
-        STEIN_SPIELER_2(Spieler.SPIELER_2),
-        DAME_SPIELER_1(Spieler.SPIELER_1),
-        DAME_SPIELER_2(Spieler.SPIELER_2);
-
-        final Spieler spieler;
-
-        Stein(Spieler spieler) {
-            this.spieler = spieler;
-        }
+        STEIN_SPIELER_1,
+        STEIN_SPIELER_2,
+        DAME_SPIELER_1,
+        DAME_SPIELER_2;
 
         boolean isDame() {
             return this == DAME_SPIELER_1 || this == DAME_SPIELER_2;
@@ -73,6 +99,19 @@ final class Dame {
 
         boolean isStein() {
             return this == STEIN_SPIELER_1 || this == STEIN_SPIELER_2;
+        }
+
+        Spieler getSpieler() {
+            switch (this) {
+                case STEIN_SPIELER_1:
+                case DAME_SPIELER_1:
+                    return Spieler.SPIELER_OBEN;
+                case STEIN_SPIELER_2:
+                case DAME_SPIELER_2:
+                    return Spieler.SPIELER_UNTEN;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
 
         int getColor(PApplet applet) {
@@ -184,22 +223,22 @@ final class Dame {
 
         List<Zug> getPossibleSteinBewgenZuege(Position position) {
             Optional<Stein> stein = getStein(position);
-            if (stein.isEmpty()) {
+            if (stein.isEmpty() || !stein.get().isStein()) {
                 return Collections.emptyList();
             }
-            Spieler spieler = stein.get().spieler;
+            Spieler spieler = stein.get().getSpieler();
 
             List<Zug> result = new ArrayList<>();
 
             for (RichtungHorizontal richtungHorizontal : RichtungHorizontal.values()) {
-                Optional<Position> neuePosition = position.add(spieler.moveDirection.offset, richtungHorizontal.offset);
+                Optional<Position> neuePosition = position.add(spieler.getMoveDirection().offset, richtungHorizontal.offset);
                 if (neuePosition.isEmpty()) {
                     continue;
                 }
                 if (getStein(neuePosition.get()).isPresent()) {
                     continue;
                 }
-                Stein neuerStein = neuePosition.get().zeile == spieler.dameZeile ? spieler.dame : spieler.stein;
+                Stein neuerStein = neuePosition.get().zeile == spieler.getDameZeile() ? spieler.getDame() : spieler.getStein();
 
                 Brett neuesBrett = withSteinen(Map.of(
                         position, Optional.empty(),
@@ -213,10 +252,10 @@ final class Dame {
 
         List<Zug> getPossibleSteinSchlagenZuege(Position position, boolean backwards) {
             Optional<Stein> stein = getStein(position);
-            if (stein.isEmpty()) {
+            if (stein.isEmpty() || !stein.get().isStein()) {
                 return Collections.emptyList();
             }
-            Spieler spieler = stein.get().spieler;
+            Spieler spieler = stein.get().getSpieler();
 
             List<Zug> result = new ArrayList<>();
 
@@ -224,7 +263,7 @@ final class Dame {
             if (backwards) {
                 richtungenVertikal = RichtungVertikal.values();
             } else {
-                richtungenVertikal = new RichtungVertikal[]{spieler.moveDirection};
+                richtungenVertikal = new RichtungVertikal[]{spieler.getMoveDirection()};
             }
 
             for (RichtungVertikal richtungVertikal : richtungenVertikal) {
@@ -234,7 +273,7 @@ final class Dame {
                         continue;
                     }
                     Optional<Stein> schlagenStein = getStein(schlagenPosition.get());
-                    if (schlagenStein.isEmpty() || schlagenStein.get().spieler == spieler) {
+                    if (schlagenStein.isEmpty() || schlagenStein.get().getSpieler() == spieler) {
                         continue;
                     }
 
@@ -245,7 +284,7 @@ final class Dame {
                     if (getStein(neuePosition.get()).isPresent()) {
                         continue;
                     }
-                    Stein neuerStein = neuePosition.get().zeile == spieler.dameZeile ? spieler.dame : spieler.stein;
+                    Stein neuerStein = neuePosition.get().zeile == spieler.getDameZeile() ? spieler.getDame() : spieler.getStein();
 
                     Brett neuesBrett = withSteinen(Map.of(
                             position, Optional.empty(),
@@ -283,12 +322,12 @@ final class Dame {
 
             for (int zeile = 0; zeile < SIZE; zeile++) {
                 for (int spalte = 0; spalte < SIZE; spalte++) {
-                    if (!Position.isValid(spalte, zeile)) {
+                    if (!Position.isValid(zeile, spalte)) {
                         continue;
                     }
                     Position position = new Position(zeile, spalte);
                     Optional<Stein> stein = getStein(position);
-                    if (stein.isEmpty() || stein.get().spieler != spieler) {
+                    if (stein.isEmpty() || stein.get().getSpieler() != spieler) {
                         continue;
                     }
 
@@ -303,12 +342,12 @@ final class Dame {
 
             for (int zeile = 0; zeile < SIZE; zeile++) {
                 for (int spalte = 0; spalte < SIZE; spalte++) {
-                    if (!Position.isValid(spalte, zeile)) {
+                    if (!Position.isValid(zeile, spalte)) {
                         continue;
                     }
                     Position position = new Position(zeile, spalte);
                     Optional<Stein> stein = getStein(position);
-                    if (stein.isEmpty() || stein.get().spieler != spieler) {
+                    if (stein.isEmpty() || stein.get().getSpieler() != spieler) {
                         continue;
                     }
 
@@ -325,7 +364,7 @@ final class Dame {
             if (stein.isEmpty()) {
                 return Collections.emptyList();
             }
-            Spieler spieler = stein.get().spieler;
+            Spieler spieler = stein.get().getSpieler();
 
             List<Zug> result = new ArrayList<>();
             for (Zug zug : getPossibleZuegeForSpieler(spieler)) {
@@ -362,8 +401,15 @@ final class Dame {
             return (applet.height-calculateSize(applet)) / 2;
         }
 
-        void draw(PApplet applet) {
+        void draw(PApplet applet, Optional<Position> selectedPositon) {
             applet.pushStyle();
+
+            Set<Position> possibleMovePositions = new HashSet<>();
+            if (selectedPositon.isPresent()) {
+                for (Zug zug : getPossibleZuegeForPosition(selectedPositon.get())) {
+                    possibleMovePositions.add(zug.nach);
+                }
+            }
 
             int feldSize = calculateFeldSize(applet);
 
@@ -379,7 +425,15 @@ final class Dame {
                     }
                     Position position = new Position(zeile, spalte);
 
-                    applet.fill(applet.color(0));
+                    int backgroundColor;
+                    if (selectedPositon.isPresent() && selectedPositon.get().equals(position)) {
+                        backgroundColor = applet.color(161, 2, 118);
+                    } else if (possibleMovePositions.contains(position)) {
+                        backgroundColor = applet.color(245, 59, 194);
+                    } else {
+                        backgroundColor = applet.color(0);
+                    }
+                    applet.fill(backgroundColor);
                     applet.rect(screenX, screenY, feldSize, feldSize);
 
                     int steinSize = calculateSteinSize(applet);
@@ -389,7 +443,6 @@ final class Dame {
                         continue;
                     }
                     int steinColor = stein.get().getColor(applet);
-
                     applet.fill(steinColor);
                     applet.rect(screenX + steinAbstand, screenY + steinAbstand, steinSize, steinSize);
                 }
@@ -402,6 +455,18 @@ final class Dame {
     static final class Position {
         static boolean isValid(int zeile, int spalte) {
             return zeile >= 0 && zeile < Brett.SIZE && spalte >= 0 && spalte < Brett.SIZE && zeile%2 == spalte%2;
+        }
+
+        static Optional<Position> fromMousePosition(PApplet applet) {
+            int mouseXOffset = applet.mouseX - Brett.calculateAbstandX(applet);
+            int mouseYOffset = applet.mouseY - Brett.calculateAbstandY(applet);
+            int feldSize = Brett.calculateFeldSize(applet);
+            int zeile = mouseYOffset / feldSize;
+            int spalte = mouseXOffset / feldSize;
+            if (!isValid(zeile, spalte)) {
+                return Optional.empty();
+            }
+            return Optional.of(new Position(zeile, spalte));
         }
 
         final int zeile;
@@ -420,7 +485,7 @@ final class Dame {
             if (!isValid(zeile + zeilen, spalte + spalten)) {
                 return Optional.empty();
             }
-            return Optional.of(new Position(zeile + zeilen, spalten + spalten));
+            return Optional.of(new Position(zeile + zeilen, spalte + spalten));
         }
 
         @Override
@@ -451,19 +516,72 @@ final class Dame {
             this.nach = nach;
             this.schritte = List.copyOf(schritte);
         }
+
+        Brett getResult() {
+            return schritte.get(schritte.size()-1);
+        }
     }
 
     static final class SpielSpielerGegenSpieler extends Spiel {
         private Brett aktuellesBrett = Brett.ANFANG;
+        private Optional<Position> selectedPosition = Optional.empty();
+        private Spieler amZug = Spieler.SPIELER_OBEN;
 
         SpielSpielerGegenSpieler(PApplet applet) {
             super(applet);
         }
 
+        void selectNewField() {
+            if (!applet.mousePressed) {
+                return;
+            }
+
+            Optional<Position> position = Position.fromMousePosition(applet);
+            if (position.isEmpty()) {
+                selectedPosition = Optional.empty();
+                return;
+            }
+            Optional<Stein> stein = aktuellesBrett.getStein(position.get());
+            if (stein.isEmpty() || stein.get().getSpieler() != amZug) {
+                selectedPosition = Optional.empty();
+                return;
+            }
+
+            selectedPosition = position;
+        }
+
+        void zugMachen() {
+            if (!applet.mousePressed) {
+                return;
+            }
+
+            if (selectedPosition.isEmpty()) {
+                return;
+            }
+
+            Optional<Position> position = Position.fromMousePosition(applet);
+            if (position.isEmpty()) {
+                return;
+            }
+
+            List<Zug> possibleZuege = aktuellesBrett.getPossibleZuegeForPosition(selectedPosition.get());
+            for (Zug possibleZug : possibleZuege) {
+                if (possibleZug.nach.equals(position.get())) {
+                    aktuellesBrett = possibleZug.getResult();
+                    amZug = amZug.getGegner();
+                    selectedPosition = Optional.empty();
+                    return;
+                }
+            }
+        }
+
         @Override
         void draw() {
+            zugMachen();
+            selectNewField();
+
             applet.background(applet.color(255));
-            aktuellesBrett.draw(applet);
+            aktuellesBrett.draw(applet, selectedPosition);
         }
     }
 }
