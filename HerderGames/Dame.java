@@ -34,9 +34,9 @@ final class Dame {
         private Stein getStein() {
             switch (this) {
                 case SPIELER_OBEN:
-                    return Stein.STEIN_SPIELER_1;
+                    return Stein.STEIN_SPIELER_OBEN;
                 case SPIELER_UNTEN:
-                    return Stein.STEIN_SPIELER_2;
+                    return Stein.STEIN_SPIELER_UNTEN;
                 default:
                     throw new IllegalArgumentException();
             }
@@ -45,9 +45,9 @@ final class Dame {
         private Stein getDame() {
             switch (this) {
                 case SPIELER_OBEN:
-                    return Stein.DAME_SPIELER_1;
+                    return Stein.DAME_SPIELER_OBEN;
                 case SPIELER_UNTEN:
-                    return Stein.DAME_SPIELER_2;
+                    return Stein.DAME_SPIELER_UNTEN;
                 default:
                     throw new IllegalArgumentException();
             }
@@ -89,26 +89,26 @@ final class Dame {
     }
 
     private enum Stein {
-        STEIN_SPIELER_1,
-        STEIN_SPIELER_2,
-        DAME_SPIELER_1,
-        DAME_SPIELER_2;
+        STEIN_SPIELER_OBEN,
+        STEIN_SPIELER_UNTEN,
+        DAME_SPIELER_OBEN,
+        DAME_SPIELER_UNTEN;
 
         private boolean isDame() {
-            return this == DAME_SPIELER_1 || this == DAME_SPIELER_2;
+            return this == DAME_SPIELER_OBEN || this == DAME_SPIELER_UNTEN;
         }
 
         boolean isStein() {
-            return this == STEIN_SPIELER_1 || this == STEIN_SPIELER_2;
+            return this == STEIN_SPIELER_OBEN || this == STEIN_SPIELER_UNTEN;
         }
 
         private Spieler getSpieler() {
             switch (this) {
-                case STEIN_SPIELER_1:
-                case DAME_SPIELER_1:
+                case STEIN_SPIELER_OBEN:
+                case DAME_SPIELER_OBEN:
                     return Spieler.SPIELER_OBEN;
-                case STEIN_SPIELER_2:
-                case DAME_SPIELER_2:
+                case STEIN_SPIELER_UNTEN:
+                case DAME_SPIELER_UNTEN:
                     return Spieler.SPIELER_UNTEN;
                 default:
                     throw new IllegalArgumentException();
@@ -117,13 +117,13 @@ final class Dame {
 
         private int getColor(PApplet applet) {
             switch (this) {
-                case STEIN_SPIELER_1:
+                case STEIN_SPIELER_OBEN:
                     return applet.color(66, 176, 245);
-                case DAME_SPIELER_1:
+                case DAME_SPIELER_OBEN:
                     return applet.color(1, 44, 71);
-                case STEIN_SPIELER_2:
+                case STEIN_SPIELER_UNTEN:
                     return applet.color(245, 103, 32);
-                case DAME_SPIELER_2:
+                case DAME_SPIELER_UNTEN:
                     return applet.color(196, 14, 35);
                 default:
                     throw new IllegalArgumentException();
@@ -138,10 +138,10 @@ final class Dame {
 
         static Brett createAnfang() {
             List<Optional<Stein>> zeileSpieler1 = List.of(
-                    Optional.of(Stein.STEIN_SPIELER_1),
-                    Optional.of(Stein.STEIN_SPIELER_1),
-                    Optional.of(Stein.STEIN_SPIELER_1),
-                    Optional.of(Stein.STEIN_SPIELER_1)
+                    Optional.of(Stein.STEIN_SPIELER_OBEN),
+                    Optional.of(Stein.STEIN_SPIELER_OBEN),
+                    Optional.of(Stein.STEIN_SPIELER_OBEN),
+                    Optional.of(Stein.STEIN_SPIELER_OBEN)
             );
 
             List<Optional<Stein>> zeileLeer = List.of(
@@ -152,10 +152,10 @@ final class Dame {
             );
 
             List<Optional<Stein>> zeileSpieler2 = List.of(
-                    Optional.of(Stein.STEIN_SPIELER_2),
-                    Optional.of(Stein.STEIN_SPIELER_2),
-                    Optional.of(Stein.STEIN_SPIELER_2),
-                    Optional.of(Stein.STEIN_SPIELER_2)
+                    Optional.of(Stein.STEIN_SPIELER_UNTEN),
+                    Optional.of(Stein.STEIN_SPIELER_UNTEN),
+                    Optional.of(Stein.STEIN_SPIELER_UNTEN),
+                    Optional.of(Stein.STEIN_SPIELER_UNTEN)
             );
 
             return new Brett(List.of(
@@ -647,7 +647,6 @@ final class Dame {
             return Objects.hash(von, nach, schritte);
         }
     }
-
 
     static final class SpielerGegenSpielerSpiel extends MiniSpiel {
         private Brett aktuellesBrett = Brett.ANFANG;
