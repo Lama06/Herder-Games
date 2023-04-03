@@ -545,8 +545,6 @@ final class Dame {
         }
 
         private void draw(PApplet applet, Optional<Position> ausgewaehltePosition) {
-            applet.pushStyle();
-
             Set<Position> possibleMovePositions = new HashSet<>();
             if (ausgewaehltePosition.isPresent()) {
                 for (Zug zug : getMoeglicheZuegeFuerPosition(ausgewaehltePosition.get())) {
@@ -592,8 +590,6 @@ final class Dame {
                     applet.rect(screenX + steinAbstand, screenY + steinAbstand, steinSize, steinSize);
                 }
             }
-
-            applet.popStyle();
         }
     }
 
