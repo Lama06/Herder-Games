@@ -817,7 +817,7 @@ final class Dame {
 
     static final class AIGegenAISpiel extends MiniSpiel {
         private Brett aktuellesBrett = Brett.ANFANG;
-        private Spieler amZug = Spieler.SPIELER_OBEN;
+        private Spieler amZug = Spieler.SPIELER_UNTEN;
 
         AIGegenAISpiel(PApplet applet) {
             super(applet);
