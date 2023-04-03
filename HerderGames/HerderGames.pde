@@ -1,9 +1,5 @@
 MiniSpiel currentSpiel = null;
 
-void setup() {
-    fullScreen();
-}
-
 void settings() {
     size(int(random(400, 100)), int(random(400, 1000)));
 }
