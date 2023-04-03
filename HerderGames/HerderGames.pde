@@ -1,7 +1,8 @@
 MiniSpiel currentSpiel = null;
 
 void settings() {
-    size(int(random(400, 100)), int(random(400, 1000)));
+    //size(int(random(400, 100)), int(random(400, 1000)));
+    fullScreen();
 }
 
 void draw() {
@@ -15,6 +16,8 @@ void draw() {
         text("3: Dame - AI gegen AI", width/2, height/3 + 110);
         text("4: Tic Tac Toe - Spieler gegen Spieler", width/2, height/3 + 140);
         text("5: Tic Tac Toe - Spieler gegen AI", width/2, height/3 + 170);
+        text("6: Vier Gewinnt - Spieler gegen Spieler", width/2, height/3+200);
+        text("7: Vier Gewinnt - Spieler gegen AI", width/2, height/3+230);
         popStyle();
 
         if (keyPressed) {
@@ -34,6 +37,12 @@ void draw() {
                 case '5':
                     currentSpiel = new TicTacToe.SpielerGegenAISpiel(this);
                     break;
+                case '6':
+                    currentSpiel = new VierGewinnt.SpielerGegenSpielerSpiel(this);
+                    break;
+                case '7':
+                    currentSpiel = new VierGewinnt.SpielerGegenAISpiel(this);
+                    break;
             }
         }
 
@@ -43,4 +52,10 @@ void draw() {
     pushStyle();
     currentSpiel.draw();
     popStyle();
+}
+
+void mouseClicked() {
+    if (currentSpiel != null) {
+        currentSpiel.mousePressed();
+    }
 }

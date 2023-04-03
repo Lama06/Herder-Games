@@ -688,10 +688,6 @@ final class Dame {
         }
 
         private void selectNewField() {
-            if (!applet.mousePressed) {
-                return;
-            }
-
             Optional<Position> position = Position.fromMousePosition(applet);
             if (position.isEmpty()) {
                 ausgewaehltePosition = Optional.empty();
@@ -707,10 +703,6 @@ final class Dame {
         }
 
         private void zugMachen() {
-            if (!applet.mousePressed) {
-                return;
-            }
-
             if (ausgewaehltePosition.isEmpty()) {
                 return;
             }
@@ -732,10 +724,13 @@ final class Dame {
         }
 
         @Override
-        void draw() {
+        void mousePressed() {
             zugMachen();
             selectNewField();
+        }
 
+        @Override
+        void draw() {
             applet.background(applet.color(0));
             aktuellesBrett.draw(applet, ausgewaehltePosition);
         }
@@ -744,14 +739,15 @@ final class Dame {
     static final class SpielerGegenAISpiel extends MiniSpiel {
         private static final Spieler COMPUTER = Spieler.SPIELER_OBEN;
         private static final Spieler MENSCH = Spieler.SPIELER_UNTEN;
+
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
 
-        private void selectNewField() {
-            if (!applet.mousePressed) {
-                return;
-            }
+        SpielerGegenAISpiel(PApplet applet) {
+            super(applet);
+        }
 
+        private void selectNewField() {
             Optional<Position> position = Position.fromMousePosition(applet);
             if (position.isEmpty()) {
                 ausgewaehltePosition = Optional.empty();
@@ -767,10 +763,6 @@ final class Dame {
         }
 
         private void zugMachen() {
-            if (!applet.mousePressed) {
-                return;
-            }
-
             if (ausgewaehltePosition.isEmpty()) {
                 return;
             }
@@ -797,15 +789,14 @@ final class Dame {
             }
         }
 
-        SpielerGegenAISpiel(PApplet applet) {
-            super(applet);
+        @Override
+        void mousePressed() {
+            zugMachen();
+            selectNewField();
         }
 
         @Override
         void draw() {
-            zugMachen();
-            selectNewField();
-
             applet.background(applet.color(0));
             aktuellesBrett.draw(applet, ausgewaehltePosition);
         }

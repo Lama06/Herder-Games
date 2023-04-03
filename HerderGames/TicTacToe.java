@@ -3,6 +3,8 @@ import processing.core.PApplet;
 import java.util.*;
 
 final class TicTacToe {
+    private TicTacToe() {}
+
     private enum Spieler implements AI.Spieler<Spieler> {
         KREUZ {
             @Override
@@ -378,11 +380,8 @@ final class TicTacToe {
             amZug = applet.random(1) > 0.5 ? Spieler.KREIS : Spieler.KREUZ;
         }
 
-        private void zugMachen(PApplet applet) {
-            if (!applet.mousePressed) {
-                return;
-            }
-
+        @Override
+        void mousePressed() {
             Optional<Position> mausPosition = Position.fromMausPosition(applet);
             if (mausPosition.isEmpty()) {
                 return;
@@ -400,8 +399,6 @@ final class TicTacToe {
 
         @Override
         void draw() {
-            zugMachen(applet);
-
             applet.background(applet.color(255));
             aktuellesBrett.draw(applet);
         }
@@ -424,11 +421,8 @@ final class TicTacToe {
             aktuellesBrett = ersterZug.get().ergebnis;
         }
 
-        private void zugMachen(PApplet applet) {
-            if (!applet.mousePressed) {
-                return;
-            }
-
+        @Override
+        void mousePressed() {
             Optional<Position> mausPosition = Position.fromMausPosition(applet);
             if (mausPosition.isEmpty()) {
                 return;
@@ -451,8 +445,6 @@ final class TicTacToe {
 
         @Override
         void draw() {
-            zugMachen(applet);
-
             applet.background(applet.color(255));
             aktuellesBrett.draw(applet);
         }
