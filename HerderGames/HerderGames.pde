@@ -54,7 +54,7 @@ void draw() {
     popStyle();
 }
 
-void mouseClicked() {
+void mousePressed() {
     if (currentSpiel != null) {
         currentSpiel.mousePressed();
     }
