@@ -415,19 +415,16 @@ final class VierGewinnt {
     }
 
     static final class SpielerGegenAISpiel extends MiniSpiel {
+        private static final int AI_TIEFE = 6;
         private static final Spieler MENSCH = Spieler.SPIELER_1;
         private static final Spieler COMPUTER = Spieler.SPIELER_2;
 
-        private Brett aktuellesBrett;
+        // In der Mitte anzufangen ist in Vier Gewinnt immer eine gute Iddee.
+        // Unsere AI guckt aber nicht weit genug in die Zukunft, um das zu verstehen, also geben wir ihr einen kleinen Tipp.
+        private Brett aktuellesBrett = Brett.LEER.mitStein(new Position(5, 3), Optional.of(COMPUTER));
 
         SpielerGegenAISpiel(PApplet applet) {
             super(applet);
-            Optional<Zug> ersterZug = AI.bestenNaechstenZugBerechnen(Brett.LEER, COMPUTER, 5);
-            if (ersterZug.isEmpty()) {
-                // Das sollte niemals passieren, weil der Computer immer einen Zug findet, wenn er anfängt
-                throw new IllegalStateException();
-            }
-            aktuellesBrett = ersterZug.get().ergebnis;
         }
 
         @Override
@@ -440,7 +437,7 @@ final class VierGewinnt {
             Set<Zug> moeglicheZuege = aktuellesBrett.getMoeglicheZuegeFuerSpieler(MENSCH);
             for (Zug moeglicherZug : moeglicheZuege) {
                 if (moeglicherZug.spalte == mausSpalte.getAsInt()) {
-                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.ergebnis, COMPUTER, 5);
+                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.ergebnis, COMPUTER, AI_TIEFE);
                     if (antwort.isEmpty()) {
                         aktuellesBrett = moeglicherZug.ergebnis;
                         return;

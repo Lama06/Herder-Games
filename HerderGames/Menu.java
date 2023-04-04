@@ -10,7 +10,7 @@ final class Menu {
 
     void settings() {
         applet.size((int) applet.random(400, applet.displayWidth), (int) applet.random(400, applet.displayHeight));
-        applet.fullScreen();
+        //applet.fullScreen();
     }
 
     void setup() {
