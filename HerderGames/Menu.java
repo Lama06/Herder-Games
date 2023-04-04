@@ -1,23 +1,23 @@
 import processing.core.PApplet;
 
-public final class Menu {
+final class Menu {
     private final PApplet applet;
     private MiniSpiel currentSpiel = null;
 
-    public Menu(PApplet applet) {
+    Menu(PApplet applet) {
         this.applet = applet;
     }
 
-    public void settings() {
+    void settings() {
         applet.size((int) applet.random(400, applet.displayWidth), (int) applet.random(400, applet.displayHeight));
         applet.fullScreen();
     }
 
-    public void setup() {
+    void setup() {
         FlappyOinky.init(applet);
     }
 
-    public void draw() {
+    void draw() {
         if (currentSpiel == null) {
             applet.pushStyle();
             applet.textAlign(PApplet.CENTER);
@@ -70,13 +70,13 @@ public final class Menu {
         applet.popStyle();
     }
 
-    public void mousePressed() {
+    void mousePressed() {
         if (currentSpiel != null) {
             currentSpiel.mousePressed();
         }
     }
 
-    public void keyPressed() {
+    void keyPressed() {
         if (currentSpiel != null) {
             currentSpiel.keyPressed();
         }
