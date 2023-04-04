@@ -1,8 +1,12 @@
 MiniSpiel currentSpiel = null;
 
 void settings() {
-    //size(int(random(400, 100)), int(random(400, 1000)));
+    size(int(random(400, displayWidth)), int(random(400, displayHeight)));
     fullScreen();
+}
+
+void setup() {
+    FlappyOinky.init(this);
 }
 
 void draw() {
@@ -18,6 +22,7 @@ void draw() {
         text("5: Tic Tac Toe - Spieler gegen AI", width/2, height/3 + 170);
         text("6: Vier Gewinnt - Spieler gegen Spieler", width/2, height/3+200);
         text("7: Vier Gewinnt - Spieler gegen AI", width/2, height/3+230);
+        text("8: Flappy Oinky", width/2, height/3+260);
         popStyle();
 
         if (keyPressed) {
@@ -43,6 +48,9 @@ void draw() {
                 case '7':
                     currentSpiel = new VierGewinnt.SpielerGegenAISpiel(this);
                     break;
+                case '8':
+                    currentSpiel = new FlappyOinky.Spiel(this);
+                    break;
             }
         }
 
@@ -57,5 +65,11 @@ void draw() {
 void mousePressed() {
     if (currentSpiel != null) {
         currentSpiel.mousePressed();
+    }
+}
+
+void keyPressed() {
+    if (currentSpiel != null) {
+        currentSpiel.keyPressed();
     }
 }

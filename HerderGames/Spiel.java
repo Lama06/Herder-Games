@@ -10,4 +10,6 @@ abstract class MiniSpiel {
     abstract void draw();
 
     void mousePressed() { }
+
+    void keyPressed() { }
 }
