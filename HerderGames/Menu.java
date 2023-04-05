@@ -15,6 +15,7 @@ final class Menu {
 
     void setup() {
         FlappyOinky.init(applet);
+        Schach.init(applet);
     }
 
     void draw() {
@@ -22,52 +23,60 @@ final class Menu {
             applet.pushStyle();
             applet.textAlign(PApplet.CENTER);
             applet.textSize(30);
-            applet.text("Spiel auswählen:", applet.width/2, applet.height/3);
-            applet.text("1: Dame - Spieler gegen Spieler", applet.width/2, applet.height/3 + 50);
-            applet.text("2: Dame - Spieler gegen AI", applet.width/2, applet.height/3 + 80);
-            applet.text("3: Dame - AI gegen AI", applet.width/2, applet.height/3 + 110);
-            applet.text("4: Tic Tac Toe - Spieler gegen Spieler", applet.width/2, applet.height/3 + 140);
-            applet.text("5: Tic Tac Toe - Spieler gegen AI", applet.width/2, applet.height/3 + 170);
-            applet.text("6: Vier Gewinnt - Spieler gegen Spieler", applet.width/2, applet.height/3+200);
-            applet.text("7: Vier Gewinnt - Spieler gegen AI", applet.width/2, applet.height/3+230);
-            applet.text("8: Flappy Oinky", applet.width/2, applet.height/3+260);
+            applet.text("Spiel auswählen:", applet.width / 2, applet.height / 3);
+            applet.text("1: Dame - Spieler gegen Spieler", applet.width / 2, applet.height / 3 + 50);
+            applet.text("2: Dame - Spieler gegen AI", applet.width / 2, applet.height / 3 + 80);
+            applet.text("3: Dame - AI gegen AI", applet.width / 2, applet.height / 3 + 110);
+            applet.text("4: Tic Tac Toe - Spieler gegen Spieler", applet.width / 2, applet.height / 3 + 140);
+            applet.text("5: Tic Tac Toe - Spieler gegen AI", applet.width / 2, applet.height / 3 + 170);
+            applet.text("6: Vier Gewinnt - Spieler gegen Spieler", applet.width / 2, applet.height / 3 + 200);
+            applet.text("7: Vier Gewinnt - Spieler gegen AI", applet.width / 2, applet.height / 3 + 230);
+            applet.text("8: Flappy Oinky", applet.width / 2, applet.height / 3 + 260);
+            applet.text("9: Schach Spieler gegen Spieler", applet.width / 2, applet.height / 3 + 290);
+            applet.text("a: Schach gegen AI", applet.width / 2, applet.height / 3 + 320);
             applet.popStyle();
-
-            if (applet.keyPressed) {
-                switch (applet.key) {
-                    case '1':
-                        currentSpiel = new Dame.SpielerGegenSpielerSpiel(applet);
-                        break;
-                    case '2':
-                        currentSpiel = new Dame.SpielerGegenAISpiel(applet);
-                        break;
-                    case '3':
-                        currentSpiel = new Dame.AIGegenAISpiel(applet);
-                        break;
-                    case '4':
-                        currentSpiel = new TicTacToe.SpielerGegenSpielerSpiel(applet);
-                        break;
-                    case '5':
-                        currentSpiel = new TicTacToe.SpielerGegenAISpiel(applet);
-                        break;
-                    case '6':
-                        currentSpiel = new VierGewinnt.SpielerGegenSpielerSpiel(applet);
-                        break;
-                    case '7':
-                        currentSpiel = new VierGewinnt.SpielerGegenAISpiel(applet);
-                        break;
-                    case '8':
-                        currentSpiel = new FlappyOinky.Spiel(applet);
-                        break;
-                }
-            }
-
-            return;
         }
 
-        applet.pushStyle();
-        currentSpiel.draw();
-        applet.popStyle();
+        if (currentSpiel != null) {
+            applet.pushStyle();
+            currentSpiel.draw();
+            applet.popStyle();
+        }
+
+        if (applet.keyPressed) {
+            switch (applet.key) {
+                case '1':
+                    currentSpiel = new Dame.SpielerGegenSpielerSpiel(applet);
+                    break;
+                case '2':
+                    currentSpiel = new Dame.SpielerGegenAISpiel(applet);
+                    break;
+                case '3':
+                    currentSpiel = new Dame.AIGegenAISpiel(applet);
+                    break;
+                case '4':
+                    currentSpiel = new TicTacToe.SpielerGegenSpielerSpiel(applet);
+                    break;
+                case '5':
+                    currentSpiel = new TicTacToe.SpielerGegenAISpiel(applet);
+                    break;
+                case '6':
+                    currentSpiel = new VierGewinnt.SpielerGegenSpielerSpiel(applet);
+                    break;
+                case '7':
+                    currentSpiel = new VierGewinnt.SpielerGegenAISpiel(applet);
+                    break;
+                case '8':
+                    currentSpiel = new FlappyOinky.Spiel(applet);
+                    break;
+                case '9':
+                    currentSpiel = new Schach.SpielerGegenSpielerSpiel(applet);
+                    break;
+                case 'a':
+                    currentSpiel = new Schach.SpielerGegenAISpiel(applet);
+                    break;
+            }
+        }
     }
 
     void mousePressed() {
