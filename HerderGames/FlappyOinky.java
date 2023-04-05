@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
-final class FlappyOinky {
+final class FlappyOinky extends MiniSpiel {
     private static PImage hindernis;
     private static PImage oinky;
 
@@ -15,7 +15,63 @@ final class FlappyOinky {
         oinky = applet.loadImage("flappyoinky/oinky.png");
     }
 
-    private FlappyOinky() {}
+    private static final int HINDERNIS_DELAY = 200;
+
+    private final Set<Oinky> oinkys = new HashSet<>();
+
+    private int nextHinderniss = 20;
+    private final Set<Hindernis> hindernisse = new HashSet<>();
+
+    private int punkte;
+
+    FlappyOinky(PApplet applet) {
+        super(applet);
+        // Hier height verwenden, weil die Größe der Oinkys auch mit height berechnet wird
+        oinkys.add(new Oinky(() -> applet.key == 'w', applet.width/2-applet.height/15));
+        oinkys.add(new Oinky(() -> applet.keyCode == PApplet.UP, applet.width/2+applet.height/15));
+    }
+
+    @Override
+    void draw() {
+        nextHinderniss--;
+        if (nextHinderniss <= 0) {
+            hindernisse.add(new Hindernis());
+            nextHinderniss = HINDERNIS_DELAY;
+            punkte++;
+        }
+
+        applet.background(173, 216, 230);
+
+        applet.textAlign(PApplet.CENTER);
+        applet.text(punkte, (float) applet.width/2, 50);
+
+
+        Iterator<Hindernis> hindernisIterator = hindernisse.iterator();
+        while (hindernisIterator.hasNext()) {
+            Hindernis hindernis = hindernisIterator.next();
+            if (hindernis.istWeg()) {
+                hindernisIterator.remove();
+            }
+            hindernis.draw();
+        }
+
+        Iterator<Oinky> oinkyIterator = oinkys.iterator();
+        while (oinkyIterator.hasNext()) {
+            Oinky oinky = oinkyIterator.next();
+            if (oinky.istRaus()) {
+                oinkyIterator.remove();
+                continue;
+            }
+            oinky.draw();
+        }
+    }
+
+    @Override
+    void keyPressed() {
+        for (Oinky oinky : oinkys) {
+            oinky.keyPressed();
+        }
+    }
 
     private static final class Rechteck {
         private final float x;
@@ -53,10 +109,9 @@ final class FlappyOinky {
         }
     }
 
-    private static final class Oinky {
-        private static final float MAX_DREHUNG_AENDERUNG = 1f;
+    private final class Oinky {
+        private static final float MAX_DREHUNG_AENDERUNG = 2f;
 
-        private final PApplet applet;
         private final BooleanSupplier keyTest;
         private final float size;
         private final float x;
@@ -64,13 +119,12 @@ final class FlappyOinky {
         private float geschwindigkeitY = 0;
         private final float beschleunigungY;
         private final float geschwindigkeitYNachSprung;
-        private float drehung;
+        private float drehung = 0;
         private boolean tot = false;
 
-        private Oinky(PApplet applet, BooleanSupplier keyTest, int x) {
-            this.applet = applet;
+        private Oinky(BooleanSupplier keyTest, int x) {
             this.keyTest = keyTest;
-            size = Math.min((float) applet.height / 10, (float) applet.width / 10);
+            size = (float) applet.height / 10;
             this.x = x;
             y = (float) applet.height / 2;
             beschleunigungY = (float) applet.height / 700;
@@ -89,7 +143,7 @@ final class FlappyOinky {
             geschwindigkeitY = geschwindigkeitYNachSprung;
         }
 
-        private void draw(Set<Hindernis> hindernisse) {
+        private void draw() {
             for (Hindernis hindernis : hindernisse) {
                 if (kollidiertMit(hindernis)) {
                     tot = true;
@@ -100,7 +154,7 @@ final class FlappyOinky {
             geschwindigkeitY += beschleunigungY;
             y += geschwindigkeitY;
 
-            float targetDrehung = getTargetDrehung();
+            float targetDrehung = geschwindigkeitY > 0 ? 30 : -30;
             if (targetDrehung > drehung) {
                 float drehungAenderung = targetDrehung - drehung;
                 if (drehungAenderung > MAX_DREHUNG_AENDERUNG) {
@@ -124,10 +178,6 @@ final class FlappyOinky {
             applet.popMatrix();
         }
 
-        private float getTargetDrehung() {
-            return geschwindigkeitY*2f;
-        }
-
         private boolean istRaus() {
             return y+size < 0 || y > applet.height;
         }
@@ -147,8 +197,7 @@ final class FlappyOinky {
         }
     }
 
-    private static final class Hindernis {
-        private final PApplet applet;
+    private final class Hindernis {
         private final float breite;
         private final float luecke;
         private final float obereHoehe;
@@ -156,8 +205,7 @@ final class FlappyOinky {
         private float x;
         private final float xGeschwindigkeit;
 
-        private Hindernis(PApplet applet) {
-            this.applet = applet;
+        private Hindernis() {
             breite = (float) applet.width / 20;
             luecke = (float) applet.height / 2.7f;
             obereHoehe = applet.random(applet.height - luecke);
@@ -191,65 +239,6 @@ final class FlappyOinky {
 
         private Set<Rechteck> getRechtecke() {
             return Set.of(new Rechteck(x, 0, breite, obereHoehe), new Rechteck(x, obereHoehe+luecke, breite, untereHoehe));
-        }
-    }
-
-    static final class Spiel extends MiniSpiel {
-        private static final int HINDERNIS_DELAY = 200;
-
-        private final Set<Oinky> oinkys = new HashSet<>();
-
-        private int nextHinderniss = 20;
-        private final Set<Hindernis> hindernisse = new HashSet<>();
-
-        private int punkte;
-
-        Spiel(PApplet applet) {
-            super(applet);
-            oinkys.add(new Oinky(applet, () -> applet.key == 'w', applet.width/2-50));
-            oinkys.add(new Oinky(applet, () -> applet.keyCode == PApplet.UP, applet.width/2+50));
-        }
-
-        @Override
-        void draw() {
-            nextHinderniss--;
-            if (nextHinderniss <= 0) {
-                hindernisse.add(new Hindernis(applet));
-                nextHinderniss = HINDERNIS_DELAY;
-                punkte++;
-            }
-
-            applet.background(173, 216, 230);
-
-            applet.textAlign(PApplet.CENTER);
-            applet.text(punkte, (float) applet.width/2, 50);
-
-
-            Iterator<Hindernis> hindernisIterator = hindernisse.iterator();
-            while (hindernisIterator.hasNext()) {
-                Hindernis hindernis = hindernisIterator.next();
-                if (hindernis.istWeg()) {
-                    hindernisIterator.remove();
-                }
-                hindernis.draw();
-            }
-
-            Iterator<Oinky> oinkyIterator = oinkys.iterator();
-            while (oinkyIterator.hasNext()) {
-                Oinky oinky = oinkyIterator.next();
-                if (oinky.istRaus()) {
-                    oinkyIterator.remove();
-                    continue;
-                }
-                oinky.draw(hindernisse);
-            }
-        }
-
-        @Override
-        void keyPressed() {
-            for (Oinky oinky : oinkys) {
-                oinky.keyPressed();
-            }
         }
     }
 }

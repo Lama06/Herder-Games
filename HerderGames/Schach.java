@@ -37,7 +37,7 @@ final class Schach {
 
     private Schach() {}
 
-    private static class Verschiebung1D {
+    private static abstract class Verschiebung1D {
         final int verschiebung;
 
         private Verschiebung1D(int verschiebung) {
@@ -498,7 +498,6 @@ final class Schach {
             if (getStein(uebersprungenePosition.get()).isPresent()) {
                 return Optional.empty();
             }
-
 
             Optional<Position> neuePosition = startPosition.add(
                     spieler.getBauerBewegenVerschiebung().verschiebung*2,

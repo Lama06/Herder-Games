@@ -12,4 +12,6 @@ abstract class MiniSpiel {
     void mousePressed() { }
 
     void keyPressed() { }
+
+    void keyReleased() { }
 }

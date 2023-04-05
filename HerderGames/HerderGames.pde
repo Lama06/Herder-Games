@@ -19,3 +19,7 @@ void mousePressed() {
 void keyPressed() {
     menu.keyPressed();
 }
+
+void keyReleased() {
+    menu.keyReleased();
+}
