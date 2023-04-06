@@ -14,8 +14,8 @@ final class Baelle extends MiniSpiel {
 
     Baelle(PApplet applet) {
         super(applet);
-        spieler.add(new Spieler((float) applet.width/50, SpielerSteuerungType.WASD));
-        spieler.add(new Spieler((float) applet.width/50, SpielerSteuerungType.PFEILTASTEN));
+        spieler.add(new Spieler(Spieler.RADIUS*2, SpielerSteuerungType.WASD));
+        spieler.add(new Spieler(Spieler.RADIUS*-2, SpielerSteuerungType.PFEILTASTEN));
     }
 
     @Override
@@ -71,29 +71,18 @@ final class Baelle extends MiniSpiel {
         private boolean kollidiertMit(Kreis kreis) {
             return PApplet.dist(mittelpunktX, mittelpunktY, kreis.mittelpunktX, kreis.mittelpunktY) <= radius + kreis.radius;
         }
-    }
 
-    private static float getMinBallRadius(PApplet applet) {
-        return (float) applet.width / 100;
-    }
-
-    private static float getMaxBallRadius(PApplet applet) {
-        return (float) applet.width / 50;
-    }
-
-    private static float getMinBallGeschwindigkeit(PApplet applet) {
-        return (float) applet.width / 1000;
-    }
-
-    private static float getMaxBallGeschwindigkeit(PApplet applet) {
-        return (float) applet.width / 250;
-    }
-
-    private static float getNeuerBallMinEntfernungZuSpieler(PApplet applet, float geschwindigkeit) {
-        return geschwindigkeit * applet.frameRate; // ca 1 Sekunde Reaktionszeit
+        private boolean istWegVomBildschirm() {
+            return mittelpunktX-radius <= 0 || mittelpunktX+radius >= 1 || mittelpunktY-radius <= 0 || mittelpunktY+radius >= 1;
+        }
     }
 
     private final class Ball {
+        private static final float MIN_RADIUS = 0.01f;
+        private static final float MAX_RADIUS = 0.02f;
+        private static final float MIN_GESCHWINDIGKEIT = 0.001f;
+        private static final float MAX_GESCHWINDIGKEIT = 0.004f;
+
         private float x;
         private float y;
         private float geschwindigkeitX;
@@ -102,34 +91,29 @@ final class Baelle extends MiniSpiel {
         private final int color;
 
         private Ball() {
-            radius = applet.random(getMinBallRadius(applet), getMaxBallRadius(applet));
-            geschwindigkeitX = applet.random(getMinBallGeschwindigkeit(applet), getMaxBallGeschwindigkeit(applet));
-            geschwindigkeitY = applet.random(getMinBallGeschwindigkeit(applet), getMaxBallGeschwindigkeit(applet));
-            float[] position = findPosition(radius, geschwindigkeitX, geschwindigkeitY);
-            x = position[0];
-            y = position[1];
+            radius = applet.random(MIN_RADIUS, MAX_RADIUS);
+            geschwindigkeitX = applet.random(MIN_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
+            geschwindigkeitY = applet.random(MIN_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
+            findPosition(radius, geschwindigkeitX, geschwindigkeitY);
             color = applet.color(applet.random(255), applet.random(255), applet.random(255));
         }
 
-        private float[] findPosition(float radius, float geschwindigkeitX, float geschwindigkeitY) {
-            float x, y;
+        private void findPosition(float radius, float geschwindigkeitX, float geschwindigkeitY) {
         findPosition:
             while (true) {
-                x = applet.random(radius*2, applet.width-radius*2);
-                y = applet.random(radius*2, applet.height-radius*2);
+                x = applet.random(radius*2, 1-radius*2);
+                y = applet.random(radius*2, 1-radius*2);
 
                 Kreis kreis = new Kreis(x, y, radius);
 
                 for (Spieler spieler : spieler) {
-                    if (spieler.getKreis().kollidiertMit(kreis)) {
+                    float minXEnterfnungZuSpieler = Math.abs(geschwindigkeitX * applet.frameRate);
+                    if (Math.abs(spieler.x - x) < minXEnterfnungZuSpieler) {
                         continue findPosition;
                     }
 
-                    if (Math.abs(spieler.x - x) < getNeuerBallMinEntfernungZuSpieler(applet, geschwindigkeitX)) {
-                        continue findPosition;
-                    }
-
-                    if (Math.abs(spieler.y - y) < getNeuerBallMinEntfernungZuSpieler(applet, geschwindigkeitY)) {
+                    float minYEnterfnungZuSpieler = Math.abs(geschwindigkeitY * applet.frameRate);
+                    if (Math.abs(spieler.y - y) < minYEnterfnungZuSpieler) {
                         continue findPosition;
                     }
                 }
@@ -142,7 +126,6 @@ final class Baelle extends MiniSpiel {
 
                 break;
             }
-            return new float[] {x, y};
         }
 
         private boolean kollidiertMitAnderemBall() {
@@ -159,12 +142,8 @@ final class Baelle extends MiniSpiel {
             return false;
         }
 
-        private boolean istWegVomBildschirm() {
-            return x < 0 || x > applet.width || y < 0 || y > applet.height;
-        }
-
         private void kollisionenUeberpruefen() {
-            if (kollidiertMitAnderemBall() || istWegVomBildschirm()) {
+            if (kollidiertMitAnderemBall() || getKreis().istWegVomBildschirm()) {
                 geschwindigkeitX *= -1;
                 geschwindigkeitY *= -1;
             }
@@ -175,7 +154,7 @@ final class Baelle extends MiniSpiel {
             y += geschwindigkeitY;
             applet.fill(color);
             applet.ellipseMode(PConstants.CENTER);
-            applet.circle(x, y, radius*2);
+            applet.circle(x*applet.width, y*applet.height, Math.max(radius*2*applet.width, radius*2*applet.height));
         }
 
         private Kreis getKreis() {
@@ -199,35 +178,28 @@ final class Baelle extends MiniSpiel {
         }
     }
 
-    private static int getSpielerColor(PApplet applet) {
-        return applet.color(255, 0, 0);
-    }
-
-    private static float getSpielerRadius(PApplet applet) {
-        return (float) applet.width / 50;
-    }
-
-    private static float getSpielerMoveSpeed(PApplet applet) {
-        return (float) applet.width / 300;
-    }
-
     private final class Spieler {
+        private static final float RADIUS = 0.02f;
+        private static final float MOVE_SPEED = 0.003f;
+        private static final float X_START = 0.5f;
+        private static final float Y_START = 0.5f;
+
         private float x;
         private float y;
         private final Steuerung steuerung;
 
         private Spieler(float xOffset, SpielerSteuerungType steuerungType) {
-            this.x = (float) applet.width / 2 + xOffset;
-            y = (float) applet.height / 2;
+            x = X_START+xOffset;
+            y = Y_START;
             steuerung = steuerungType.create(this);
         }
 
         private void draw() {
             steuerung.draw();
 
-            applet.fill(getSpielerColor(applet));
+            applet.fill(applet.color(255, 0, 0));
             applet.ellipseMode(PConstants.CENTER);
-            applet.circle(x, y, getSpielerRadius(applet));
+            applet.circle(x*applet.width, y*applet.height, Math.max(RADIUS*2*applet.width, RADIUS*2*applet.height));
         }
 
         private void keyPressed() {
@@ -248,16 +220,12 @@ final class Baelle extends MiniSpiel {
             return false;
         }
 
-        private boolean istWegVomBildschirm() {
-            return x < 0 || x > applet.width || y < 0 || y > applet.height;
-        }
-
         private boolean istTot() {
-            return kollidiertMitBall() || istWegVomBildschirm();
+            return kollidiertMitBall() || getKreis().istWegVomBildschirm();
         }
 
         private Kreis getKreis() {
-            return new Kreis(x, y, getSpielerRadius(applet));
+            return new Kreis(x, y, RADIUS);
         }
 
         private abstract class Steuerung {
@@ -268,16 +236,16 @@ final class Baelle extends MiniSpiel {
 
             private void draw() {
                 if (links) {
-                    x -= getSpielerMoveSpeed(applet);
+                    x -= MOVE_SPEED;
                 }
                 if (rechts) {
-                    x += getSpielerMoveSpeed(applet);
+                    x += MOVE_SPEED;
                 }
                 if (oben) {
-                    y -= getSpielerMoveSpeed(applet);
+                    y -= MOVE_SPEED;
                 }
                 if (unten) {
-                    y += getSpielerMoveSpeed(applet);
+                    y += MOVE_SPEED;
                 }
             }
 

@@ -15,7 +15,7 @@ final class FlappyOinky extends MiniSpiel {
         oinky = applet.loadImage("flappyoinky/oinky.png");
     }
 
-    private static final int HINDERNIS_DELAY = 200;
+    private static final int HINDERNIS_DELAY = 170;
 
     private final Set<Oinky> oinkys = new HashSet<>();
 
@@ -26,9 +26,8 @@ final class FlappyOinky extends MiniSpiel {
 
     FlappyOinky(PApplet applet) {
         super(applet);
-        // Hier height verwenden, weil die Größe der Oinkys auch mit height berechnet wird
-        oinkys.add(new Oinky(() -> applet.key == 'w', applet.width/2-applet.height/15));
-        oinkys.add(new Oinky(() -> applet.keyCode == PApplet.UP, applet.width/2+applet.height/15));
+        oinkys.add(new Oinky(() -> applet.key == 'w', -Oinky.SIZE));
+        oinkys.add(new Oinky(() -> applet.keyCode == PApplet.UP, Oinky.SIZE));
     }
 
     @Override
@@ -110,25 +109,25 @@ final class FlappyOinky extends MiniSpiel {
     }
 
     private final class Oinky {
+        private static final float SIZE = 0.05f;
+        private static final float X = 0.5f - SIZE/2;
+        private static final float Y_START = 0.5f - SIZE/2;
+        private static final float GESCHWINDIGKEIT_Y_NACH_SPRUNG = -0.01f;
+        private static final float GESCHWINDIGKEIT_Y_START = GESCHWINDIGKEIT_Y_NACH_SPRUNG*2;
+        private static final float BESCHLEUNIGUNG_Y = 0.001f;
+        private static final float MAX_DREHUNG = 30f;
         private static final float MAX_DREHUNG_AENDERUNG = 2f;
 
         private final BooleanSupplier keyTest;
-        private final float size;
         private final float x;
-        private float y;
-        private float geschwindigkeitY = 0;
-        private final float beschleunigungY;
-        private final float geschwindigkeitYNachSprung;
+        private float y = Y_START;
+        private float geschwindigkeitY = GESCHWINDIGKEIT_Y_START;
         private float drehung = 0;
         private boolean tot = false;
 
-        private Oinky(BooleanSupplier keyTest, int x) {
+        private Oinky(BooleanSupplier keyTest, float xOffset) {
+            x = X + xOffset;
             this.keyTest = keyTest;
-            size = (float) applet.height / 10;
-            this.x = x;
-            y = (float) applet.height / 2;
-            beschleunigungY = (float) applet.height / 700;
-            geschwindigkeitYNachSprung = (float) applet.height / -60;
         }
 
         private void keyPressed() {
@@ -140,7 +139,7 @@ final class FlappyOinky extends MiniSpiel {
                 return;
             }
 
-            geschwindigkeitY = geschwindigkeitYNachSprung;
+            geschwindigkeitY = GESCHWINDIGKEIT_Y_NACH_SPRUNG;
         }
 
         private void draw() {
@@ -151,10 +150,10 @@ final class FlappyOinky extends MiniSpiel {
                 }
             }
 
-            geschwindigkeitY += beschleunigungY;
+            geschwindigkeitY += BESCHLEUNIGUNG_Y;
             y += geschwindigkeitY;
 
-            float targetDrehung = geschwindigkeitY > 0 ? 30 : -30;
+            float targetDrehung = geschwindigkeitY > 0 ? MAX_DREHUNG : -MAX_DREHUNG;
             if (targetDrehung > drehung) {
                 float drehungAenderung = targetDrehung - drehung;
                 if (drehungAenderung > MAX_DREHUNG_AENDERUNG) {
@@ -171,15 +170,16 @@ final class FlappyOinky extends MiniSpiel {
 
             applet.pushMatrix();
             Rechteck rechteck = getRechteck();
-            applet.translate(rechteck.x, rechteck.y);
+            applet.translate(rechteck.x * applet.width, rechteck.y * applet.height);
             applet.rotate(PApplet.radians(drehung));
             applet.imageMode(PApplet.CORNER);
-            applet.image(oinky, 0, 0, rechteck.breite, rechteck.hoehe);
+            float size = Math.max(rechteck.breite * applet.width, rechteck.hoehe * applet.height);
+            applet.image(oinky, 0, 0, size, size);
             applet.popMatrix();
         }
 
         private boolean istRaus() {
-            return y+size < 0 || y > applet.height;
+            return y+SIZE < 0 || y > 1;
         }
 
         private boolean kollidiertMit(Hindernis hindernis) {
@@ -193,40 +193,43 @@ final class FlappyOinky extends MiniSpiel {
         }
 
         private Rechteck getRechteck() {
-            return new Rechteck(x, y, size, size);
+            return new Rechteck(x, y, SIZE, SIZE);
         }
     }
 
     private final class Hindernis {
-        private final float breite;
-        private final float luecke;
-        private final float obereHoehe;
-        private final float untereHoehe;
+        private static final float BREITE = 0.05f;
+        private static final float LUECKE_HOEHE = 0.3f;
+        private static final float X_START = 1f;
+        private static final float X_GESCHWINDIGKEIT = -0.003f;
+
+        private final float obererTeilHoehe;
+        private final float untererTeilHoehe;
         private float x;
-        private final float xGeschwindigkeit;
 
         private Hindernis() {
-            breite = (float) applet.width / 20;
-            luecke = (float) applet.height / 2.7f;
-            obereHoehe = applet.random(applet.height - luecke);
-            untereHoehe = applet.height - luecke - obereHoehe;
-            x = applet.width;
-            xGeschwindigkeit = (float) applet.width / -600;
+            obererTeilHoehe = applet.random(1 - LUECKE_HOEHE);
+            untererTeilHoehe = 1 - LUECKE_HOEHE - obererTeilHoehe;
+            x = X_START;
         }
 
         private void drawTeil(Rechteck rechteck) {
-            float scaleFactor = rechteck.breite / hindernis.width;
-            float scaledHindernisWidth = hindernis.width * scaleFactor;
-            float scaledHindernisHeight = hindernis.height * scaleFactor;
+            float imageScaleFactor = (rechteck.breite * applet.width) / hindernis.width;
+            float scaledImageWidth = hindernis.width * imageScaleFactor;
+            float scaledImageHeight = hindernis.height * imageScaleFactor;
 
-            for (float hindernisY = rechteck.y; hindernisY < rechteck.y + rechteck.hoehe; hindernisY += scaledHindernisHeight) {
+            for (
+                    float hindernisY = rechteck.y * applet.height;
+                    hindernisY < (rechteck.y + rechteck.hoehe) * applet.height;
+                    hindernisY += scaledImageHeight
+            ) {
                 applet.imageMode(PApplet.CORNER);
-                applet.image(hindernis, rechteck.x, hindernisY, scaledHindernisWidth, scaledHindernisHeight);
+                applet.image(hindernis, rechteck.x * applet.width, hindernisY, scaledImageWidth, scaledImageHeight);
             }
         }
 
         private void draw() {
-            x += xGeschwindigkeit;
+            x += X_GESCHWINDIGKEIT;
 
             for (Rechteck rechteck : getRechtecke()) {
                 drawTeil(rechteck);
@@ -234,11 +237,14 @@ final class FlappyOinky extends MiniSpiel {
         }
 
         private boolean istWeg() {
-            return x+breite < 0;
+            return x+BREITE < 0;
         }
 
         private Set<Rechteck> getRechtecke() {
-            return Set.of(new Rechteck(x, 0, breite, obereHoehe), new Rechteck(x, obereHoehe+luecke, breite, untereHoehe));
+            return Set.of(
+                    new Rechteck(x, 0, BREITE, obererTeilHoehe),
+                    new Rechteck(x, obererTeilHoehe + LUECKE_HOEHE, BREITE, untererTeilHoehe)
+            );
         }
     }
 }

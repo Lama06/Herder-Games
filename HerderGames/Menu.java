@@ -1,4 +1,5 @@
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 final class Menu {
     private final PApplet applet;
@@ -14,6 +15,7 @@ final class Menu {
     }
 
     void setup() {
+        applet.windowResizable(true);
         FlappyOinky.init(applet);
         Schach.init(applet);
     }
