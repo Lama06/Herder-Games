@@ -1,25 +1,33 @@
 import processing.core.PApplet;
 import processing.core.PConstants;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-final class Baelle extends MiniSpiel {
+final class Baelle extends Spiel.Mehrspieler {
+    static final Spiel.Mehrspieler.Factory FACTORY = new Factory("Bälle") {
+        @Override
+        Mehrspieler neuesSpiel(PApplet applet, Set<Spiel.Spieler> spieler) {
+            return new Baelle(applet, spieler);
+        }
+    };
+
     private static final int BALL_DELAY = 30;
 
     private final Set<Ball> baelle = new HashSet<>();
     private int nextBall = BALL_DELAY;
 
     private final Set<Spieler> spieler = new HashSet<>();
+    private final List<Spiel.Spieler.Id> rangliste = new ArrayList<>();
 
-    Baelle(PApplet applet) {
+    private Baelle(PApplet applet, Set<Spiel.Spieler> alleSpieler) {
         super(applet);
-        spieler.add(new Spieler(Spieler.RADIUS*2, SpielerSteuerungType.WASD));
-        spieler.add(new Spieler(Spieler.RADIUS*-2, SpielerSteuerungType.PFEILTASTEN));
+        for (Spiel.Spieler spieler : alleSpieler) {
+            this.spieler.add(new Spieler(spieler));
+        }
     }
 
     @Override
-    void draw() {
+    Optional<List<Spiel.Spieler.Id>> draw() {
         applet.background(255);
 
         nextBall--;
@@ -28,7 +36,18 @@ final class Baelle extends MiniSpiel {
             nextBall = BALL_DELAY;
         }
 
-        spieler.removeIf(Spieler::istTot);
+        Iterator<Spieler> spielerIterator = spieler.iterator();
+        while (spielerIterator.hasNext()) {
+            Spieler spieler = spielerIterator.next();
+            if (spieler.istTot()) {
+                spielerIterator.remove();
+                rangliste.add(0, spieler.spieler.id);
+            }
+        }
+
+        if (spieler.isEmpty()) {
+            return Optional.of(rangliste);
+        }
 
         for (Ball ball : baelle) {
             ball.kollisionenUeberpruefen();
@@ -41,6 +60,8 @@ final class Baelle extends MiniSpiel {
         for (Spieler spieler : spieler) {
             spieler.draw();
         }
+
+        return Optional.empty();
     }
 
     @Override
@@ -162,36 +183,52 @@ final class Baelle extends MiniSpiel {
         }
     }
 
-    private enum SpielerSteuerungType {
-        WASD,
-        PFEILTASTEN;
-
-        private Spieler.Steuerung create(Spieler spieler) {
-            switch (this) {
-                case WASD:
-                    return spieler.new WASDSteuerung();
-                case PFEILTASTEN:
-                    return spieler.new PfeilTastenSteuerung();
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-    }
-
     private final class Spieler {
         private static final float RADIUS = 0.02f;
         private static final float MOVE_SPEED = 0.003f;
         private static final float X_START = 0.5f;
         private static final float Y_START = 0.5f;
 
+        private final Spiel.Spieler spieler;
         private float x;
         private float y;
         private final Steuerung steuerung;
 
-        private Spieler(float xOffset, SpielerSteuerungType steuerungType) {
-            x = X_START+xOffset;
+        private Spieler(Spiel.Spieler spieler) {
+            this.spieler = spieler;
+            x = X_START + getXOffset();
             y = Y_START;
-            steuerung = steuerungType.create(this);
+            steuerung = getSteuerung();
+        }
+
+        private Steuerung getSteuerung() {
+            switch (spieler.id) {
+                case SPIELER_1:
+                    return new PfeilTastenSteuerung();
+                case SPIELER_2:
+                    return new TastenSteuerung('a', 'd', 'w', 's');
+                case SPIELER_3:
+                    return new TastenSteuerung('f', 'h', 't', 'g');
+                case SPIELER_4:
+                    return new TastenSteuerung('j', 'l', 'i', 'k');
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        private float getXOffset() {
+            switch (spieler.id) {
+                case SPIELER_1:
+                    return -RADIUS*6;
+                case SPIELER_2:
+                    return -RADIUS*2;
+                case SPIELER_3:
+                    return RADIUS*2;
+                case SPIELER_4:
+                    return RADIUS*6;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
 
         private void draw() {
@@ -288,25 +325,37 @@ final class Baelle extends MiniSpiel {
             abstract boolean isUnten();
         }
 
-        private final class WASDSteuerung extends Steuerung {
+        private final class TastenSteuerung extends Steuerung {
+            private final char links;
+            private final char rechts;
+            private final char oben;
+            private final char unten;
+
+            private TastenSteuerung(char links, char rechts, char oben, char unten) {
+                this.links = links;
+                this.rechts = rechts;
+                this.oben = oben;
+                this.unten = unten;
+            }
+
             @Override
             boolean isLinks() {
-                return applet.key == 'a';
+                return applet.key == links;
             }
 
             @Override
             boolean isRechts() {
-                return applet.key == 'd';
+                return applet.key == rechts;
             }
 
             @Override
             boolean isOben() {
-                return applet.key == 'w';
+                return applet.key == oben;
             }
 
             @Override
             boolean isUnten() {
-                return applet.key == 's';
+                return applet.key == unten;
             }
         }
 

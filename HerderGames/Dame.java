@@ -3,6 +3,20 @@ import processing.core.PApplet;
 import java.util.*;
 
 final class Dame {
+    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory("Dame") {
+        @Override
+        Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
+            return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
+        }
+    };
+
+    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory("Dame AI") {
+        @Override
+        Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
+            return new SpielerGegenAISpiel(applet, spieler);
+        }
+    };
+
     private Dame() {}
 
     private enum RichtungHorizontal {
@@ -677,14 +691,22 @@ final class Dame {
         }
     }
 
-    static final class SpielerGegenSpielerSpiel extends MiniSpiel {
+    private static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+        private final Spieler spielerObenSpieler;
+        private final Spieler spielerUntenSpieler;
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
-        private Spieler amZug;
+        private Dame.Spieler amZug = Dame.Spieler.SPIELER_UNTEN;
 
-        SpielerGegenSpielerSpiel(PApplet applet) {
+        private SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
-            amZug = applet.random(1) > 0.5 ? Spieler.SPIELER_UNTEN : Spieler.SPIELER_OBEN;
+            if (spieler1.punkte < spieler2.punkte) {
+                spielerUntenSpieler = spieler1;
+                spielerObenSpieler = spieler2;
+            } else {
+                spielerUntenSpieler = spieler2;
+                spielerObenSpieler = spieler1;
+            }
         }
 
         private void selectNewField() {
@@ -730,20 +752,28 @@ final class Dame {
         }
 
         @Override
-        void draw() {
+        Optional<Optional<Spieler.Id>> draw() {
             applet.background(applet.color(0));
             aktuellesBrett.draw(applet, ausgewaehltePosition);
+
+            if (aktuellesBrett.hatVerloren(Dame.Spieler.SPIELER_OBEN)) {
+                return Optional.of(Optional.of(spielerUntenSpieler.id));
+            }
+            if (aktuellesBrett.hatVerloren(Dame.Spieler.SPIELER_UNTEN)) {
+                return Optional.of(Optional.of(spielerObenSpieler.id));
+            }
+            return Optional.empty();
         }
     }
 
-    static final class SpielerGegenAISpiel extends MiniSpiel {
-        private static final Spieler COMPUTER = Spieler.SPIELER_OBEN;
-        private static final Spieler MENSCH = Spieler.SPIELER_UNTEN;
+    private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+        private static final Dame.Spieler COMPUTER = Dame.Spieler.SPIELER_OBEN;
+        private static final Dame.Spieler MENSCH = Dame.Spieler.SPIELER_UNTEN;
 
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
 
-        SpielerGegenAISpiel(PApplet applet) {
+        private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
         }
 
@@ -796,43 +826,17 @@ final class Dame {
         }
 
         @Override
-        void draw() {
+        Optional<Ergebnis> draw() {
             applet.background(applet.color(0));
             aktuellesBrett.draw(applet, ausgewaehltePosition);
-        }
-    }
 
-    static final class AIGegenAISpiel extends MiniSpiel {
-        private Brett aktuellesBrett = Brett.ANFANG;
-        private Spieler amZug = Spieler.SPIELER_UNTEN;
-
-        AIGegenAISpiel(PApplet applet) {
-            super(applet);
-        }
-
-        @Override
-        void draw() {
-            applet.background(applet.color(0));
-            aktuellesBrett.draw(applet, Optional.empty());
-
-            if (amZug == null) {
-                return;
+            if (aktuellesBrett.hatVerloren(MENSCH)) {
+                return Optional.of(Ergebnis.VERLOREN);
             }
-
-            int maximaleTiefe;
-            if (amZug == Spieler.SPIELER_OBEN) {
-                maximaleTiefe = 3;
-            } else {
-                maximaleTiefe = 6;
+            if (aktuellesBrett.hatVerloren(COMPUTER)) {
+                return Optional.of(Ergebnis.GEWONNEN);
             }
-
-            Optional<Zug> zug = AI.bestenNaechstenZugBerechnen(aktuellesBrett, amZug, maximaleTiefe);
-            if (zug.isEmpty()) {
-                amZug = null;
-                return;
-            }
-            aktuellesBrett = zug.get().getErgebnis();
-            amZug = amZug.getGegner();
+            return Optional.empty();
         }
     }
 }

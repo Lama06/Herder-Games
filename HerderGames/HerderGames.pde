@@ -1,25 +1,25 @@
-Menu menu = new Menu(this);
+TitleScreen titleScreen = new TitleScreen(this);
 
 void settings() {
-    menu.settings();
+    titleScreen.settings();
 }
 
 void setup() {
-    menu.setup();
+    titleScreen.setup();
 }
 
 void draw() {
-    menu.draw();
+    titleScreen.draw();
 }
 
 void mousePressed() {
-    menu.mousePressed();
+    titleScreen.mousePressed();
 }
 
 void keyPressed() {
-    menu.keyPressed();
+    titleScreen.keyPressed();
 }
 
 void keyReleased() {
-    menu.keyReleased();
+    titleScreen.keyReleased();
 }

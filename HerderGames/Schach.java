@@ -5,6 +5,20 @@ import processing.core.PImage;
 import java.util.*;
 
 final class Schach {
+    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory("Schach") {
+        @Override
+        Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
+            return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
+        }
+    };
+
+    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory("Schach AI") {
+        @Override
+        Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
+            return new SpielerGegenAISpiel(applet, spieler);
+        }
+    };
+
     private static PImage WEISS_BAUER;
     private static PImage WEISS_LAEUFER;
     private static PImage WEISS_SPRINGER;
@@ -859,13 +873,23 @@ final class Schach {
         }
     }
 
-    static final class SpielerGegenSpielerSpiel extends MiniSpiel {
+
+    private static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+        private final Spieler weiss;
+        private final Spieler schwarz;
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
-        private Spieler amZug = Spieler.WEISS;
+        private Schach.Spieler amZug = Schach.Spieler.WEISS;
 
-        SpielerGegenSpielerSpiel(PApplet applet) {
+        private SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
+            if (spieler1.punkte < spieler2.punkte) {
+                weiss = spieler1;
+                schwarz = spieler2;
+            } else {
+                weiss = spieler2;
+                schwarz = spieler1;
+            }
         }
 
         private void selectNewField() {
@@ -911,19 +935,28 @@ final class Schach {
         }
 
         @Override
-        void draw() {
+        Optional<Optional<Spieler.Id>> draw() {
             aktuellesBrett.draw(applet, ausgewaehltePosition);
+
+            if (aktuellesBrett.hatVerloren(Schach.Spieler.WEISS)) {
+                return Optional.of(Optional.of(schwarz.id));
+            }
+            if (aktuellesBrett.hatVerloren(Schach.Spieler.SCHWARZ)) {
+                return Optional.of(Optional.of(weiss.id));
+            }
+
+            return Optional.empty();
         }
     }
 
-    static final class SpielerGegenAISpiel extends MiniSpiel {
-        private static final Spieler COMPUTER = Spieler.WEISS;
-        private static final Spieler MENSCH = Spieler.SCHWARZ;
+    private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+        private static final Schach.Spieler COMPUTER = Schach.Spieler.WEISS;
+        private static final Schach.Spieler MENSCH = Schach.Spieler.SCHWARZ;
 
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
 
-        SpielerGegenAISpiel(PApplet applet) {
+        private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
         }
 
@@ -976,8 +1009,17 @@ final class Schach {
         }
 
         @Override
-        void draw() {
+        Optional<Ergebnis> draw() {
             aktuellesBrett.draw(applet, ausgewaehltePosition);
+
+            if (aktuellesBrett.hatVerloren(MENSCH)) {
+                return Optional.of(Ergebnis.VERLOREN);
+            }
+            if (aktuellesBrett.hatVerloren(COMPUTER)) {
+                return Optional.of(Ergebnis.GEWONNEN);
+            }
+
+            return Optional.empty();
         }
     }
 }

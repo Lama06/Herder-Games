@@ -3,6 +3,20 @@ import processing.core.PApplet;
 import java.util.*;
 
 final class VierGewinnt {
+    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory("Vier Gewinnt") {
+        @Override
+        Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
+            return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
+        }
+    };
+
+    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory("Vier Gewinnt AI") {
+        @Override
+        Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
+            return new SpielerGegenAISpiel(applet, spieler);
+        }
+    };
+
     private VierGewinnt() {}
 
     private enum VerschiebungHorizontal {
@@ -382,13 +396,21 @@ final class VierGewinnt {
         }
     }
 
-    static final class SpielerGegenSpielerSpiel extends MiniSpiel {
+    private static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+        private final Spieler spieler1;
+        private final Spieler spieler2;
         private Brett aktuellesBrett = Brett.LEER;
-        private Spieler amZug;
+        private VierGewinnt.Spieler amZug = VierGewinnt.Spieler.SPIELER_1;
 
-        SpielerGegenSpielerSpiel(PApplet applet) {
+        private SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
-            amZug = applet.random(1) > 0.5 ? Spieler.SPIELER_1 : Spieler.SPIELER_2;
+            if (spieler1.punkte < spieler2.punkte) {
+                this.spieler1 = spieler1;
+                this.spieler2 = spieler2;
+            } else {
+                this.spieler1 = spieler2;
+                this.spieler2 = spieler1;
+            }
         }
 
         @Override
@@ -409,21 +431,30 @@ final class VierGewinnt {
         }
 
         @Override
-        void draw() {
+        Optional<Optional<Spieler.Id>> draw() {
             aktuellesBrett.draw(applet);
+
+            if (aktuellesBrett.hatGewonnen(VierGewinnt.Spieler.SPIELER_1)) {
+                return Optional.of(Optional.of(spieler1.id));
+            }
+            if (aktuellesBrett.hatGewonnen(VierGewinnt.Spieler.SPIELER_2)) {
+                return Optional.of(Optional.of(spieler2.id));
+            }
+
+            return Optional.empty();
         }
     }
 
-    static final class SpielerGegenAISpiel extends MiniSpiel {
+    private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
         private static final int AI_TIEFE = 6;
-        private static final Spieler MENSCH = Spieler.SPIELER_1;
-        private static final Spieler COMPUTER = Spieler.SPIELER_2;
+        private static final VierGewinnt.Spieler MENSCH = VierGewinnt.Spieler.SPIELER_1;
+        private static final VierGewinnt.Spieler COMPUTER = VierGewinnt.Spieler.SPIELER_2;
 
         // In der Mitte anzufangen ist in Vier Gewinnt immer eine gute Iddee.
         // Unsere AI guckt aber nicht weit genug in die Zukunft, um das zu verstehen, also geben wir ihr einen kleinen Tipp.
         private Brett aktuellesBrett = Brett.LEER.mitStein(new Position(5, 3), Optional.of(COMPUTER));
 
-        SpielerGegenAISpiel(PApplet applet) {
+        private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
         }
 
@@ -449,8 +480,17 @@ final class VierGewinnt {
         }
 
         @Override
-        void draw() {
+        Optional<Ergebnis> draw() {
             aktuellesBrett.draw(applet);
+
+            if (aktuellesBrett.hatGewonnen(COMPUTER)) {
+                return Optional.of(Ergebnis.VERLOREN);
+            }
+            if (aktuellesBrett.hatGewonnen(MENSCH)) {
+                return Optional.of(Ergebnis.GEWONNEN);
+            }
+
+            return Optional.empty();
         }
     }
 }

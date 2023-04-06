@@ -1,37 +1,42 @@
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PImage;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.function.BooleanSupplier;
+import java.util.*;
 
-final class FlappyOinky extends MiniSpiel {
-    private static PImage hindernis;
-    private static PImage oinky;
-
+final class FlappyOinky extends Spiel.Mehrspieler {
     static void init(PApplet applet) {
         hindernis = applet.loadImage("flappyoinky/obstacle.png");
         oinky = applet.loadImage("flappyoinky/oinky.png");
     }
 
+    static final Spiel.Mehrspieler.Factory FACTORY = new Factory("Flappy Oinky") {
+        @Override
+        public Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
+            return new FlappyOinky(applet, spieler);
+        }
+    };
+
     private static final int HINDERNIS_DELAY = 170;
 
-    private final Set<Oinky> oinkys = new HashSet<>();
+    private static PImage hindernis;
+    private static PImage oinky;
 
+    private final List<Spieler.Id> rangliste = new ArrayList<>();
+    private final Set<Oinky> oinkys = new HashSet<>();
     private int nextHinderniss = 20;
     private final Set<Hindernis> hindernisse = new HashSet<>();
-
     private int punkte;
 
-    FlappyOinky(PApplet applet) {
+    private FlappyOinky(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
-        oinkys.add(new Oinky(() -> applet.key == 'w', -Oinky.SIZE));
-        oinkys.add(new Oinky(() -> applet.keyCode == PApplet.UP, Oinky.SIZE));
+        for (Spieler spieler : alleSpieler) {
+            oinkys.add(new Oinky(spieler));
+        }
     }
 
     @Override
-    void draw() {
+    Optional<List<Spieler.Id>> draw() {
         nextHinderniss--;
         if (nextHinderniss <= 0) {
             hindernisse.add(new Hindernis());
@@ -42,6 +47,7 @@ final class FlappyOinky extends MiniSpiel {
         applet.background(173, 216, 230);
 
         applet.textAlign(PApplet.CENTER);
+        applet.textSize(30);
         applet.text(punkte, (float) applet.width/2, 50);
 
 
@@ -59,10 +65,19 @@ final class FlappyOinky extends MiniSpiel {
             Oinky oinky = oinkyIterator.next();
             if (oinky.istRaus()) {
                 oinkyIterator.remove();
-                continue;
+                rangliste.add(0, oinky.spieler.id);
             }
+        }
+
+        if (oinkys.isEmpty()) {
+            return Optional.of(rangliste);
+        }
+
+        for (Oinky oinky : oinkys) {
             oinky.draw();
         }
+
+        return Optional.empty();
     }
 
     @Override
@@ -109,6 +124,7 @@ final class FlappyOinky extends MiniSpiel {
     }
 
     private final class Oinky {
+        private static final int HELP_TEXT_MAX_TIME = 120;
         private static final float SIZE = 0.05f;
         private static final float X = 0.5f - SIZE/2;
         private static final float Y_START = 0.5f - SIZE/2;
@@ -118,16 +134,62 @@ final class FlappyOinky extends MiniSpiel {
         private static final float MAX_DREHUNG = 30f;
         private static final float MAX_DREHUNG_AENDERUNG = 2f;
 
-        private final BooleanSupplier keyTest;
+        private final Spieler spieler;
         private final float x;
         private float y = Y_START;
         private float geschwindigkeitY = GESCHWINDIGKEIT_Y_START;
         private float drehung = 0;
+        private int helpTextTime;
         private boolean tot = false;
 
-        private Oinky(BooleanSupplier keyTest, float xOffset) {
-            x = X + xOffset;
-            this.keyTest = keyTest;
+        private Oinky(Spieler spieler) {
+            this.spieler = spieler;
+            x = getXPosition();
+        }
+
+        private boolean isJumpKeyPressed() {
+            switch (spieler.id) {
+                case SPIELER_1:
+                    return applet.key == 'w';
+                case SPIELER_2:
+                    return applet.key == ' ';
+                case SPIELER_3:
+                    return applet.key == PConstants.ENTER;
+                case SPIELER_4:
+                    return applet.keyCode == PConstants.UP;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        private String getJumpKeyName() {
+            switch (spieler.id) {
+                case SPIELER_1:
+                    return "W";
+                case SPIELER_2:
+                    return "Leertaste";
+                case SPIELER_3:
+                    return "Enter";
+                case SPIELER_4:
+                    return "Pfeiltaste hoch";
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+
+        private float getXPosition() {
+            switch (spieler.id) {
+                case SPIELER_1:
+                    return X - SIZE*3;
+                case SPIELER_2:
+                    return X - SIZE;
+                case SPIELER_3:
+                    return X + SIZE;
+                case SPIELER_4:
+                    return X + SIZE*3;
+                default:
+                    throw new IllegalArgumentException();
+            }
         }
 
         private void keyPressed() {
@@ -135,7 +197,7 @@ final class FlappyOinky extends MiniSpiel {
                 return;
             }
 
-            if (!keyTest.getAsBoolean()) {
+            if (!isJumpKeyPressed()) {
                 return;
             }
 
@@ -168,14 +230,26 @@ final class FlappyOinky extends MiniSpiel {
                 drehung -= drehungAenderung;
             }
 
-            applet.pushMatrix();
             Rechteck rechteck = getRechteck();
+
+            applet.pushMatrix();
             applet.translate(rechteck.x * applet.width, rechteck.y * applet.height);
             applet.rotate(PApplet.radians(drehung));
             applet.imageMode(PApplet.CORNER);
             float size = Math.max(rechteck.breite * applet.width, rechteck.hoehe * applet.height);
             applet.image(oinky, 0, 0, size, size);
             applet.popMatrix();
+
+            if (helpTextTime <= HELP_TEXT_MAX_TIME) {
+                applet.textAlign(PConstants.CENTER);
+                applet.textSize(30);
+                applet.text(
+                        "%s: %s".formatted(spieler.name, getJumpKeyName()),
+                        (rechteck.x + SIZE/2) * applet.width,
+                        (rechteck.y - SIZE) * applet.height
+                );
+                helpTextTime++;
+            }
         }
 
         private boolean istRaus() {

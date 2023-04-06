@@ -3,6 +3,20 @@ import processing.core.PApplet;
 import java.util.*;
 
 final class TicTacToe {
+    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory("Tic Tac Toe") {
+        @Override
+        Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
+            return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
+        }
+    };
+
+    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory("Tic Tac Toe AI") {
+        @Override
+        Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
+            return new SpielerGegenAISpiel(applet, spieler);
+        }
+    };
+
     private TicTacToe() {}
 
     private enum Spieler implements AI.Spieler<Spieler> {
@@ -371,13 +385,21 @@ final class TicTacToe {
         }
     }
 
-    static final class SpielerGegenSpielerSpiel extends MiniSpiel {
+    private static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+        private final Spieler spielerKreuz;
+        private final Spieler spielerKreis;
         private Brett aktuellesBrett = Brett.LEER;
-        private Spieler amZug;
+        private TicTacToe.Spieler amZug = TicTacToe.Spieler.KREUZ;
 
-        SpielerGegenSpielerSpiel(PApplet applet) {
+        private SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
-            amZug = applet.random(1) > 0.5 ? Spieler.KREIS : Spieler.KREUZ;
+            if (spieler1.punkte < spieler2.punkte) {
+                spielerKreuz = spieler1;
+                spielerKreis = spieler2;
+            } else {
+                spielerKreuz = spieler2;
+                spielerKreis = spieler1;
+            }
         }
 
         @Override
@@ -398,19 +420,28 @@ final class TicTacToe {
         }
 
         @Override
-        void draw() {
+        Optional<Optional<Spieler.Id>> draw() {
             applet.background(applet.color(255));
             aktuellesBrett.draw(applet);
+
+            if (aktuellesBrett.hatGewonnen(TicTacToe.Spieler.KREUZ)) {
+                return Optional.of(Optional.of(spielerKreuz.id));
+            }
+            if (aktuellesBrett.hatGewonnen(TicTacToe.Spieler.KREIS)) {
+                return Optional.of(Optional.of(spielerKreis.id));
+            }
+
+            return Optional.empty();
         }
     }
 
-    static final class SpielerGegenAISpiel extends MiniSpiel {
+    private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
         private static final int AI_TIEFE = 9; // Ein Tic Tac Toe Spiel ist nach spätestens 9 Zügen beendet, weil dann das Brett voll ist
-        private static final Spieler MENSCH = Spieler.KREIS;
-        private static final Spieler COMPUTER = Spieler.KREUZ;
+        private static final TicTacToe.Spieler MENSCH = TicTacToe.Spieler.KREIS;
+        private static final TicTacToe.Spieler COMPUTER = TicTacToe.Spieler.KREUZ;
         private Brett aktuellesBrett;
 
-        SpielerGegenAISpiel(PApplet applet) {
+        private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
 
             Optional<Zug> ersterZug = AI.bestenNaechstenZugBerechnen(Brett.LEER, COMPUTER, AI_TIEFE);
@@ -444,9 +475,17 @@ final class TicTacToe {
         }
 
         @Override
-        void draw() {
+        Optional<Ergebnis> draw() {
             applet.background(applet.color(255));
             aktuellesBrett.draw(applet);
+
+            if (aktuellesBrett.hatGewonnen(COMPUTER)) {
+                return Optional.of(Ergebnis.VERLOREN);
+            }
+            if (aktuellesBrett.hatGewonnen(MENSCH)) {
+                return Optional.of(Ergebnis.GEWONNEN);
+            }
+            return Optional.empty();
         }
     }
 }
