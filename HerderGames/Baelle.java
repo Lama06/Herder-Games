@@ -45,10 +45,6 @@ final class Baelle extends Spiel.Mehrspieler {
             }
         }
 
-        if (spieler.isEmpty()) {
-            return Optional.of(rangliste);
-        }
-
         for (Ball ball : baelle) {
             ball.kollisionenUeberpruefen();
         }
@@ -59,6 +55,10 @@ final class Baelle extends Spiel.Mehrspieler {
 
         for (Spieler spieler : spieler) {
             spieler.draw();
+        }
+
+        if (spieler.isEmpty()) {
+            return Optional.of(rangliste);
         }
 
         return Optional.empty();
@@ -128,12 +128,12 @@ final class Baelle extends Spiel.Mehrspieler {
                 Kreis kreis = new Kreis(x, y, radius);
 
                 for (Spieler spieler : spieler) {
-                    float minXEnterfnungZuSpieler = Math.abs(geschwindigkeitX * applet.frameRate);
+                    float minXEnterfnungZuSpieler = Math.abs(geschwindigkeitX * 30);
                     if (Math.abs(spieler.x - x) < minXEnterfnungZuSpieler) {
                         continue findPosition;
                     }
 
-                    float minYEnterfnungZuSpieler = Math.abs(geschwindigkeitY * applet.frameRate);
+                    float minYEnterfnungZuSpieler = Math.abs(geschwindigkeitY * 30);
                     if (Math.abs(spieler.y - y) < minYEnterfnungZuSpieler) {
                         continue findPosition;
                     }

@@ -55,10 +55,6 @@ abstract class Spiel {
         abstract Optional<List<Spieler.Id>> draw();
 
         abstract static class Factory extends Spiel.Factory {
-            boolean checkAnzahlSpieler(int anzahlSpieler) {
-                return true;
-            }
-
             abstract Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler);
         }
     }
@@ -85,14 +81,6 @@ abstract class Spiel {
         @Override
         public int hashCode() {
             return Objects.hash(id);
-        }
-
-        Spieler mitNamen(String name) {
-            return new Spieler(id, name, punkte);
-        }
-
-        Spieler addPunkte(int punkte) {
-            return new Spieler(id, name, this.punkte + punkte);
         }
 
         enum Id {

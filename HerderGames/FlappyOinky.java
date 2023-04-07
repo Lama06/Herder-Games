@@ -50,12 +50,12 @@ final class FlappyOinky extends Spiel.Mehrspieler {
         applet.textSize(30);
         applet.text(punkte, (float) applet.width/2, 50);
 
-
         Iterator<Hindernis> hindernisIterator = hindernisse.iterator();
         while (hindernisIterator.hasNext()) {
             Hindernis hindernis = hindernisIterator.next();
             if (hindernis.istWeg()) {
                 hindernisIterator.remove();
+                continue;
             }
             hindernis.draw();
         }
@@ -66,15 +66,13 @@ final class FlappyOinky extends Spiel.Mehrspieler {
             if (oinky.istRaus()) {
                 oinkyIterator.remove();
                 rangliste.add(0, oinky.spieler.id);
+                continue;
             }
+            oinky.draw();
         }
 
         if (oinkys.isEmpty()) {
             return Optional.of(rangliste);
-        }
-
-        for (Oinky oinky : oinkys) {
-            oinky.draw();
         }
 
         return Optional.empty();

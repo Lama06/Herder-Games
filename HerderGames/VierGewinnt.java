@@ -295,12 +295,12 @@ final class VierGewinnt {
             applet.ellipseMode(PApplet.CORNER);
             applet.stroke(0);
             applet.strokeWeight(2);
-            applet.fill(stein.map(spieler -> spieler.getColor(applet)).orElseGet(() -> applet.color(0)));
+            applet.fill(stein.map(spieler -> spieler.getColor(applet)).orElseGet(() -> applet.color(255)));
             applet.circle(steinX, steinY, steinSize);
         }
 
         private void draw(PApplet applet) {
-            applet.background(applet.color(255));
+            applet.background(applet.color(0));
 
             int abstandHorizontal = getAbstandHorizontal(applet);
             int abstandVertikal = getAbstandVertikal(applet);
@@ -368,7 +368,6 @@ final class VierGewinnt {
 
         private Position(int zeile, int spalte) {
             if (!isValid(zeile, spalte)) {
-                new Exception().printStackTrace();
                 throw new IllegalArgumentException();
             }
 
@@ -439,6 +438,9 @@ final class VierGewinnt {
             }
             if (aktuellesBrett.hatGewonnen(VierGewinnt.Spieler.SPIELER_2)) {
                 return Optional.of(Optional.of(spieler2.id));
+            }
+            if (aktuellesBrett.getMoeglicheZuegeFuerSpieler(amZug).isEmpty()) {
+                return Optional.of(Optional.empty());
             }
 
             return Optional.empty();

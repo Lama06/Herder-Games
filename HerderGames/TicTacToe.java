@@ -23,6 +23,7 @@ final class TicTacToe {
         KREUZ {
             @Override
             void drawSymbol(PApplet applet, int x, int y, int size) {
+                applet.stroke(255);
                 applet.strokeWeight(5);
                 applet.line(x, y, x+size, y+size);
                 applet.line(x+size, y, x, y+size);
@@ -31,6 +32,8 @@ final class TicTacToe {
         KREIS {
             @Override
             void drawSymbol(PApplet applet, int x, int y, int size) {
+                applet.stroke(255);
+                applet.noFill();
                 applet.strokeWeight(5);
                 applet.ellipseMode(PApplet.CORNER);
                 applet.ellipse(x, y, size, size);
@@ -257,6 +260,7 @@ final class TicTacToe {
             int feldSize = getFeldSize(applet);
 
             applet.strokeWeight(5);
+            applet.stroke(applet.color(255));
 
             for (int zeile = 1; zeile < SIZE; zeile++) {
                 int linieXStart = abstandHorizontal;
@@ -298,6 +302,7 @@ final class TicTacToe {
         }
 
         private void draw(PApplet applet) {
+            applet.background(11, 22, 10);
             drawLinien(applet);
             drawSymbole(applet);
         }
@@ -421,7 +426,6 @@ final class TicTacToe {
 
         @Override
         Optional<Optional<Spieler.Id>> draw() {
-            applet.background(applet.color(255));
             aktuellesBrett.draw(applet);
 
             if (aktuellesBrett.hatGewonnen(TicTacToe.Spieler.KREUZ)) {
@@ -429,6 +433,9 @@ final class TicTacToe {
             }
             if (aktuellesBrett.hatGewonnen(TicTacToe.Spieler.KREIS)) {
                 return Optional.of(Optional.of(spielerKreis.id));
+            }
+            if (aktuellesBrett.getMoeglicheZuegeFuerSpieler(amZug).isEmpty()) {
+                return Optional.of(Optional.empty());
             }
 
             return Optional.empty();
@@ -476,7 +483,6 @@ final class TicTacToe {
 
         @Override
         Optional<Ergebnis> draw() {
-            applet.background(applet.color(255));
             aktuellesBrett.draw(applet);
 
             if (aktuellesBrett.hatGewonnen(COMPUTER)) {

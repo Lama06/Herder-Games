@@ -1,4 +1,5 @@
 import processing.core.PApplet;
+import processing.core.PConstants;
 
 import java.util.*;
 
@@ -112,7 +113,7 @@ final class Dame {
             return this == DAME_SPIELER_OBEN || this == DAME_SPIELER_UNTEN;
         }
 
-        boolean isStein() {
+        private boolean isStein() {
             return this == STEIN_SPIELER_OBEN || this == STEIN_SPIELER_UNTEN;
         }
 
@@ -150,7 +151,7 @@ final class Dame {
 
         private static final Brett ANFANG = createAnfang();
         private static Brett createAnfang() {
-            List<Optional<Stein>> zeileSpieler1 = List.of(
+            List<Optional<Stein>> zeileSpielerOben = List.of(
                     Optional.of(Stein.STEIN_SPIELER_OBEN),
                     Optional.of(Stein.STEIN_SPIELER_OBEN),
                     Optional.of(Stein.STEIN_SPIELER_OBEN),
@@ -164,7 +165,7 @@ final class Dame {
                     Optional.empty()
             );
 
-            List<Optional<Stein>> zeileSpieler2 = List.of(
+            List<Optional<Stein>> zeileSpielerUnten = List.of(
                     Optional.of(Stein.STEIN_SPIELER_UNTEN),
                     Optional.of(Stein.STEIN_SPIELER_UNTEN),
                     Optional.of(Stein.STEIN_SPIELER_UNTEN),
@@ -172,14 +173,14 @@ final class Dame {
             );
 
             return new Brett(List.of(
-                    zeileSpieler1,
-                    zeileSpieler1,
-                    zeileSpieler1,
+                    zeileSpielerOben,
+                    zeileSpielerOben,
+                    zeileSpielerOben,
                     zeileLeer,
                     zeileLeer,
-                    zeileSpieler2,
-                    zeileSpieler2,
-                    zeileSpieler2
+                    zeileSpielerUnten,
+                    zeileSpielerUnten,
+                    zeileSpielerUnten
             ));
         }
 
@@ -593,6 +594,7 @@ final class Dame {
                         backgroundColor = applet.color(0);
                     }
                     applet.fill(backgroundColor);
+                    applet.rectMode(PConstants.CORNER);
                     applet.rect(screenX, screenY, feldSize, feldSize);
 
                     Optional<Stein> stein = getStein(position);
@@ -601,7 +603,8 @@ final class Dame {
                     }
                     int steinColor = stein.get().getColor(applet);
                     applet.fill(steinColor);
-                    applet.rect(screenX + steinAbstand, screenY + steinAbstand, steinSize, steinSize);
+                    applet.ellipseMode(PConstants.CORNER);
+                    applet.circle(screenX + steinAbstand, screenY + steinAbstand, steinSize);
                 }
             }
         }

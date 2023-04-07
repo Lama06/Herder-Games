@@ -80,7 +80,7 @@ final class TitleScreen {
 
     void settings() {
         applet.size(1000, 1000, PConstants.P3D);
-        //applet.fullScreen();
+        applet.fullScreen();
     }
 
     void setup() {
@@ -525,6 +525,11 @@ final class TitleScreen {
         }
 
         @Override
+        void mousePressed() {
+            currentState = new SpielState(spiel);
+        }
+
+        @Override
         void draw() {
             applet.background(0);
 
@@ -543,6 +548,11 @@ final class TitleScreen {
         private UebergangZuSpielState(SpielDaten spiel) {
             this.spiel = spiel;
             video = new EinmalVideoPlayer(spiel.uebergang.video, 0.5f);
+        }
+
+        @Override
+        void mousePressed() {
+            currentState = new SpielState(spiel);
         }
 
         @Override
@@ -591,7 +601,7 @@ final class TitleScreen {
                 spiel = spielerGegenSpielerFactory.neuesSpiel(applet, spieler1, spieler2);
             } else {
                 Spiel.Mehrspieler.Factory mehrspielerFactory = (Spiel.Mehrspieler.Factory) spielDaten.factory;
-                if (aktivierteSpielerDaten.isEmpty() || !mehrspielerFactory.checkAnzahlSpieler(aktivierteSpielerDaten.size())) {
+                if (aktivierteSpielerDaten.isEmpty()) {
                     SpielerDaten spieler1Daten = alleSpielerDaten.get(Spiel.Spieler.Id.SPIELER_1);
                     spieler1Daten.aktiviert = true;
                     SpielerDaten spieler2Daten = alleSpielerDaten.get(Spiel.Spieler.Id.SPIELER_2);
@@ -615,6 +625,11 @@ final class TitleScreen {
                 return;
             }
 
+            if (applet.key == PConstants.DELETE) {
+                currentState = new SpielState(spielDaten);
+                return;
+            }
+
             spiel.keyPressed();
         }
 
@@ -634,6 +649,8 @@ final class TitleScreen {
             if (ergebnis.isEmpty()) {
                 return;
             }
+
+            currentState = new SpielBeendetState(spielDaten);
 
             if (getAktivierteSpielerDaten().isEmpty()) {
                 throw new IllegalStateException();
@@ -656,8 +673,6 @@ final class TitleScreen {
             }
 
             spielerDaten.punkte += punkte;
-
-            currentState = new SpielBeendetState(spielDaten);
         }
 
         private void drawSpielerGegenSpielerSpiel() {
@@ -667,14 +682,14 @@ final class TitleScreen {
                 return;
             }
 
+            currentState = new SpielBeendetState(spielDaten);
+
             Optional<Spiel.Spieler.Id> gewinnerId = result.get();
             if (gewinnerId.isEmpty()) {
                 return;
             }
             SpielerDaten gewinnerSpielerDaten = alleSpielerDaten.get(gewinnerId.get());
             gewinnerSpielerDaten.punkte++;
-
-            currentState = new SpielBeendetState(spielDaten);
         }
 
         private void drawMehrspielerSpiel() {
@@ -684,14 +699,14 @@ final class TitleScreen {
                 return;
             }
 
+            currentState = new SpielBeendetState(spielDaten);
+
             int punkte = rangliste.get().size() - 1;
             for (int i = 0; i < rangliste.get().size(); i++, punkte--) {
                 Spiel.Spieler.Id spielerId = rangliste.get().get(i);
                 SpielerDaten spielerDaten = alleSpielerDaten.get(spielerId);
                 spielerDaten.punkte += punkte;
             }
-
-            currentState = new SpielBeendetState(spielDaten);
         }
 
         @Override
@@ -723,7 +738,7 @@ final class TitleScreen {
 
         @Override
         void keyPressed() {
-            if (applet.key == ' ' || applet.key == PConstants.ENTER) {
+            if (applet.key == ' ' || applet.key == PConstants.ENTER || applet.key == PConstants.RETURN) {
                 currentState = new SpielState(spiel);
                 return;
             }
@@ -742,6 +757,11 @@ final class TitleScreen {
         private UebergangVonSpielState(SpielDaten spiel) {
             this.spiel = spiel;
             video = new EinmalVideoPlayer(spiel.uebergang.video, 0.5f, spiel.uebergang.video.frames-1, 0);
+        }
+
+        @Override
+        void mousePressed() {
+            currentState = new SpielAuswahlState(spiel.uebergang.frame);
         }
 
         @Override
