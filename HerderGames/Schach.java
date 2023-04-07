@@ -5,14 +5,14 @@ import processing.core.PImage;
 import java.util.*;
 
 final class Schach {
-    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory("Schach") {
+    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory() {
         @Override
         Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
             return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
         }
     };
 
-    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory("Schach AI") {
+    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory() {
         @Override
         Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
             return new SpielerGegenAISpiel(applet, spieler);

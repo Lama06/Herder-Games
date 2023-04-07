@@ -15,13 +15,7 @@ abstract class Spiel {
 
     void keyReleased() { }
 
-    abstract static class Factory {
-        final String name;
-
-        Factory(String name) {
-            this.name = name;
-        }
-    }
+    abstract static class Factory { }
 
     abstract static class Einzelspieler extends Spiel {
         Einzelspieler(PApplet applet) {
@@ -37,10 +31,6 @@ abstract class Spiel {
         }
 
         abstract static class Factory extends Spiel.Factory {
-            Factory(String name) {
-                super(name);
-            }
-
             abstract Einzelspieler neuesSpiel(PApplet applet, Spieler spieler);
         }
     }
@@ -53,10 +43,6 @@ abstract class Spiel {
         abstract Optional<Optional<Spieler.Id>> draw();
 
         abstract static class Factory extends Spiel.Factory {
-            Factory(String name) {
-                super(name);
-            }
-
             abstract SpielerGegenSpieler neuesSpiel(PApplet applet, Spieler spieler1, Spieler spieler2);
         }
     }
@@ -69,10 +55,6 @@ abstract class Spiel {
         abstract Optional<List<Spieler.Id>> draw();
 
         abstract static class Factory extends Spiel.Factory {
-            Factory(String name) {
-                super(name);
-            }
-
             boolean checkAnzahlSpieler(int anzahlSpieler) {
                 return true;
             }

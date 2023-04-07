@@ -17,9 +17,9 @@ void mousePressed() {
 }
 
 void keyPressed() {
-    titleScreen.keyPressed();
+   titleScreen.keyPressed();
 }
 
 void keyReleased() {
-    titleScreen.keyReleased();
+   titleScreen.keyReleased();
 }

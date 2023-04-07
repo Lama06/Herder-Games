@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="processing-video">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/processing-video.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

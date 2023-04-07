@@ -4,7 +4,7 @@ import processing.core.PConstants;
 import java.util.*;
 
 final class Baelle extends Spiel.Mehrspieler {
-    static final Spiel.Mehrspieler.Factory FACTORY = new Factory("Bälle") {
+    static final Spiel.Mehrspieler.Factory FACTORY = new Factory() {
         @Override
         Mehrspieler neuesSpiel(PApplet applet, Set<Spiel.Spieler> spieler) {
             return new Baelle(applet, spieler);

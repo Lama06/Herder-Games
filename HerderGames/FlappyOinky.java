@@ -10,7 +10,7 @@ final class FlappyOinky extends Spiel.Mehrspieler {
         oinky = applet.loadImage("flappyoinky/oinky.png");
     }
 
-    static final Spiel.Mehrspieler.Factory FACTORY = new Factory("Flappy Oinky") {
+    static final Spiel.Mehrspieler.Factory FACTORY = new Factory() {
         @Override
         public Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
             return new FlappyOinky(applet, spieler);
