@@ -63,6 +63,11 @@ final class TitleScreen {
                     "Bälle",
                     Baelle.FACTORY,
                     UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Snake",
+                    Snake.FACTORY,
+                    UEBERGANG_1
             )
     );
 
@@ -86,6 +91,7 @@ final class TitleScreen {
     void setup() {
         Schach.init(applet);
         FlappyOinky.init(applet);
+        Snake.init(applet);
 
         currentState = new SpielAuswahlState(0);
     }
