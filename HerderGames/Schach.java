@@ -950,6 +950,8 @@ final class Schach {
     }
 
     private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+        private static final int AI_DEPTH = 2;
+
         private static final Schach.Spieler COMPUTER = Schach.Spieler.WEISS;
         private static final Schach.Spieler MENSCH = Schach.Spieler.SCHWARZ;
 
@@ -988,7 +990,7 @@ final class Schach {
             Set<Zug> moeglicheZuege = aktuellesBrett.getMoeglicheZuegeFuerPosition(ausgewaehltePosition.get());
             for (Zug moeglicherZug : moeglicheZuege) {
                 if (moeglicherZug.nach.equals(position.get())) {
-                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.getErgebnis(), COMPUTER, 2);
+                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.getErgebnis(), COMPUTER, AI_DEPTH);
                     if (antwort.isEmpty()) {
                         aktuellesBrett = moeglicherZug.getErgebnis();
                         ausgewaehltePosition = Optional.empty();
