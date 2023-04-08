@@ -98,20 +98,41 @@ final class TitleScreen {
 
     void draw() {
         applet.pushStyle();
-        currentState.draw();
-        applet.popStyle();
+        try {
+            currentState.draw();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            currentState = new SpielAuswahlState(0);
+        } finally {
+            applet.popStyle();
+        }
     }
 
     void mousePressed() {
-        currentState.mousePressed();
+        try {
+            currentState.mousePressed();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            currentState = new SpielAuswahlState(0);
+        }
     }
 
     void keyPressed() {
-        currentState.keyPressed();
+        try {
+            currentState.keyPressed();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            currentState = new SpielAuswahlState(0);
+        }
     }
 
     void keyReleased() {
-        currentState.keyReleased();
+        try {
+            currentState.keyReleased();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            currentState = new SpielAuswahlState(0);
+        }
     }
 
     private List<SpielerDaten> getAktivierteSpielerDaten() {
