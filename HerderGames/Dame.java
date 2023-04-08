@@ -425,6 +425,8 @@ final class Dame {
                                 result.add(new Zug(startPosition, folgenderZug.nach, schritte));
                             }
                         }
+
+                        continue richtungHorizontal;
                     }
                 }
             }
@@ -560,6 +562,8 @@ final class Dame {
         }
 
         private void draw(PApplet applet, Optional<Position> ausgewaehltePosition) {
+            applet.background(applet.color(0));
+
             Set<Position> possibleMovePositions = new HashSet<>();
             if (ausgewaehltePosition.isPresent()) {
                 for (Zug zug : getMoeglicheZuegeFuerPosition(ausgewaehltePosition.get())) {
@@ -756,7 +760,6 @@ final class Dame {
 
         @Override
         Optional<Optional<Spieler.Id>> draw() {
-            applet.background(applet.color(0));
             aktuellesBrett.draw(applet, ausgewaehltePosition);
 
             if (aktuellesBrett.hatVerloren(Dame.Spieler.SPIELER_OBEN)) {
@@ -770,11 +773,17 @@ final class Dame {
     }
 
     private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+        private static final int AI_DEPTH = 6;
+        private static final int AI_ZUG_SCHRITT_DELAY = 60;
+
         private static final Dame.Spieler COMPUTER = Dame.Spieler.SPIELER_OBEN;
         private static final Dame.Spieler MENSCH = Dame.Spieler.SPIELER_UNTEN;
 
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
+
+        private List<Brett> verbleibendeAiZugSchritte = Collections.emptyList();
+        private int nextAiZugSchritt;
 
         private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
@@ -808,15 +817,27 @@ final class Dame {
             Set<Zug> moeglicheZuege = aktuellesBrett.getMoeglicheZuegeFuerPosition(ausgewaehltePosition.get());
             for (Zug moeglicherZug : moeglicheZuege) {
                 if (moeglicherZug.nach.equals(position.get())) {
-                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.getErgebnis(), COMPUTER, 6);
+                    ausgewaehltePosition = Optional.empty();
+
+                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.getErgebnis(), COMPUTER, AI_DEPTH);
                     if (antwort.isEmpty()) {
                         aktuellesBrett = moeglicherZug.getErgebnis();
-                        ausgewaehltePosition = Optional.empty();
                         return;
                     }
 
-                    aktuellesBrett = antwort.get().getErgebnis();
-                    ausgewaehltePosition = Optional.empty();
+                    if (antwort.get().schritte.size() == 1) {
+                        aktuellesBrett = antwort.get().getErgebnis();
+                        return;
+                    }
+
+                    aktuellesBrett = antwort.get().schritte.get(0);
+
+                    List<Brett> verbleibendeAiZugSchritte = new ArrayList<>(antwort.get().schritte);
+                    verbleibendeAiZugSchritte.remove(0);
+                    this.verbleibendeAiZugSchritte = verbleibendeAiZugSchritte;
+
+                    nextAiZugSchritt = AI_ZUG_SCHRITT_DELAY;
+
                     return;
                 }
             }
@@ -824,14 +845,43 @@ final class Dame {
 
         @Override
         void mousePressed() {
+            if (!verbleibendeAiZugSchritte.isEmpty()) {
+                return;
+            }
+
             zugMachen();
+
+            if (!verbleibendeAiZugSchritte.isEmpty()) {
+                return;
+            }
+
             selectNewField();
+        }
+
+        private void aiZugSchritteMachen() {
+            if (verbleibendeAiZugSchritte.isEmpty()) {
+                return;
+            }
+
+            if (nextAiZugSchritt > 0) {
+                nextAiZugSchritt--;
+                return;
+            }
+
+            Brett schritt = verbleibendeAiZugSchritte.remove(0);
+            aktuellesBrett = schritt;
+            nextAiZugSchritt = AI_ZUG_SCHRITT_DELAY;
         }
 
         @Override
         Optional<Ergebnis> draw() {
-            applet.background(applet.color(0));
+            aiZugSchritteMachen();
+
             aktuellesBrett.draw(applet, ausgewaehltePosition);
+
+            if (!verbleibendeAiZugSchritte.isEmpty()) {
+                return Optional.empty();
+            }
 
             if (aktuellesBrett.hatVerloren(MENSCH)) {
                 return Optional.of(Ergebnis.VERLOREN);
@@ -839,6 +889,7 @@ final class Dame {
             if (aktuellesBrett.hatVerloren(COMPUTER)) {
                 return Optional.of(Ergebnis.GEWONNEN);
             }
+
             return Optional.empty();
         }
     }
