@@ -236,7 +236,7 @@ final class Snake extends Spiel.Mehrspieler {
         private int naechsteBewegungDelay = BEWEGUNG_DELAY;
         private boolean beiNaechsterBewegungWachsen = false;
 
-        public SchlangeKopf(Spieler spieler) {
+        private SchlangeKopf(Spieler spieler) {
             this.spieler = spieler;
             x = getStartX();
 
@@ -458,7 +458,7 @@ final class Snake extends Spiel.Mehrspieler {
         private SchlangeTeil davor;
         private SchlangeTeil dahinter;
 
-        public SchlangeKoerper(int x, int y, SchlangeTeil davor, SchlangeTeil dahinter) {
+        private SchlangeKoerper(int x, int y, SchlangeTeil davor, SchlangeTeil dahinter) {
             this.x = x;
             this.y = y;
             this.davor = davor;
