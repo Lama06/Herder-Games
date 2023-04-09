@@ -19,7 +19,7 @@ final class Tetris extends Spiel.Mehrspieler {
     private final List<SpielBrett> spielBretter = new ArrayList<>();
     private final List<Spieler.Id> rangliste = new ArrayList<>();
 
-    Tetris(PApplet applet, Set<Spieler> alleSpieler) {
+    private Tetris(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         List<Spieler> spielerSortiert = new ArrayList<>(alleSpieler);
         spielerSortiert.sort(Comparator.comparing(spieler -> spieler.id));
