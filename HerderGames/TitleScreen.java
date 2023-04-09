@@ -89,7 +89,7 @@ final class TitleScreen {
     }
 
     void settings() {
-        applet.size(1000, 1000, PConstants.P3D);
+        applet.size(applet.displayWidth, applet.displayHeight, PConstants.JAVA2D);
         applet.fullScreen();
     }
 
