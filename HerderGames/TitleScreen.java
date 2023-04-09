@@ -68,6 +68,11 @@ final class TitleScreen {
                     "Snake",
                     Snake.FACTORY,
                     UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Tetris",
+                    Tetris.FACTORY,
+                    UEBERGANG_1
             )
     );
 
