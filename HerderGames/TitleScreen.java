@@ -73,6 +73,11 @@ final class TitleScreen {
                     "Tetris",
                     Tetris.FACTORY,
                     UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Stapeln",
+                    Stapeln.FACTORY,
+                    UEBERGANG_1
             )
     );
 
