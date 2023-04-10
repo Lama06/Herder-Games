@@ -13,8 +13,8 @@ final class RainCatcher extends Spiel.Mehrspieler {
     };
 
     static void init(PApplet applet) {
-        tropfenBild = applet.loadImage("raincatcher/tropfen.png", "jpg");
-        tropfenNichtFangenBild = applet.loadImage("raincatcher/tropfen_nicht_fangen.png", "jpg");
+        tropfenBild = applet.loadImage("raincatcher/tropfen", "jpg");
+        tropfenNichtFangenBild = applet.loadImage("raincatcher/tropfen_nicht_fangen", "jpg");
     }
 
     private static final String PASSWORT = "Ich schwöre feierlich ich bin ein Tunichtgut";
