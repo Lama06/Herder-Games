@@ -261,6 +261,14 @@ final class TitleScreen {
             uiEnabled = !uiEnabled;
         }
 
+        private void neuInstalisieren() {
+            if (applet.key != 'x') {
+                return;
+            }
+
+            applet.link("https://www.youtube.com/watch?v=0NXLKOfXkoI");
+        }
+
         @Override
         void keyPressed() {
             for (SpielerStatus spielerStatus : spielerStatuse) {
@@ -268,6 +276,8 @@ final class TitleScreen {
                     return;
                 }
             }
+
+            neuInstalisieren();
 
             toggleUi();
         }
