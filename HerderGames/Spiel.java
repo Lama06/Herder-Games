@@ -84,6 +84,7 @@ abstract class Spiel {
         }
 
         enum Id {
+            // Reigenfolge ist wichtig, weil Spiele ordinal() verwenden
             SPIELER_1,
             SPIELER_2,
             SPIELER_3,

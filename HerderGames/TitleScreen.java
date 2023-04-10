@@ -78,6 +78,11 @@ final class TitleScreen {
                     "Stapeln",
                     Stapeln.FACTORY,
                     UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Rain Catcher",
+                    RainCatcher.FACTORY,
+                    UEBERGANG_1
             )
     );
 
