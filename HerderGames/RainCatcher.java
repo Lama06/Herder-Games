@@ -1,5 +1,6 @@
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PImage;
 
 import java.util.*;
 
@@ -11,11 +12,23 @@ final class RainCatcher extends Spiel.Mehrspieler {
         }
     };
 
+    static void init(PApplet applet) {
+        tropfenBild = applet.loadImage("raincatcher/tropfen.png", "jpg");
+        tropfenNichtFangenBild = applet.loadImage("raincatcher/tropfen_nicht_fangen.png", "jpg");
+    }
+
+    private static final String PASSWORT = "Ich schwöre feierlich ich bin ein Tunichtgut";
+
+    private static  PImage tropfenBild;
+    private static PImage tropfenNichtFangenBild;
+
     private final List<Platform> platformen = new ArrayList<>();
     private final List<Spieler.Id> rangliste = new ArrayList<>();
     private final List<Tropfen> tropfen = new ArrayList<>();
     private int nextTropfen = Tropfen.DELAY;
     private final List<Partikel> partikel = new ArrayList<>();
+    private final StringBuffer passwortInput = new StringBuffer();
+    private boolean rumtreiber;
 
     private RainCatcher(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
@@ -87,8 +100,34 @@ final class RainCatcher extends Spiel.Mehrspieler {
         return Optional.empty();
     }
 
+    private void readPasswort() {
+        if (applet.key == PConstants.CODED) {
+            return;
+        }
+
+        passwortInput.append(applet.key);
+
+        if (passwortInput.length() > PASSWORT.length()) {
+           passwortInput.deleteCharAt(0);
+        }
+
+        if (passwortInput.toString().toLowerCase(Locale.ROOT).equals(PASSWORT.toLowerCase(Locale.ROOT))) {
+            rumtreiber = true;
+
+            PApplet.println("Die hochwohlgeborenen Herren Moony, Wurmschwanz, Tatze und Krone präsentieren stolz die Karte des Rumtreibers");
+
+            for (float x = 0; x <= 1; x += 0.1f) {
+                for (float y = 0; y <= 1; y += 0.1f) {
+                    spawnPartikel(x, y);
+                }
+            }
+        }
+    }
+
     @Override
     void keyPressed() {
+        readPasswort();
+
         for (Platform platform : platformen) {
             platform.keyPressed();
         }
@@ -290,6 +329,27 @@ final class RainCatcher extends Spiel.Mehrspieler {
         private void draw() {
             y += yGeschwindigkeit;
 
+            if (rumtreiber) {
+                drawFuerRumtreiber(); // Ignorieren Sie das am Besten einfach :)
+            } else {
+                drawFuerHerrHamdorf();
+            }
+        }
+
+        private void drawFuerRumtreiber() {
+            applet.imageMode(PConstants.CORNER);
+            PImage image;
+            if (nichtFangen) {
+                image = tropfenNichtFangenBild;
+            } else {
+                image = tropfenBild;
+            }
+            float width = 0.1f;
+            float height = 0.1f;
+            applet.image(image, x * applet.width, y * applet.height, applet.width * width, applet.height * height);
+        }
+
+        private void drawFuerHerrHamdorf() {
             applet.ellipseMode(PConstants.CORNER);
             applet.noStroke();
             if (nichtFangen) {

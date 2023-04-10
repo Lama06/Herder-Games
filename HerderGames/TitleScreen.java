@@ -107,6 +107,7 @@ final class TitleScreen {
         Schach.init(applet);
         FlappyOinky.init(applet);
         Snake.init(applet);
+        RainCatcher.init(applet);
 
         currentState = new SpielAuswahlState(0);
     }
