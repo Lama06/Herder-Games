@@ -180,11 +180,11 @@ final class Snake extends Spiel.Mehrspieler {
         }
 
         private void findPosition() {
-            x = (int) applet.random(SIZE);
-            y = (int) applet.random(SIZE);
-
             findPosition:
             while (true) {
+                x = (int) applet.random(SIZE);
+                y = (int) applet.random(SIZE);
+
                 for (Apfel apfel : aepfel) {
                     if (apfel.x == x && apfel.y == y) {
                         continue findPosition;
