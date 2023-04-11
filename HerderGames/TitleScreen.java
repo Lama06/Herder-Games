@@ -855,6 +855,7 @@ final class TitleScreen {
         private final float speed;
         private final PImage[] frames;
         private float currentFrame;
+        private PImage lastFrame;
 
         private LoopVideoPlayer(Video video, float speed, int startFrame) {
             if (startFrame < 0 || startFrame >= video.frames) {
@@ -877,9 +878,15 @@ final class TitleScreen {
         private void draw() {
             PImage frame = frames[(int) currentFrame];
             if (frame.width == 0) {
+                if (lastFrame == null) {
+                    return;
+                }
+                applet.image(lastFrame, 0, 0, applet.width, applet.height);
                 return;
             }
+
             applet.image(frame, 0, 0, applet.width, applet.height);
+            lastFrame = frame;
 
             currentFrame += speed;
             if (currentFrame >= frames.length) {
@@ -897,6 +904,7 @@ final class TitleScreen {
         private final int destination;
         private final PImage[] frames;
         private float currentFrame;
+        private PImage lastFrame;
         private boolean finished;
 
         private EinmalVideoPlayer(Video video, float speed, int startFrame, int destination) {
@@ -945,10 +953,15 @@ final class TitleScreen {
         private void draw() {
             PImage frame = frames[(int) currentFrame];
             if (frame.width == 0) {
+                if (lastFrame == null) {
+                    return;
+                }
+                applet.image(lastFrame, 0, 0, applet.width, applet.height);
                 return;
             }
 
             applet.image(frame, 0, 0, applet.width, applet.height);
+            lastFrame = frame;
 
             if (finished) {
                 return;
@@ -966,6 +979,8 @@ final class TitleScreen {
                     currentFrame = destination;
                     finished = true;
                 }
+            } else if (currentFrame == destination) {
+                finished = true;
             }
         }
     }
