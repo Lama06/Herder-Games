@@ -246,7 +246,7 @@ final class Stapeln extends Spiel.Mehrspieler {
                 }
 
                 if (amBoden()) {
-                    gefalleneSteine.add(new GefallenerStein(breite, x, y, farbe));
+                    gefalleneSteine.add(new GefallenerStein(breite, x, 1-GefallenerStein.HOEHE, farbe));
                     fallenderStein = new FallenderStein();
                 } else if (getLiegtAufStein().isPresent()) {
                     GefallenerStein liegtAufStein = getLiegtAufStein().get();
