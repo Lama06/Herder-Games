@@ -3,6 +3,7 @@ import processing.core.PConstants;
 import processing.core.PImage;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 final class TitleScreen {
     private static final Video LOOP_VIDEO = new Video("titlescreen/loop", 504);
@@ -35,7 +36,8 @@ final class TitleScreen {
             new SpielDaten(
                     "Schach",
                     Schach.SPIELER_GEGEN_SPIELER_FACTORY,
-                    UEBERGANG_1
+                    UEBERGANG_1,
+                    Schach::init
             ),
             new SpielDaten(
                     "Schach AI",
@@ -57,7 +59,8 @@ final class TitleScreen {
             new SpielDaten(
                     "Flappy Oinky",
                     FlappyOinky.FACTORY,
-                    UEBERGANG_1
+                    UEBERGANG_1,
+                    FlappyOinky::init
             ),
             new SpielDaten(
                     "Bälle",
@@ -67,7 +70,8 @@ final class TitleScreen {
             new SpielDaten(
                     "Snake",
                     Snake.FACTORY,
-                    UEBERGANG_1
+                    UEBERGANG_1,
+                    Snake::init
             ),
             new SpielDaten(
                     "Tetris",
@@ -82,12 +86,14 @@ final class TitleScreen {
             new SpielDaten(
                     "Rain Catcher",
                     RainCatcher.FACTORY,
-                    UEBERGANG_1
+                    UEBERGANG_1,
+                    RainCatcher::init
             ),
             new SpielDaten(
                     "Pacman",
                     PacmanSpiel.FACTORY,
-                    UEBERGANG_1
+                    UEBERGANG_1,
+                    PacmanSpiel::init
             )
     );
 
@@ -109,11 +115,14 @@ final class TitleScreen {
     }
 
     void setup() {
-        Schach.init(applet);
-        FlappyOinky.init(applet);
-        Snake.init(applet);
-        RainCatcher.init(applet);
-        PacmanSpiel.init(applet);
+        for (SpielDaten spielDaten : SPIELE) {
+            try {
+                spielDaten.init.accept(applet);
+            } catch (RuntimeException e) {
+                PApplet.println("Fehler beim initialisieren des Spiels %s".formatted(spielDaten.name));
+                e.printStackTrace();
+            }
+        }
 
         currentState = new SpielAuswahlState(0);
     }
@@ -181,11 +190,17 @@ final class TitleScreen {
         private final String name;
         private final Spiel.Factory factory;
         private final SpielUebergang uebergang;
+        private final Consumer<PApplet> init;
 
-        public SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebergang) {
+        private SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebergang, Consumer<PApplet> init) {
             this.name = name;
             this.factory = factory;
             this.uebergang = uebergang;
+            this.init = init;
+        }
+
+        private SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebergang) {
+            this(name, factory, uebergang, applet -> {});
         }
     }
 
