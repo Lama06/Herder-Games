@@ -83,6 +83,11 @@ final class TitleScreen {
                     "Rain Catcher",
                     RainCatcher.FACTORY,
                     UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Pacman",
+                    PacmanSpiel.FACTORY,
+                    UEBERGANG_1
             )
     );
 
@@ -108,6 +113,7 @@ final class TitleScreen {
         FlappyOinky.init(applet);
         Snake.init(applet);
         RainCatcher.init(applet);
+        PacmanSpiel.init(applet);
 
         currentState = new SpielAuswahlState(0);
     }
