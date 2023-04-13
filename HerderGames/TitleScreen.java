@@ -233,6 +233,7 @@ final class TitleScreen {
 
         private boolean uiEnabled;
         private final SpaceDrueckenHinweis spaceDrueckenHinweis = new SpaceDrueckenHinweis();
+        private final CreditsHinweis creditsHinweis = new CreditsHinweis();
         private final Set<SpielKnopf> spielKnoepfe = new HashSet<>();
         private final Set<SpielerStatus> spielerStatuse = new HashSet<>();
 
@@ -262,6 +263,7 @@ final class TitleScreen {
             video.draw();
 
             spaceDrueckenHinweis.draw();
+            creditsHinweis.draw();
 
             for (SpielerStatus spielerStatus : spielerStatuse) {
                 spielerStatus.draw();
@@ -299,6 +301,14 @@ final class TitleScreen {
             applet.link("https://www.youtube.com/watch?v=0NXLKOfXkoI");
         }
 
+        private void creditsOeffnen() {
+            if (applet.key != 'c') {
+                return;
+            }
+
+            currentState = new CreditsState(video.getCurrentFrame());
+        }
+
         @Override
         void keyPressed() {
             for (SpielerStatus spielerStatus : spielerStatuse) {
@@ -310,6 +320,8 @@ final class TitleScreen {
             neuInstalisieren();
 
             toggleUi();
+
+            creditsOeffnen();
         }
 
         private final class SpielKnopf {
@@ -592,7 +604,8 @@ final class TitleScreen {
         }
 
         private final class SpaceDrueckenHinweis {
-            private static final String TEXT = "Space drücken";
+            private static final String TEXT = "Starten: Space Drücken";
+            private static final float TEXT_SIZE = 0.04f;
             private static final float ALPHA_AENDERUNG = 1.8f;
 
             private float alpha = 0;
@@ -614,9 +627,43 @@ final class TitleScreen {
                 }
 
                 applet.textAlign(PConstants.CENTER, PConstants.BOTTOM);
-                applet.textSize((float) applet.height / 25);
+                applet.textSize(TEXT_SIZE * (float) applet.height);
                 applet.fill(applet.color(255, alpha));
                 applet.text(TEXT, (float) applet.width / 2, applet.height);
+            }
+        }
+
+        private final class CreditsHinweis {
+            private static final String TEXT = "Credits: C Drücken";
+            private static final float TEXT_SIZE = 0.04f;
+            private static final float GESCHWINDIGKEIT = 0.001f;
+
+            private float x = 1f;
+
+            private float getTargetX() {
+                applet.textSize(TEXT_SIZE * (float) applet.height);
+                float breite = applet.textWidth(TEXT) / applet.width;
+                return 1f - breite;
+            }
+
+            private void draw() {
+                if (uiEnabled) {
+                    x = 1f;
+                    return;
+                }
+
+                if (x > getTargetX()) {
+                    float diff = getTargetX() - x;
+                    if (Math.abs(diff) > GESCHWINDIGKEIT) {
+                        diff = -GESCHWINDIGKEIT;
+                    }
+                    x += diff;
+                }
+
+                applet.textAlign(PConstants.LEFT, PConstants.BOTTOM);
+                applet.textSize(TEXT_SIZE * (float) applet.height);
+                applet.fill(applet.color(255));
+                applet.text(TEXT, x * (float) applet.width, applet.height);
             }
         }
     }
@@ -879,6 +926,66 @@ final class TitleScreen {
             if (video.finished) {
                 currentState = new SpielAuswahlState(spiel.uebergang.frame);
             }
+        }
+    }
+
+    private final class CreditsState extends State {
+        private static final String CREDITS_FILE = "titlescreen/credits.txt";
+        private static final float TEXT_SIZE = 0.05f;
+        private static final float TEXT_ABSTAND = TEXT_SIZE / 2;
+        private static final float SCROLL_GESCHWINDIGKEIT = -0.001f;
+
+        private final int currentFrame;
+        private final PImage backgroundImage;
+        private final String[] creditsZeilen;
+        private float y = 1f;
+
+        private CreditsState(int currentFrame) {
+            this.currentFrame = currentFrame;
+            backgroundImage = applet.loadImage(LOOP_VIDEO.getFrameFileName(currentFrame));
+            creditsZeilen = applet.loadStrings(CREDITS_FILE);
+        }
+
+        private float getLaenge() {
+            return creditsZeilen.length * (TEXT_SIZE + TEXT_ABSTAND);
+        }
+
+        @Override
+        void draw() {
+            if (y <= -getLaenge()) {
+                currentState = new SpielAuswahlState(currentFrame);
+                return;
+            }
+
+            y += SCROLL_GESCHWINDIGKEIT * (applet.keyPressed && applet.key == ' ' ? 2 : 1);
+
+            applet.imageMode(PConstants.CORNER);
+            applet.image(backgroundImage, 0, 0, applet.width, applet.height);
+
+            applet.textAlign(PConstants.CENTER, PConstants.TOP);
+            applet.textSize(TEXT_SIZE * (float) applet.height);
+
+            float y = this.y;
+            for (String zeile : creditsZeilen) {
+                applet.text(zeile, (float) applet.width / 2f, y * (float) applet.height);
+                y += TEXT_SIZE + TEXT_ABSTAND;
+            }
+        }
+
+        @Override
+        void keyPressed() {
+            if (applet.key != PConstants.ESC) {
+                return;
+            }
+
+            applet.key = 0;
+
+            currentState = new SpielAuswahlState(currentFrame);
+        }
+
+        @Override
+        void mousePressed() {
+            currentState = new SpielAuswahlState(currentFrame);
         }
     }
 
