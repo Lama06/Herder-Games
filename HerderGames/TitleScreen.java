@@ -232,6 +232,7 @@ final class TitleScreen {
         private final LoopVideoPlayer video;
 
         private boolean uiEnabled;
+        private final SpaceDrueckenHinweis spaceDrueckenHinweis = new SpaceDrueckenHinweis();
         private final Set<SpielKnopf> spielKnoepfe = new HashSet<>();
         private final Set<SpielerStatus> spielerStatuse = new HashSet<>();
 
@@ -259,6 +260,8 @@ final class TitleScreen {
             applet.background(0);
 
             video.draw();
+
+            spaceDrueckenHinweis.draw();
 
             for (SpielerStatus spielerStatus : spielerStatuse) {
                 spielerStatus.draw();
@@ -585,6 +588,35 @@ final class TitleScreen {
             private float getWidth() {
                 applet.textSize(HEIGHT * applet.height);
                 return applet.textWidth(getText());
+            }
+        }
+
+        private final class SpaceDrueckenHinweis {
+            private static final String TEXT = "Space drücken";
+            private static final float ALPHA_AENDERUNG = 1.8f;
+
+            private float alpha = 0;
+            private float alphaAenderung = ALPHA_AENDERUNG;
+
+            private void draw() {
+                if (uiEnabled) {
+                    alpha = 0;
+                    alphaAenderung = ALPHA_AENDERUNG;
+                    return;
+                }
+
+                alpha += alphaAenderung;
+
+                if (alpha > 255) {
+                    alphaAenderung = -ALPHA_AENDERUNG;
+                } else if (alpha < 0) {
+                    alphaAenderung = ALPHA_AENDERUNG;
+                }
+
+                applet.textAlign(PConstants.CENTER, PConstants.BOTTOM);
+                applet.textSize((float) applet.height / 25);
+                applet.fill(applet.color(255, alpha));
+                applet.text(TEXT, (float) applet.width / 2, applet.height);
             }
         }
     }
