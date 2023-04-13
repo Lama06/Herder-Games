@@ -1036,6 +1036,8 @@ final class TitleScreen {
         }
 
         private void draw() {
+            applet.imageMode(PConstants.CORNER);
+
             PImage frame = frames[(int) currentFrame];
             if (frame.width == 0) {
                 if (lastFrame == null) {
@@ -1111,6 +1113,8 @@ final class TitleScreen {
         }
 
         private void draw() {
+            applet.imageMode(PConstants.CORNER);
+
             PImage frame = frames[(int) currentFrame];
             if (frame.width == 0) {
                 if (lastFrame == null) {
