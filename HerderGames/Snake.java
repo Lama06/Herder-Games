@@ -154,7 +154,7 @@ final class Snake extends Spiel.Mehrspieler {
                     return value;
                 }
             }
-            new Exception().printStackTrace();
+
             throw new IllegalArgumentException();
         }
 
