@@ -3,20 +3,6 @@ import processing.core.PApplet;
 import java.util.*;
 
 final class VierGewinnt {
-    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory() {
-        @Override
-        Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
-            return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
-        }
-    };
-
-    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory() {
-        @Override
-        Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
-            return new SpielerGegenAISpiel(applet, spieler);
-        }
-    };
-
     private VierGewinnt() {}
 
     private enum VerschiebungHorizontal {
@@ -395,13 +381,13 @@ final class VierGewinnt {
         }
     }
 
-    private static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+    static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
         private final Spieler spieler1;
         private final Spieler spieler2;
         private Brett aktuellesBrett = Brett.LEER;
         private VierGewinnt.Spieler amZug = VierGewinnt.Spieler.SPIELER_1;
 
-        private SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
+        SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
             if (spieler1.punkte < spieler2.punkte) {
                 this.spieler1 = spieler1;
@@ -447,7 +433,7 @@ final class VierGewinnt {
         }
     }
 
-    private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+    static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
         private static final int AI_TIEFE = 6;
         private static final VierGewinnt.Spieler MENSCH = VierGewinnt.Spieler.SPIELER_1;
         private static final VierGewinnt.Spieler COMPUTER = VierGewinnt.Spieler.SPIELER_2;
@@ -456,7 +442,7 @@ final class VierGewinnt {
         // Unsere AI guckt aber nicht weit genug in die Zukunft, um das zu verstehen, also geben wir ihr einen kleinen Tipp.
         private Brett aktuellesBrett = Brett.LEER.mitStein(new Position(5, 3), Optional.of(COMPUTER));
 
-        private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
+        SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
         }
 

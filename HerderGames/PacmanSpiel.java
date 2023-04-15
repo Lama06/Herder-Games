@@ -5,13 +5,6 @@ import processing.core.PImage;
 import java.util.*;
 
 final class PacmanSpiel extends Spiel.Mehrspieler {
-    static final Factory FACTORY = new Factory() {
-        @Override
-        Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
-            return new PacmanSpiel(applet, spieler);
-        }
-    };
-
     static void init(PApplet applet) {
         spriteSheet = applet.loadImage("pacman/pacman.png");
 
@@ -77,7 +70,7 @@ final class PacmanSpiel extends Spiel.Mehrspieler {
     private boolean superModus;
     private int superModusVerbleibendeZeit;
 
-    private PacmanSpiel(PApplet applet, Set<Spieler> alleSpieler) {
+    PacmanSpiel(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
 
         List<Spieler> spielerListe = new ArrayList<>(alleSpieler);

@@ -9,17 +9,10 @@ import java.util.stream.Stream;
 // In diesem Spiel habe ichs ein bischen mit funktionaler Programmierung übertrieben
 
 final class Tetris extends Spiel.Mehrspieler {
-    static final Factory FACTORY = new Factory() {
-        @Override
-        Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
-            return new Tetris(applet, spieler);
-        }
-    };
-
     private final List<SpielBrett> spielBretter = new ArrayList<>();
     private final List<Spieler.Id> rangliste = new ArrayList<>();
 
-    private Tetris(PApplet applet, Set<Spieler> alleSpieler) {
+    Tetris(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         List<Spieler> spielerSortiert = new ArrayList<>(alleSpieler);
         spielerSortiert.sort(Comparator.comparing(spieler -> spieler.id));

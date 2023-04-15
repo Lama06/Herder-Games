@@ -6,13 +6,6 @@ import java.util.*;
 import java.util.List;
 
 final class Snake extends Spiel.Mehrspieler {
-    static final Spiel.Mehrspieler.Factory FACTORY = new Factory() {
-        @Override
-        Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
-            return new Snake(applet, spieler);
-        }
-    };
-
     private static PImage apfel;
 
     private static PImage kopfOben;
@@ -61,7 +54,7 @@ final class Snake extends Spiel.Mehrspieler {
     private int nextApfel = APFEL_SPAWN_DELAY;
     private final List<Spieler.Id> rangliste = new ArrayList<>();
 
-    private Snake(PApplet applet, Set<Spieler> alleSpieler) {
+    Snake(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
 
         for (Spieler spieler : alleSpieler) {

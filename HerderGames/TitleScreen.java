@@ -13,85 +13,85 @@ final class TitleScreen {
     private static final List<SpielDaten> SPIELE = List.of(
             new SpielDaten(
                     "Dame",
-                    Dame.SPIELER_GEGEN_SPIELER_FACTORY,
+                    (Spiel.SpielerGegenSpieler.Factory) Dame.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Dame AI",
-                    Dame.SPIELER_GEGEN_AI_FACTORY,
+                    (Spiel.Einzelspieler.Factory) Dame.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Vier Gewinnt",
-                    VierGewinnt.SPIELER_GEGEN_SPIELER_FACTORY,
+                    (Spiel.SpielerGegenSpieler.Factory) VierGewinnt.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Vier Gewinnt AI",
-                    VierGewinnt.SPIELER_GEGEN_AI_FACTORY,
+                    (Spiel.Einzelspieler.Factory) VierGewinnt.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Schach",
-                    Schach.SPIELER_GEGEN_SPIELER_FACTORY,
+                    (Spiel.SpielerGegenSpieler.Factory) Schach.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1,
                     Schach::init
             ),
             new SpielDaten(
                     "Schach AI",
-                    Schach.SPIELER_GEGEN_AI_FACTORY,
+                    (Spiel.Einzelspieler.Factory) Schach.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Tic Tac Toe",
-                    TicTacToe.SPIELER_GEGEN_SPIELER_FACTORY,
+                    (Spiel.SpielerGegenSpieler.Factory) TicTacToe.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Tic Tac Toe AI",
-                    TicTacToe.SPIELER_GEGEN_AI_FACTORY,
+                    (Spiel.Einzelspieler.Factory) TicTacToe.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Flappy Oinky",
-                    FlappyOinky.FACTORY,
+                    (Spiel.Mehrspieler.Factory) FlappyOinky::new,
                     UEBERGANG_1,
                     FlappyOinky::init
             ),
             new SpielDaten(
                     "Bälle",
-                    Baelle.FACTORY,
+                    (Spiel.Mehrspieler.Factory) Baelle::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Snake",
-                    Snake.FACTORY,
+                    (Spiel.Mehrspieler.Factory) Snake::new,
                     UEBERGANG_1,
                     Snake::init
             ),
             new SpielDaten(
                     "Tetris",
-                    Tetris.FACTORY,
+                    (Spiel.Mehrspieler.Factory) Tetris::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Stapeln",
-                    Stapeln.FACTORY,
+                    (Spiel.Mehrspieler.Factory) Stapeln::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Rain Catcher",
-                    RainCatcher.FACTORY,
+                    (Spiel.Mehrspieler.Factory) RainCatcher::new,
                     UEBERGANG_1,
                     RainCatcher::init
             ),
             new SpielDaten(
                     "Pacman",
-                    PacmanSpiel.FACTORY,
+                    (Spiel.Mehrspieler.Factory) PacmanSpiel::new,
                     UEBERGANG_1,
                     PacmanSpiel::init
             )

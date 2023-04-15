@@ -4,20 +4,6 @@ import processing.core.PConstants;
 import java.util.*;
 
 final class Dame {
-    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory() {
-        @Override
-        Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
-            return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
-        }
-    };
-
-    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory() {
-        @Override
-        Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
-            return new SpielerGegenAISpiel(applet, spieler);
-        }
-    };
-
     private Dame() {}
 
     private enum RichtungHorizontal {
@@ -698,14 +684,14 @@ final class Dame {
         }
     }
 
-    private static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+    static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
         private final Spieler spielerObenSpieler;
         private final Spieler spielerUntenSpieler;
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
         private Dame.Spieler amZug = Dame.Spieler.SPIELER_UNTEN;
 
-        private SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
+        SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
             if (spieler1.punkte < spieler2.punkte) {
                 spielerUntenSpieler = spieler1;
@@ -772,7 +758,7 @@ final class Dame {
         }
     }
 
-    private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+    static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
         private static final int AI_DEPTH = 6;
         private static final int AI_ZUG_SCHRITT_DELAY = 60;
 
@@ -785,7 +771,7 @@ final class Dame {
         private List<Brett> verbleibendeAiZugSchritte = Collections.emptyList();
         private int nextAiZugSchritt;
 
-        private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
+        SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
         }
 

@@ -4,13 +4,6 @@ import processing.core.PConstants;
 import java.util.*;
 
 final class Baelle extends Spiel.Mehrspieler {
-    static final Spiel.Mehrspieler.Factory FACTORY = new Factory() {
-        @Override
-        Mehrspieler neuesSpiel(PApplet applet, Set<Spiel.Spieler> spieler) {
-            return new Baelle(applet, spieler);
-        }
-    };
-
     private static final int BALL_DELAY = 30;
 
     private final Set<Ball> baelle = new HashSet<>();
@@ -19,7 +12,7 @@ final class Baelle extends Spiel.Mehrspieler {
     private final Set<Spieler> spieler = new HashSet<>();
     private final List<Spiel.Spieler.Id> rangliste = new ArrayList<>();
 
-    private Baelle(PApplet applet, Set<Spiel.Spieler> alleSpieler) {
+    Baelle(PApplet applet, Set<Spiel.Spieler> alleSpieler) {
         super(applet);
         for (Spiel.Spieler spieler : alleSpieler) {
             this.spieler.add(new Spieler(spieler));

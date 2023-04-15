@@ -4,17 +4,10 @@ import processing.core.PConstants;
 import java.util.*;
 
 final class Stapeln extends Spiel.Mehrspieler {
-    static final Factory FACTORY = new Factory() {
-        @Override
-        Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
-            return new Stapeln(applet, spieler);
-        }
-    };
-
     private final List<SpielBrett> spielBretter = new ArrayList<>();
     private final List<Spieler.Id> rangliste = new ArrayList<>();
 
-    private Stapeln(PApplet applet, Set<Spieler> alleSpieler) {
+    Stapeln(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         List<Spieler> spielerSortiert = new ArrayList<>(alleSpieler);
         spielerSortiert.sort(Comparator.comparing(spieler -> spieler.id));

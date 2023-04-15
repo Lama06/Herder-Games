@@ -10,13 +10,6 @@ final class FlappyOinky extends Spiel.Mehrspieler {
         oinky = applet.loadImage("flappyoinky/oinky.png");
     }
 
-    static final Spiel.Mehrspieler.Factory FACTORY = new Factory() {
-        @Override
-        public Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
-            return new FlappyOinky(applet, spieler);
-        }
-    };
-
     private static final int HINDERNIS_DELAY = 170;
 
     private static PImage hindernis;
@@ -28,7 +21,7 @@ final class FlappyOinky extends Spiel.Mehrspieler {
     private final Set<Hindernis> hindernisse = new HashSet<>();
     private int punkte;
 
-    private FlappyOinky(PApplet applet, Set<Spieler> alleSpieler) {
+    FlappyOinky(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         for (Spieler spieler : alleSpieler) {
             oinkys.add(new Oinky(spieler));

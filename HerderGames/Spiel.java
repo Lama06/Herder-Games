@@ -15,7 +15,7 @@ abstract class Spiel {
 
     void keyReleased() { }
 
-    abstract static class Factory { }
+    interface Factory { }
 
     abstract static class Einzelspieler extends Spiel {
         Einzelspieler(PApplet applet) {
@@ -30,8 +30,9 @@ abstract class Spiel {
             VERLOREN
         }
 
-        abstract static class Factory extends Spiel.Factory {
-            abstract Einzelspieler neuesSpiel(PApplet applet, Spieler spieler);
+        @FunctionalInterface
+        interface Factory extends Spiel.Factory {
+            Einzelspieler neuesSpiel(PApplet applet, Spieler spieler);
         }
     }
 
@@ -42,8 +43,9 @@ abstract class Spiel {
 
         abstract Optional<Optional<Spieler.Id>> draw();
 
-        abstract static class Factory extends Spiel.Factory {
-            abstract SpielerGegenSpieler neuesSpiel(PApplet applet, Spieler spieler1, Spieler spieler2);
+        @FunctionalInterface
+        interface Factory extends Spiel.Factory {
+            SpielerGegenSpieler neuesSpiel(PApplet applet, Spieler spieler1, Spieler spieler2);
         }
     }
 
@@ -54,8 +56,9 @@ abstract class Spiel {
 
         abstract Optional<List<Spieler.Id>> draw();
 
-        abstract static class Factory extends Spiel.Factory {
-            abstract Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler);
+        @FunctionalInterface
+        interface Factory extends Spiel.Factory {
+            Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler);
         }
     }
 

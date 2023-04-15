@@ -5,20 +5,6 @@ import processing.core.PImage;
 import java.util.*;
 
 final class Schach {
-    static final Spiel.SpielerGegenSpieler.Factory SPIELER_GEGEN_SPIELER_FACTORY = new Spiel.SpielerGegenSpieler.Factory() {
-        @Override
-        Spiel.SpielerGegenSpieler neuesSpiel(PApplet applet, Spiel.Spieler spieler1, Spiel.Spieler spieler2) {
-            return new SpielerGegenSpielerSpiel(applet, spieler1, spieler2);
-        }
-    };
-
-    static final Spiel.Einzelspieler.Factory SPIELER_GEGEN_AI_FACTORY = new Spiel.Einzelspieler.Factory() {
-        @Override
-        Spiel.Einzelspieler neuesSpiel(PApplet applet, Spiel.Spieler spieler) {
-            return new SpielerGegenAISpiel(applet, spieler);
-        }
-    };
-
     private static PImage WEISS_BAUER;
     private static PImage WEISS_LAEUFER;
     private static PImage WEISS_SPRINGER;
@@ -874,14 +860,14 @@ final class Schach {
     }
 
 
-    private static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+    static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
         private final Spieler weiss;
         private final Spieler schwarz;
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
         private Schach.Spieler amZug = Schach.Spieler.WEISS;
 
-        private SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
+        SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
             if (spieler1.punkte < spieler2.punkte) {
                 weiss = spieler1;
@@ -949,7 +935,7 @@ final class Schach {
         }
     }
 
-    private static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+    static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
         private static final int AI_DEPTH = 2;
 
         private static final Schach.Spieler COMPUTER = Schach.Spieler.WEISS;
@@ -958,7 +944,7 @@ final class Schach {
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
 
-        private SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
+        SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
             super(applet);
         }
 

@@ -5,13 +5,6 @@ import processing.core.PImage;
 import java.util.*;
 
 final class RainCatcher extends Spiel.Mehrspieler {
-    static final Factory FACTORY = new Factory() {
-        @Override
-        Mehrspieler neuesSpiel(PApplet applet, Set<Spieler> spieler) {
-            return new RainCatcher(applet, spieler);
-        }
-    };
-
     static void init(PApplet applet) {
         tropfenBild = applet.loadImage("raincatcher/tropfen", "jpg");
         tropfenNichtFangenBild = applet.loadImage("raincatcher/tropfen_nicht_fangen", "jpg");
@@ -30,7 +23,7 @@ final class RainCatcher extends Spiel.Mehrspieler {
     private final StringBuffer passwortInput = new StringBuffer();
     private boolean rumtreiber;
 
-    private RainCatcher(PApplet applet, Set<Spieler> alleSpieler) {
+    RainCatcher(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         for (Spieler spieler : alleSpieler) {
             platformen.add(new Platform(spieler));
