@@ -94,6 +94,12 @@ final class TitleScreen {
                     (Spiel.Mehrspieler.Factory) PacmanSpiel::new,
                     UEBERGANG_1,
                     PacmanSpiel::init
+            ),
+            new SpielDaten(
+                    "Harry Potter Trivia",
+                    (Spiel.Mehrspieler.Factory) HarryPotterQuiz::new,
+                    UEBERGANG_1,
+                    HarryPotterQuiz::init
             )
     );
 
