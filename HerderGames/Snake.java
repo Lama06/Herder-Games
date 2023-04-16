@@ -136,10 +136,10 @@ final class Snake extends Spiel.Mehrspieler {
     }
 
     private enum Richtung {
-        Links(-1, 0),
-        Rechts(1, 0),
-        Oben(0, -1),
-        Unten(0, 1);
+        LINKS(-1, 0),
+        RECHTS(1, 0),
+        OBEN(0, -1),
+        UNTEN(0, 1);
 
         private static Richtung mitVerschiebung(int x, int y) {
             for (Richtung value : values()) {
@@ -225,7 +225,7 @@ final class Snake extends Spiel.Mehrspieler {
 
         private SchlangeTeil dahinter;
 
-        private Richtung bewegungsRichtung = Richtung.Unten;
+        private Richtung bewegungsRichtung = Richtung.UNTEN;
         private int naechsteBewegungDelay = BEWEGUNG_DELAY;
         private boolean beiNaechsterBewegungWachsen = false;
 
@@ -337,13 +337,13 @@ final class Snake extends Spiel.Mehrspieler {
 
         private PImage getImage() {
             switch (getBlickRichtung()) {
-                case Unten:
+                case UNTEN:
                     return kopfUnten;
-                case Oben:
+                case OBEN:
                     return kopfOben;
-                case Links:
+                case LINKS:
                     return kopfLinks;
-                case Rechts:
+                case RECHTS:
                     return kopfRechts;
                 default:
                     throw new IllegalArgumentException();
@@ -427,12 +427,12 @@ final class Snake extends Spiel.Mehrspieler {
 
         private PImage getImage() {
             Map<Set<Richtung>, PImage> images = Map.of(
-                    Set.of(Richtung.Links, Richtung.Rechts), schlangeHorizontal,
-                    Set.of(Richtung.Oben, Richtung.Unten), schlangeVertikal,
-                    Set.of(Richtung.Oben, Richtung.Links), schlangeObenLinks,
-                    Set.of(Richtung.Oben, Richtung.Rechts), schlangeObenRechts,
-                    Set.of(Richtung.Unten, Richtung.Links), schlangeUntenLinks,
-                    Set.of(Richtung.Unten, Richtung.Rechts), schlangeUntenRechts
+                    Set.of(Richtung.LINKS, Richtung.RECHTS), schlangeHorizontal,
+                    Set.of(Richtung.OBEN, Richtung.UNTEN), schlangeVertikal,
+                    Set.of(Richtung.OBEN, Richtung.LINKS), schlangeObenLinks,
+                    Set.of(Richtung.OBEN, Richtung.RECHTS), schlangeObenRechts,
+                    Set.of(Richtung.UNTEN, Richtung.LINKS), schlangeUntenLinks,
+                    Set.of(Richtung.UNTEN, Richtung.RECHTS), schlangeUntenRechts
             );
 
             return images.get(Set.of(getRichtungZuDavor(), getRichtungZuDahinter()));
@@ -481,13 +481,13 @@ final class Snake extends Spiel.Mehrspieler {
 
         private PImage getImage() {
             switch (getRichtungVonDavor()) {
-                case Unten:
+                case UNTEN:
                     return endeUnten;
-                case Oben:
+                case OBEN:
                     return endeOben;
-                case Links:
+                case LINKS:
                     return endeLinks;
-                case Rechts:
+                case RECHTS:
                     return endeRechts;
                 default:
                     throw new IllegalArgumentException();

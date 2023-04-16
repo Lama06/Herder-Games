@@ -204,12 +204,11 @@ final class FlappyOinky extends Spiel.Mehrspieler {
 
         private final float obererTeilHoehe;
         private final float untererTeilHoehe;
-        private float x;
+        private float x = X_START;
 
         private Hindernis() {
             obererTeilHoehe = applet.random(1 - LUECKE_HOEHE);
             untererTeilHoehe = 1 - LUECKE_HOEHE - obererTeilHoehe;
-            x = X_START;
         }
 
         private void drawTeil(Rechteck rechteck) {

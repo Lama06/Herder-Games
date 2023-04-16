@@ -29,15 +29,6 @@ final class Baelle extends Spiel.Mehrspieler {
             nextBall = BALL_DELAY;
         }
 
-        Iterator<Spieler> spielerIterator = spieler.iterator();
-        while (spielerIterator.hasNext()) {
-            Spieler spieler = spielerIterator.next();
-            if (spieler.istTot()) {
-                spielerIterator.remove();
-                rangliste.add(0, spieler.spieler.id);
-            }
-        }
-
         for (Ball ball : baelle) {
             ball.kollisionenUeberpruefen();
         }
@@ -46,7 +37,14 @@ final class Baelle extends Spiel.Mehrspieler {
             ball.draw();
         }
 
-        for (Spieler spieler : spieler) {
+        Iterator<Spieler> spielerIterator = spieler.iterator();
+        while (spielerIterator.hasNext()) {
+            Spieler spieler = spielerIterator.next();
+            if (spieler.istTot()) {
+                spielerIterator.remove();
+                rangliste.add(0, spieler.spieler.id);
+                continue;
+            }
             spieler.draw();
         }
 
@@ -82,31 +80,31 @@ final class Baelle extends Spiel.Mehrspieler {
         private float geschwindigkeitX;
         private float geschwindigkeitY;
         private final float radius;
-        private final int color;
+        private final int color = applet.color(applet.random(255), applet.random(255), applet.random(255));
 
         private Ball() {
             radius = applet.random(MIN_RADIUS, MAX_RADIUS);
             geschwindigkeitX = applet.random(MIN_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
             geschwindigkeitY = applet.random(MIN_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
             findPosition(radius, geschwindigkeitX, geschwindigkeitY);
-            color = applet.color(applet.random(255), applet.random(255), applet.random(255));
         }
 
         private void findPosition(float radius, float geschwindigkeitX, float geschwindigkeitY) {
-        findPosition:
+            float minXEnterfnungZuSpieler = Math.abs(geschwindigkeitX) * 30;
+            float minYEnterfnungZuSpieler = Math.abs(geschwindigkeitY) * 30;
+
+            findPosition:
             while (true) {
-                x = applet.random(radius*2, 1-radius*2);
-                y = applet.random(radius*2, 1-radius*2);
+                x = applet.random(radius, 1-radius);
+                y = applet.random(radius, 1-radius);
 
                 Kreis kreis = new Kreis(x, y, radius);
 
                 for (Spieler spieler : spieler) {
-                    float minXEnterfnungZuSpieler = Math.abs(geschwindigkeitX * 30);
                     if (Math.abs(spieler.x - x) < minXEnterfnungZuSpieler) {
                         continue findPosition;
                     }
 
-                    float minYEnterfnungZuSpieler = Math.abs(geschwindigkeitY * 30);
                     if (Math.abs(spieler.y - y) < minYEnterfnungZuSpieler) {
                         continue findPosition;
                     }
@@ -137,7 +135,7 @@ final class Baelle extends Spiel.Mehrspieler {
         }
 
         private void kollisionenUeberpruefen() {
-            if (kollidiertMitAnderemBall() || getKreis().istWegVomBildschirm()) {
+            if (kollidiertMitAnderemBall() || getKreis().beruehrtBildschirmRand()) {
                 geschwindigkeitX *= -1;
                 geschwindigkeitY *= -1;
             }
@@ -146,6 +144,7 @@ final class Baelle extends Spiel.Mehrspieler {
         private void draw() {
             x += geschwindigkeitX;
             y += geschwindigkeitY;
+
             applet.fill(color);
             applet.ellipseMode(PConstants.CENTER);
             applet.circle(x*applet.width, y*applet.height, Math.max(radius*2*applet.width, radius*2*applet.height));
@@ -165,13 +164,12 @@ final class Baelle extends Spiel.Mehrspieler {
         private final Spiel.Spieler spieler;
         private final Steuerung steuerung;
         private float x;
-        private float y;
+        private float y = Y_START;
 
         private Spieler(Spiel.Spieler spieler) {
             this.spieler = spieler;
             steuerung = new Steuerung(applet, spieler.id);
             x = X_START + getXOffset();
-            y = Y_START;
         }
 
         private float getXOffset() {
