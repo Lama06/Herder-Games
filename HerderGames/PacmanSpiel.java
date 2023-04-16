@@ -206,7 +206,7 @@ final class PacmanSpiel extends Spiel.Mehrspieler {
         SpielerGesteuert(PacmanSpiel spiel, Spieler spieler) {
             this.spiel = spiel;
             this.spieler = spieler;
-            steuerung = Steuerung.fuerSpieler(spiel.applet, spieler.id);
+            steuerung = new Steuerung(spiel.applet, spieler.id);
         }
 
         abstract float getStartX();
@@ -228,10 +228,12 @@ final class PacmanSpiel extends Spiel.Mehrspieler {
         abstract int getAnimationSpeed();
 
         PImage getImage() {
+            Richtung visuelleRichtung = Richtung.vonSteuerungRichtung(steuerung.getZuletztGedrueckt().orElse(Steuerung.Richtung.OBEN));
+
             if (spiel.applet.frameCount % (getAnimationSpeed()*2) >= getAnimationSpeed()) {
-                return getImage1(steuerung.visuelleRichtung);
+                return getImage1(visuelleRichtung);
             } else {
-                return getImage2(steuerung.visuelleRichtung);
+                return getImage2(visuelleRichtung);
             }
         }
 
@@ -635,142 +637,25 @@ final class PacmanSpiel extends Spiel.Mehrspieler {
         }
     }
 
-    private abstract static class Steuerung {
-        private static Steuerung fuerSpieler(PApplet applet, Spieler.Id spieler) {
-            switch (spieler) {
-                case SPIELER_1:
-                    return new PfeilTastenSteuerung(applet);
-                case SPIELER_2:
-                    return new TastenSteuerung(applet, 'a', 'd', 'w', 's');
-                case SPIELER_3:
-                    return new TastenSteuerung(applet, 'f', 'h', 't', 'g');
-                case SPIELER_4:
-                    return new TastenSteuerung(applet, 'j', 'l', 'i', 'k');
+    private enum Richtung {
+        LINKS,
+        RECHTS,
+        OBEN,
+        UNTEN;
+
+        private static Richtung vonSteuerungRichtung(Steuerung.Richtung richtung) {
+            switch (richtung) {
+                case LINKS:
+                    return LINKS;
+                case RECHTS:
+                    return RECHTS;
+                case OBEN:
+                    return OBEN;
+                case UNTEN:
+                    return UNTEN;
                 default:
                     throw new IllegalArgumentException();
             }
-        }
-
-        final PApplet applet;
-        final Set<Richtung> gedruekt = new HashSet<>();
-        Richtung visuelleRichtung;
-
-        Steuerung(PApplet applet) {
-            this.applet = applet;
-            visuelleRichtung = Richtung.OBEN;
-        }
-
-        abstract Optional<Richtung> getGedrueckteRichtung();
-
-        void keyPressed() {
-            Optional<Richtung> richtung = getGedrueckteRichtung();
-            if (richtung.isEmpty()) {
-                return;
-            }
-            gedruekt.add(richtung.get());
-            this.visuelleRichtung = richtung.get();
-        }
-
-        void keyReleased() {
-            Optional<Richtung> richtung = getGedrueckteRichtung();
-            if (richtung.isEmpty()) {
-                return;
-            }
-            gedruekt.remove(richtung.get());
-            if (richtung.get() == visuelleRichtung && !gedruekt.isEmpty()) {
-                visuelleRichtung = gedruekt.stream().findFirst().get();
-            }
-        }
-
-        int getXRichtung() {
-            int result = 0;
-            for (Richtung richtung : gedruekt) {
-                result += richtung.x;
-            }
-            return result;
-        }
-
-        int getYRichtung() {
-            int result = 0;
-            for (Richtung richtung : gedruekt) {
-                result += richtung.y;
-            }
-            return result;
-        }
-    }
-
-    private static final class TastenSteuerung extends Steuerung {
-        private final char links;
-        private final char rechts;
-        private final char oben;
-        private final char unten;
-
-        private TastenSteuerung(PApplet applet, char links, char rechts, char oben, char unten) {
-            super(applet);
-            this.links = links;
-            this.rechts = rechts;
-            this.oben = oben;
-            this.unten = unten;
-        }
-
-        @Override
-        Optional<Richtung> getGedrueckteRichtung() {
-            if (applet.key == links) {
-                return Optional.of(Richtung.LINKS);
-            }
-            if (applet.key == rechts) {
-                return Optional.of(Richtung.RECHTS);
-            }
-            if (applet.key == oben) {
-                return Optional.of(Richtung.OBEN);
-            }
-            if (applet.key == unten) {
-                return Optional.of(Richtung.UNTEN);
-            }
-            return Optional.empty();
-        }
-    }
-
-    private static final class PfeilTastenSteuerung extends Steuerung {
-        private PfeilTastenSteuerung(PApplet applet) {
-            super(applet);
-        }
-
-        @Override
-        Optional<Richtung> getGedrueckteRichtung() {
-            if (applet.key != PConstants.CODED) {
-                return Optional.empty();
-            }
-
-            if (applet.keyCode == PConstants.LEFT) {
-                return Optional.of(Richtung.LINKS);
-            }
-            if (applet.keyCode == PConstants.RIGHT) {
-                return Optional.of(Richtung.RECHTS);
-            }
-            if (applet.keyCode == PConstants.UP) {
-                return Optional.of(Richtung.OBEN);
-            }
-            if (applet.keyCode == PConstants.DOWN) {
-                return Optional.of(Richtung.UNTEN);
-            }
-
-            return Optional.empty();
-        }
-    }
-
-    private enum Richtung {
-        LINKS(-1, 0),
-        RECHTS(1, 0),
-        OBEN(0, -1),
-        UNTEN(0, 1);
-
-        private final int x;
-        private final int y;
-
-        Richtung(int x, int y) {
-            this.x = x;
-            this.y = y;
         }
     }
 
@@ -794,42 +679,6 @@ final class PacmanSpiel extends Spiel.Mehrspieler {
         @Override
         public int hashCode() {
             return Objects.hash(x, y);
-        }
-    }
-
-    private static final class Rechteck {
-        private final float x;
-        private final float y;
-        private final float breite;
-        private final float hoehe;
-
-        private Rechteck(float x, float y, float breite, float hoehe) {
-            this.x = x;
-            this.y = y;
-            this.breite = breite;
-            this.hoehe = hoehe;
-        }
-
-        private boolean kollidiertMit(Rechteck anderes) {
-            float thisMinX = x;
-            float thisMaxX = x + breite;
-            float anderesMinX = anderes.x;
-            float anderesMaxX = anderes.x + anderes.breite;
-
-            float thisMinY = y;
-            float thisMaxY = y + hoehe;
-            float anderesMinY = anderes.y;
-            float anderesMaxY = anderes.y + anderes.hoehe;
-
-            if (thisMaxX < anderesMinX || thisMinX > anderesMaxX) {
-                return false;
-            }
-
-            if (thisMaxY < anderesMinY || thisMinY > anderesMaxY) {
-                return false;
-            }
-
-            return true;
         }
     }
 }

@@ -369,75 +369,14 @@ final class Snake extends Spiel.Mehrspieler {
             dahinter.draw();
         }
 
-        private Optional<Richtung> getNeueBewegungsRichtungInput() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    switch (applet.key) {
-                        case 'w':
-                            return Optional.of(Richtung.Oben);
-                        case 'a':
-                            return Optional.of(Richtung.Links);
-                        case 's':
-                            return Optional.of(Richtung.Unten);
-                        case 'd':
-                            return Optional.of(Richtung.Rechts);
-                        default:
-                            return Optional.empty();
-                    }
-                case SPIELER_2:
-                    switch (applet.key) {
-                        case 't':
-                            return Optional.of(Richtung.Oben);
-                        case 'f':
-                            return Optional.of(Richtung.Links);
-                        case 'g':
-                            return Optional.of(Richtung.Unten);
-                        case 'h':
-                            return Optional.of(Richtung.Rechts);
-                        default:
-                            return Optional.empty();
-                    }
-                case SPIELER_3:
-                    switch (applet.key) {
-                        case 'i':
-                            return Optional.of(Richtung.Oben);
-                        case 'j':
-                            return Optional.of(Richtung.Links);
-                        case 'k':
-                            return Optional.of(Richtung.Unten);
-                        case 'l':
-                            return Optional.of(Richtung.Rechts);
-                        default:
-                            return Optional.empty();
-                    }
-                case SPIELER_4:
-                    if (applet.key != PConstants.CODED) {
-                        return Optional.empty();
-                    }
-
-                    switch (applet.keyCode) {
-                        case PConstants.UP:
-                            return Optional.of(Richtung.Oben);
-                        case PConstants.LEFT:
-                            return Optional.of(Richtung.Links);
-                        case PConstants.DOWN:
-                            return Optional.of(Richtung.Unten);
-                        case PConstants.RIGHT:
-                            return Optional.of(Richtung.Rechts);
-                        default:
-                            return Optional.empty();
-                    }
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
         private boolean isValidNeueBewegungsRichtung(Richtung neueRichtung) {
             return neueRichtung != getBlickRichtung().getGegenueber();
         }
 
         private void keyPressed() {
-            getNeueBewegungsRichtungInput().ifPresent(neueRichtung -> {
+            Steuerung.Richtung.getGedrueckt(applet, spieler.id).ifPresent(neueSteuerungRichtung -> {
+                Richtung neueRichtung = Richtung.mitVerschiebung(neueSteuerungRichtung.x, neueSteuerungRichtung.y);
+
                 if (!isValidNeueBewegungsRichtung(neueRichtung)) {
                     return;
                 }

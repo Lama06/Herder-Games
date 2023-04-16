@@ -153,66 +153,6 @@ final class Tetris extends Spiel.Mehrspieler {
             return gefalleneElemente.stream().anyMatch(GefallenesElement::ueberBrett);
         }
 
-        private boolean isLinksPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'a';
-                case SPIELER_2:
-                    return applet.key == 'f';
-                case SPIELER_3:
-                    return applet.key == 'j';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.LEFT;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        private boolean isRechtsPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'd';
-                case SPIELER_2:
-                    return applet.key == 'h';
-                case SPIELER_3:
-                    return applet.key == 'l';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.RIGHT;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        private boolean isUntenPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 's';
-                case SPIELER_2:
-                    return applet.key == 'g';
-                case SPIELER_3:
-                    return applet.key == 'k';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.DOWN;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        private boolean isDrehenPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'w';
-                case SPIELER_2:
-                    return applet.key == 't';
-                case SPIELER_3:
-                    return applet.key == 'i';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.UP;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
         private final class FallendeForm {
             private static final int MOVE_DELAY = 15;
 
@@ -300,13 +240,13 @@ final class Tetris extends Spiel.Mehrspieler {
             }
 
             private void keyPressed() {
-                if (isLinksPressed() && getKleinstesX() != 0) {
+                if (Steuerung.Richtung.LINKS.istTasteGedrueckt(applet, spieler.id) && getKleinstesX() != 0) {
                     x--;
-                } else if (isRechtsPressed() && getGroesstesX() != BREITE-1) {
+                } else if (Steuerung.Richtung.RECHTS.istTasteGedrueckt(applet, spieler.id) && getGroesstesX() != BREITE-1) {
                     x++;
-                } else if (isUntenPressed()) {
+                } else if (Steuerung.Richtung.UNTEN.istTasteGedrueckt(applet, spieler.id)) {
                     y++;
-                } else if (isDrehenPressed()) {
+                } else if (Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id)) {
                     drehen();
                 }
             }

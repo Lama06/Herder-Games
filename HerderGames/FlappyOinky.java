@@ -78,42 +78,6 @@ final class FlappyOinky extends Spiel.Mehrspieler {
         }
     }
 
-    private static final class Rechteck {
-        private final float x;
-        private final float y;
-        private final float breite;
-        private final float hoehe;
-
-        private Rechteck(float x, float y, float breite, float hoehe) {
-            this.x = x;
-            this.y = y;
-            this.breite = breite;
-            this.hoehe = hoehe;
-        }
-
-        private boolean kollidiertMit(Rechteck anderes) {
-            float thisMinX = x;
-            float thisMaxX = x + breite;
-            float anderesMinX = anderes.x;
-            float anderesMaxX = anderes.x + anderes.breite;
-
-            float thisMinY = y;
-            float thisMaxY = y + hoehe;
-            float anderesMinY = anderes.y;
-            float anderesMaxY = anderes.y + anderes.hoehe;
-
-            if (thisMaxX < anderesMinX || thisMinX > anderesMaxX) {
-                return false;
-            }
-
-            if (thisMaxY < anderesMinY || thisMinY > anderesMaxY) {
-                return false;
-            }
-
-            return true;
-        }
-    }
-
     private final class Oinky {
         private static final int HELP_TEXT_MAX_TIME = 120;
         private static final float SIZE = 0.05f;
@@ -138,36 +102,6 @@ final class FlappyOinky extends Spiel.Mehrspieler {
             x = getXPosition();
         }
 
-        private boolean isJumpKeyPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'w';
-                case SPIELER_2:
-                    return applet.key == ' ';
-                case SPIELER_3:
-                    return applet.key == PConstants.ENTER;
-                case SPIELER_4:
-                    return applet.keyCode == PConstants.UP;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        private String getJumpKeyName() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return "W";
-                case SPIELER_2:
-                    return "Leertaste";
-                case SPIELER_3:
-                    return "Enter";
-                case SPIELER_4:
-                    return "Pfeiltaste hoch";
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
         private float getXPosition() {
             switch (spieler.id) {
                 case SPIELER_1:
@@ -188,7 +122,7 @@ final class FlappyOinky extends Spiel.Mehrspieler {
                 return;
             }
 
-            if (!isJumpKeyPressed()) {
+            if (!Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id)) {
                 return;
             }
 
@@ -235,7 +169,7 @@ final class FlappyOinky extends Spiel.Mehrspieler {
                 applet.textAlign(PConstants.CENTER);
                 applet.textSize(30);
                 applet.text(
-                        "%s: %s".formatted(spieler.name, getJumpKeyName()),
+                        "%s: %s".formatted(spieler.name, Steuerung.Richtung.OBEN.getTasteName(spieler.id)),
                         (rechteck.x + SIZE/2) * applet.width,
                         (rechteck.y - SIZE) * applet.height
                 );
@@ -244,7 +178,7 @@ final class FlappyOinky extends Spiel.Mehrspieler {
         }
 
         private boolean istRaus() {
-            return y+SIZE < 0 || y > 1;
+            return getRechteck().istWegVomBildschirm();
         }
 
         private boolean kollidiertMit(Hindernis hindernis) {

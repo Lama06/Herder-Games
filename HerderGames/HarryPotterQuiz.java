@@ -17,7 +17,7 @@ final class HarryPotterQuiz extends Spiel.Mehrspieler {
     private final Frage frage = new Frage();
     private final List<Antwort> antworten = new ArrayList<>();
     private final List<Spieler> alleSpieler = new ArrayList<>();
-    private final List<Partikel> partikel = new ArrayList<>();
+    private final PartikelManager partikelManager = new PartikelManager(applet);
     private final List<FrageDaten> verbleibendeFragen;
     private FrageDaten aktuelleFrage;
     private List<String> antwortenReihenfolge;
@@ -48,18 +48,6 @@ final class HarryPotterQuiz extends Spiel.Mehrspieler {
         Collections.shuffle(antwortenReihenfolge);
     }
 
-    private void drawPartikel() {
-        Iterator<Partikel> partikelIterator = partikel.iterator();
-        while (partikelIterator.hasNext()) {
-            Partikel partikel = partikelIterator.next();
-            if (partikel.istUnsichtbar()) {
-                partikelIterator.remove();
-                continue;
-            }
-            partikel.draw();
-        }
-    }
-
     @Override
     Optional<List<Spiel.Spieler.Id>> draw() {
         applet.background(applet.color(255));
@@ -70,7 +58,7 @@ final class HarryPotterQuiz extends Spiel.Mehrspieler {
             for (Spieler spieler : alleSpieler) {
                 if (richtigeAntwort.isInside(spieler.x, spieler.y)) {
                     spieler.punkte++;
-                    spawnPartikel(spieler.x+Spieler.SIZE/2, spieler.y+Spieler.SIZE/2);
+                    partikelManager.spawnPartikel(spieler.x+Spieler.SIZE/2, spieler.y+Spieler.SIZE/2);
                 }
             }
             if (verbleibendeFragen.isEmpty()) {
@@ -93,15 +81,9 @@ final class HarryPotterQuiz extends Spiel.Mehrspieler {
         for (Spieler spieler : alleSpieler) {
             spieler.draw();
         }
-        drawPartikel();
+        partikelManager.draw();
 
         return Optional.empty();
-    }
-
-    private void spawnPartikel(float x, float y) {
-        for (int i = 0; i < 150; i++) {
-            partikel.add(new Partikel(x, y));
-        }
     }
 
     @Override
@@ -199,22 +181,7 @@ final class HarryPotterQuiz extends Spiel.Mehrspieler {
 
         private Spieler(Spiel.Spieler spieler) {
             this.spieler = spieler;
-            steuerung = getSteuerung();
-        }
-
-        private Steuerung getSteuerung() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return new PfeilTastenSteuerung();
-                case SPIELER_2:
-                    return new TastenSteuerung('a', 'd', 'w', 's');
-                case SPIELER_3:
-                    return new TastenSteuerung('f', 'h', 't', 'g');
-                case SPIELER_4:
-                    return new TastenSteuerung('j', 'l', 'i', 'k');
-                default:
-                    throw new IllegalArgumentException();
-            }
+            steuerung = new Steuerung(applet, spieler.id);
         }
 
         private void draw() {
@@ -230,7 +197,8 @@ final class HarryPotterQuiz extends Spiel.Mehrspieler {
             float size = Math.max(SIZE * applet.width, SIZE * applet.height);
             applet.circle(x * applet.width, y * applet.height, size);
 
-            steuerung.draw();
+            x += steuerung.getXRichtung() * MOVE_SPEED;
+            y += steuerung.getYRichtung() * MOVE_SPEED;
         }
 
         private void keyPressed() {
@@ -239,156 +207,6 @@ final class HarryPotterQuiz extends Spiel.Mehrspieler {
 
         private void keyReleased() {
             steuerung.keyReleased();
-        }
-
-        private abstract class Steuerung {
-            private boolean links;
-            private boolean rechts;
-            private boolean oben;
-            private boolean unten;
-
-            private void draw() {
-                if (links && x > 0) {
-                    x -= MOVE_SPEED;
-                }
-                if (rechts && x < 1-SIZE) {
-                    x += MOVE_SPEED;
-                }
-                if (oben && y > 0) {
-                    y -= MOVE_SPEED;
-                }
-                if (unten && y < 1-SIZE) {
-                    y += MOVE_SPEED;
-                }
-            }
-
-            private void keyPressed() {
-                if (isLinks()) {
-                    links = true;
-                }
-                if (isRechts()) {
-                    rechts = true;
-                }
-                if (isOben()) {
-                    oben = true;
-                }
-                if (isUnten()) {
-                    unten = true;
-                }
-            }
-
-            private void keyReleased() {
-                if (isLinks()) {
-                    links = false;
-                }
-                if (isRechts()) {
-                    rechts = false;
-                }
-                if (isOben()) {
-                    oben = false;
-                }
-                if (isUnten()) {
-                    unten = false;
-                }
-            }
-
-            abstract boolean isLinks();
-
-            abstract boolean isRechts();
-
-            abstract boolean isOben();
-
-            abstract boolean isUnten();
-        }
-
-        private final class TastenSteuerung extends Steuerung {
-            private final char links;
-            private final char rechts;
-            private final char oben;
-            private final char unten;
-
-            private TastenSteuerung(char links, char rechts, char oben, char unten) {
-                this.links = links;
-                this.rechts = rechts;
-                this.oben = oben;
-                this.unten = unten;
-            }
-
-            @Override
-            boolean isLinks() {
-                return applet.key == links;
-            }
-
-            @Override
-            boolean isRechts() {
-                return applet.key == rechts;
-            }
-
-            @Override
-            boolean isOben() {
-                return applet.key == oben;
-            }
-
-            @Override
-            boolean isUnten() {
-                return applet.key == unten;
-            }
-        }
-
-        private final class PfeilTastenSteuerung extends Steuerung {
-            @Override
-            boolean isLinks() {
-                return applet.key == PConstants.CODED && applet.keyCode == PConstants.LEFT;
-            }
-
-            @Override
-            boolean isRechts() {
-                return applet.key == PConstants.CODED && applet.keyCode == PConstants.RIGHT;
-            }
-
-            @Override
-            boolean isOben() {
-                return applet.key == PConstants.CODED && applet.keyCode == PConstants.UP;
-            }
-
-            @Override
-            boolean isUnten() {
-                return applet.key == PConstants.CODED && applet.keyCode == PConstants.DOWN;
-            }
-        }
-    }
-
-    private final class Partikel {
-        private static final float SIZE = 0.002f;
-        private static final float MAX_GESCHWINDIGKEIT = 0.002f;
-        private static final float TRANSPARENZ_AENDERUNG = -3f;
-
-        private float x;
-        private float y;
-        private final float xGeschwindigkeit = applet.random(-MAX_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
-        private final float yGeschwindigkeit = applet.random(-MAX_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
-        private final int farbe = applet.color((int) applet.random(255), (int) applet.random(255), (int) applet.random(255));
-        private float transparenz = 255;
-
-        private Partikel(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        private boolean istUnsichtbar() {
-            return transparenz <= 0;
-        }
-
-        private void draw() {
-            x += xGeschwindigkeit;
-            y += yGeschwindigkeit;
-            transparenz += TRANSPARENZ_AENDERUNG;
-
-            applet.rectMode(PConstants.CENTER);
-            applet.noStroke();
-            applet.fill(farbe);
-            float size = Math.max(applet.width * SIZE, applet.height * SIZE);
-            applet.rect(x * applet.width, y * applet.height, size, size);
         }
     }
 

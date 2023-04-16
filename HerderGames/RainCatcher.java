@@ -19,7 +19,7 @@ final class RainCatcher extends Spiel.Mehrspieler {
     private final List<Spieler.Id> rangliste = new ArrayList<>();
     private final List<Tropfen> tropfen = new ArrayList<>();
     private int nextTropfen = Tropfen.DELAY;
-    private final List<Partikel> partikel = new ArrayList<>();
+    private final PartikelManager partikelManager = new PartikelManager(applet);
     private final StringBuffer passwortInput = new StringBuffer();
     private boolean rumtreiber;
 
@@ -27,18 +27,6 @@ final class RainCatcher extends Spiel.Mehrspieler {
         super(applet);
         for (Spieler spieler : alleSpieler) {
             platformen.add(new Platform(spieler));
-        }
-    }
-
-    private void drawPartikel() {
-        Iterator<Partikel> partikelIterator = partikel.iterator();
-        while (partikelIterator.hasNext()) {
-            Partikel partikel = partikelIterator.next();
-            if (partikel.istUnsichtbar()) {
-                partikelIterator.remove();
-                continue;
-            }
-            partikel.draw();
         }
     }
 
@@ -81,7 +69,7 @@ final class RainCatcher extends Spiel.Mehrspieler {
     Optional<List<Spieler.Id>> draw() {
         applet.background(0);
 
-        drawPartikel();
+        partikelManager.draw();
         spawnTropfen();
         drawTropfen();
         drawPlatformen();
@@ -111,7 +99,7 @@ final class RainCatcher extends Spiel.Mehrspieler {
 
             for (float x = 0; x <= 1; x += 0.1f) {
                 for (float y = 0; y <= 1; y += 0.1f) {
-                    spawnPartikel(x, y);
+                    partikelManager.spawnPartikel(x, y);
                 }
             }
         }
@@ -133,12 +121,6 @@ final class RainCatcher extends Spiel.Mehrspieler {
         }
     }
 
-    private void spawnPartikel(float x, float y) {
-        for (int i = 0; i < 50; i++) {
-            partikel.add(new Partikel(x, y));
-        }
-    }
-
     private final class Platform {
         private static final float BREITE = 0.2f;
         private static final float HOEHE = 0.05f;
@@ -149,16 +131,16 @@ final class RainCatcher extends Spiel.Mehrspieler {
         private static final int ZIEL_PUNKTZAHL = 25;
 
         private final Spieler spieler;
+        private final Steuerung steuerung;
         private final int farbe = applet.color((int) applet.random(255), (int) applet.random(255), (int) applet.random(255));
         private float x = 0.5f-BREITE/2;
         private float y;
         private float yGeschwindigkeit;
         private int punkte;
-        private boolean links;
-        private boolean rechts;
 
         private Platform(Spieler spieler) {
             this.spieler = spieler;
+            steuerung = new Steuerung(applet, spieler.id);
             y = getStartY();
             yGeschwindigkeit = getStartYGeschwindigkeit();
         }
@@ -233,7 +215,7 @@ final class RainCatcher extends Spiel.Mehrspieler {
                 if (tropfen.nichtFangen) {
                     punkte--;
                 } else {
-                    spawnPartikel(tropfen.x, tropfen.y);
+                    partikelManager.spawnPartikel(tropfen.x, tropfen.y);
                     punkte++;
                 }
             }
@@ -250,60 +232,20 @@ final class RainCatcher extends Spiel.Mehrspieler {
         }
 
         private void moveX() {
-            if (links && x > 0) {
+            if (steuerung.istLinksGedrueckt() && x > 0) {
                 x -= X_GESCHWINDIGKEIT;
             }
-            if (rechts && x+BREITE < 1) {
+            if (steuerung.istRechtsGedrueckt() && x+BREITE < 1) {
                 x += X_GESCHWINDIGKEIT;
             }
         }
 
         private void keyPressed() {
-            if (isLinksPressed()) {
-                links = true;
-            }
-            if (isRechtsPressed()) {
-                rechts = true;
-            }
+            steuerung.keyPressed();
         }
 
         private void keyReleased() {
-            if (isLinksPressed()) {
-                links = false;
-            }
-            if (isRechtsPressed()) {
-                rechts = false;
-            }
-        }
-
-        private boolean isLinksPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'a';
-                case SPIELER_2:
-                    return applet.key == 'f';
-                case SPIELER_3:
-                    return applet.key == 'j';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.LEFT;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        private boolean isRechtsPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'd';
-                case SPIELER_2:
-                    return applet.key == 'h';
-                case SPIELER_3:
-                    return applet.key == 'l';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.RIGHT;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            steuerung.keyReleased();
         }
     }
 
@@ -360,42 +302,8 @@ final class RainCatcher extends Spiel.Mehrspieler {
 
         private void handleUntenRaus() {
             if (nichtFangen) {
-                spawnPartikel(x, y);
+                partikelManager.spawnPartikel(x, y);
             }
-        }
-    }
-
-    private final class Partikel {
-        private static final float SIZE = 0.002f;
-        private static final float MAX_GESCHWINDIGKEIT = 0.002f;
-        private static final float TRANSPARENZ_AENDERUNG = -3f;
-
-        private float x;
-        private float y;
-        private final float xGeschwindigkeit = applet.random(-MAX_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
-        private final float yGeschwindigkeit = applet.random(-MAX_GESCHWINDIGKEIT, MAX_GESCHWINDIGKEIT);
-        private final int farbe = applet.color((int) applet.random(255), (int) applet.random(255), (int) applet.random(255));
-        private float transparenz = 255;
-
-        private Partikel(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        private boolean istUnsichtbar() {
-            return transparenz <= 0;
-        }
-
-        private void draw() {
-            x += xGeschwindigkeit;
-            y += yGeschwindigkeit;
-            transparenz += TRANSPARENZ_AENDERUNG;
-
-            applet.rectMode(PConstants.CENTER);
-            applet.noStroke();
-            applet.fill(farbe);
-            float size = Math.max(applet.width * SIZE, applet.height * SIZE);
-            applet.rect(x * applet.width, y * applet.height, size, size);
         }
     }
 }

@@ -63,16 +63,14 @@ final class Stapeln extends Spiel.Mehrspieler {
 
     private final class SpielBrett {
         private final Spieler spieler;
+        private final Steuerung steuerung;
         private FallenderStein fallenderStein;
         private final List<GefallenerStein> gefalleneSteine;
         private boolean verloren;
 
-        private boolean beschleunigt;
-        private boolean links;
-        private boolean rechts;
-
         private SpielBrett(Spieler spieler) {
             this.spieler = spieler;
+            steuerung = new Steuerung(applet, spieler.id);
 
             gefalleneSteine = new ArrayList<>();
 
@@ -111,72 +109,11 @@ final class Stapeln extends Spiel.Mehrspieler {
         }
 
         private void keyPressed() {
-            if (isUntenPressed()) {
-                beschleunigt = true;
-            }
-            if (isLinksPressed()) {
-                links = true;
-            }
-            if (isRechtsPressed()) {
-                rechts = true;
-            }
+            steuerung.keyPressed();
         }
 
         private void keyReleased() {
-            if (isUntenPressed()) {
-                beschleunigt = false;
-            }
-            if (isLinksPressed()) {
-                links = false;
-            }
-            if (isRechtsPressed()) {
-                rechts = false;
-            }
-        }
-
-        private boolean isLinksPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'a';
-                case SPIELER_2:
-                    return applet.key == 'f';
-                case SPIELER_3:
-                    return applet.key == 'j';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.LEFT;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        private boolean isRechtsPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 'd';
-                case SPIELER_2:
-                    return applet.key == 'h';
-                case SPIELER_3:
-                    return applet.key == 'l';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.RIGHT;
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }
-
-        private boolean isUntenPressed() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return applet.key == 's';
-                case SPIELER_2:
-                    return applet.key == 'g';
-                case SPIELER_3:
-                    return applet.key == 'k';
-                case SPIELER_4:
-                    return applet.key == PConstants.CODED && applet.keyCode == PConstants.DOWN;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            steuerung.keyReleased();
         }
 
         private final class FallenderStein {
@@ -228,13 +165,13 @@ final class Stapeln extends Spiel.Mehrspieler {
             }
 
             private void draw(int index) {
-                y += beschleunigt ? GESCHWINDIGKEIT_Y_BESCHLEUNIGT : GESCHWINDIGKEIT_Y_NORMAL;
+                y += steuerung.istUntenGedrueckt() ? GESCHWINDIGKEIT_Y_BESCHLEUNIGT : GESCHWINDIGKEIT_Y_NORMAL;
 
-                if (links && x > 0) {
+                if (steuerung.istLinksGedrueckt() && x > 0) {
                     x -= GESCHWINDIGKEIT_X;
                 }
 
-                if (rechts && x+breite < 1) {
+                if (steuerung.istRechtsGedrueckt() && x+breite < 1) {
                     x += GESCHWINDIGKEIT_X;
                 }
 

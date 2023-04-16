@@ -71,26 +71,6 @@ final class Baelle extends Spiel.Mehrspieler {
         }
     }
 
-    private static final class Kreis {
-        private final float mittelpunktX;
-        private final float mittelpunktY;
-        private final float radius;
-
-        private Kreis(float mittelpunktX, float mittelpunktY, float radius) {
-            this.mittelpunktX = mittelpunktX;
-            this.mittelpunktY = mittelpunktY;
-            this.radius = radius;
-        }
-
-        private boolean kollidiertMit(Kreis kreis) {
-            return PApplet.dist(mittelpunktX, mittelpunktY, kreis.mittelpunktX, kreis.mittelpunktY) <= radius + kreis.radius;
-        }
-
-        private boolean istWegVomBildschirm() {
-            return mittelpunktX-radius <= 0 || mittelpunktX+radius >= 1 || mittelpunktY-radius <= 0 || mittelpunktY+radius >= 1;
-        }
-    }
-
     private final class Ball {
         private static final float MIN_RADIUS = 0.01f;
         private static final float MAX_RADIUS = 0.02f;
@@ -183,30 +163,15 @@ final class Baelle extends Spiel.Mehrspieler {
         private static final float Y_START = 0.5f;
 
         private final Spiel.Spieler spieler;
+        private final Steuerung steuerung;
         private float x;
         private float y;
-        private final Steuerung steuerung;
 
         private Spieler(Spiel.Spieler spieler) {
             this.spieler = spieler;
+            steuerung = new Steuerung(applet, spieler.id);
             x = X_START + getXOffset();
             y = Y_START;
-            steuerung = getSteuerung();
-        }
-
-        private Steuerung getSteuerung() {
-            switch (spieler.id) {
-                case SPIELER_1:
-                    return new PfeilTastenSteuerung();
-                case SPIELER_2:
-                    return new TastenSteuerung('a', 'd', 'w', 's');
-                case SPIELER_3:
-                    return new TastenSteuerung('f', 'h', 't', 'g');
-                case SPIELER_4:
-                    return new TastenSteuerung('j', 'l', 'i', 'k');
-                default:
-                    throw new IllegalArgumentException();
-            }
         }
 
         private float getXOffset() {
@@ -225,7 +190,8 @@ final class Baelle extends Spiel.Mehrspieler {
         }
 
         private void draw() {
-            steuerung.draw();
+            x += steuerung.getXRichtung() * MOVE_SPEED;
+            y += steuerung.getYRichtung() * MOVE_SPEED;
 
             applet.fill(applet.color(255, 0, 0));
             applet.ellipseMode(PConstants.CENTER);
@@ -256,122 +222,6 @@ final class Baelle extends Spiel.Mehrspieler {
 
         private Kreis getKreis() {
             return new Kreis(x, y, RADIUS);
-        }
-
-        private abstract class Steuerung {
-            private boolean links;
-            private boolean rechts;
-            private boolean oben;
-            private boolean unten;
-
-            private void draw() {
-                if (links) {
-                    x -= MOVE_SPEED;
-                }
-                if (rechts) {
-                    x += MOVE_SPEED;
-                }
-                if (oben) {
-                    y -= MOVE_SPEED;
-                }
-                if (unten) {
-                    y += MOVE_SPEED;
-                }
-            }
-
-            private void keyPressed() {
-                if (isLinks()) {
-                    links = true;
-                }
-                if (isRechts()) {
-                    rechts = true;
-                }
-                if (isOben()) {
-                    oben = true;
-                }
-                if (isUnten()) {
-                    unten = true;
-                }
-            }
-
-            private void keyReleased() {
-                if (isLinks()) {
-                    links = false;
-                }
-                if (isRechts()) {
-                    rechts = false;
-                }
-                if (isOben()) {
-                    oben = false;
-                }
-                if (isUnten()) {
-                    unten = false;
-                }
-            }
-
-            abstract boolean isLinks();
-
-            abstract boolean isRechts();
-
-            abstract boolean isOben();
-
-            abstract boolean isUnten();
-        }
-
-        private final class TastenSteuerung extends Steuerung {
-            private final char links;
-            private final char rechts;
-            private final char oben;
-            private final char unten;
-
-            private TastenSteuerung(char links, char rechts, char oben, char unten) {
-                this.links = links;
-                this.rechts = rechts;
-                this.oben = oben;
-                this.unten = unten;
-            }
-
-            @Override
-            boolean isLinks() {
-                return applet.key == links;
-            }
-
-            @Override
-            boolean isRechts() {
-                return applet.key == rechts;
-            }
-
-            @Override
-            boolean isOben() {
-                return applet.key == oben;
-            }
-
-            @Override
-            boolean isUnten() {
-                return applet.key == unten;
-            }
-        }
-
-        private final class PfeilTastenSteuerung extends Steuerung {
-            @Override
-            boolean isLinks() {
-                return applet.keyCode == PConstants.LEFT;
-            }
-
-            @Override
-            boolean isRechts() {
-                return applet.keyCode == PConstants.RIGHT;
-            }
-
-            @Override
-            boolean isOben() {
-                return applet.keyCode == PConstants.UP;
-            }
-
-            @Override
-            boolean isUnten() {
-                return applet.keyCode == PConstants.DOWN;
-            }
         }
     }
 }
