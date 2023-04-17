@@ -214,9 +214,9 @@ final class Dame {
                         }
                         neueZeile.set(position.spalte/2, neueFelder.get(position));
                     }
-                    neueZeilen.add(zeile, neueZeile);
+                    neueZeilen.add(neueZeile);
                 } else {
-                    neueZeilen.add(zeile, zeilen.get(zeile));
+                    neueZeilen.add(zeilen.get(zeile));
                 }
             }
             return new Brett(neueZeilen);
@@ -235,7 +235,7 @@ final class Dame {
             return Objects.hash(zeilen);
         }
 
-        private Set<Zug> getMoeglicheSteinBewgenZuege(Position startPosition) {
+        private Set<Zug> getMoeglicheSteinBewegenZuege(Position startPosition) {
             Optional<Stein> stein = getStein(startPosition);
             if (stein.isEmpty() || !stein.get().isStein()) {
                 return Collections.emptySet();
@@ -456,7 +456,7 @@ final class Dame {
                         continue;
                     }
 
-                    result.addAll(getMoeglicheSteinBewgenZuege(position));
+                    result.addAll(getMoeglicheSteinBewegenZuege(position));
                     result.addAll(getMoeglicheDameBewegenZuege(position));
                 }
             }
@@ -570,6 +570,7 @@ final class Dame {
 
                     if (!Position.isValid(zeile, spalte)) {
                         applet.fill(applet.color(255));
+                        applet.rectMode(PConstants.CORNER);
                         applet.rect(screenX, screenY, feldSize, feldSize);
                         continue;
                     }
@@ -656,12 +657,12 @@ final class Dame {
         private final List<Brett> schritte;
 
         private Zug(Position von, Position nach, List<Brett> schritte) {
-            if (von == null || nach == null || schritte == null || schritte.isEmpty()) {
+            if (schritte.isEmpty()) {
                 throw new IllegalArgumentException();
             }
 
-            this.von = von;
-            this.nach = nach;
+            this.von = Objects.requireNonNull(von);
+            this.nach = Objects.requireNonNull(nach);
             this.schritte = List.copyOf(schritte);
         }
 
@@ -685,8 +686,8 @@ final class Dame {
     }
 
     static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
-        private final Spieler spielerObenSpieler;
-        private final Spieler spielerUntenSpieler;
+        private final Spieler spielerOben;
+        private final Spieler spielerUnten;
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
         private Dame.Spieler amZug = Dame.Spieler.SPIELER_UNTEN;
@@ -694,11 +695,11 @@ final class Dame {
         SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
             super(applet);
             if (spieler1.punkte < spieler2.punkte) {
-                spielerUntenSpieler = spieler1;
-                spielerObenSpieler = spieler2;
+                spielerUnten = spieler1;
+                spielerOben = spieler2;
             } else {
-                spielerUntenSpieler = spieler2;
-                spielerObenSpieler = spieler1;
+                spielerUnten = spieler2;
+                spielerOben = spieler1;
             }
         }
 
@@ -749,21 +750,20 @@ final class Dame {
             aktuellesBrett.draw(applet, ausgewaehltePosition);
 
             if (aktuellesBrett.hatVerloren(Dame.Spieler.SPIELER_OBEN)) {
-                return Optional.of(Optional.of(spielerUntenSpieler.id));
+                return Optional.of(Optional.of(spielerUnten.id));
             }
             if (aktuellesBrett.hatVerloren(Dame.Spieler.SPIELER_UNTEN)) {
-                return Optional.of(Optional.of(spielerObenSpieler.id));
+                return Optional.of(Optional.of(spielerOben.id));
             }
             return Optional.empty();
         }
     }
 
     static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
-        private static final int AI_DEPTH = 6;
-        private static final int AI_ZUG_SCHRITT_DELAY = 60;
-
         private static final Dame.Spieler COMPUTER = Dame.Spieler.SPIELER_OBEN;
         private static final Dame.Spieler MENSCH = Dame.Spieler.SPIELER_UNTEN;
+        private static final int AI_DEPTH = 6;
+        private static final int AI_ZUG_SCHRITT_DELAY = 60;
 
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
