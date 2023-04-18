@@ -420,8 +420,11 @@ final class Dame {
             return result;
         }
 
-        @Override
-        public Set<Zug> getMoeglicheZuegeFuerSpieler(Spieler spieler) {
+        private Set<Zug> getMoeglicheZuegeFuerSpieler(Spieler spieler, boolean gewonnenUeberpruefen) {
+            if (gewonnenUeberpruefen && hatVerloren(spieler.getGegner())) {
+                return Collections.emptySet();
+            }
+
             Set<Zug> result = new HashSet<>();
 
             for (int zeile = 0; zeile < SIZE; zeile++) {
@@ -464,6 +467,11 @@ final class Dame {
             return result;
         }
 
+        @Override
+        public Set<Zug> getMoeglicheZuegeFuerSpieler(Spieler spieler) {
+            return getMoeglicheZuegeFuerSpieler(spieler, true);
+        }
+
         private Set<Zug> getMoeglicheZuegeFuerPosition(Position position) {
             Optional<Stein> stein = getStein(position);
             if (stein.isEmpty()) {
@@ -495,7 +503,7 @@ final class Dame {
         }
 
         private boolean hatVerloren(Spieler spieler) {
-            return getMoeglicheZuegeFuerSpieler(spieler).isEmpty();
+            return getMoeglicheZuegeFuerSpieler(spieler, false).isEmpty();
         }
 
         @Override
