@@ -80,7 +80,6 @@ final class VierGewinnt {
 
         private Brett(List<List<Optional<Spieler>>> zeilen) {
             if (zeilen.size() != HEIGHT) {
-                new Exception().printStackTrace();
                 throw new IllegalArgumentException();
             }
 
