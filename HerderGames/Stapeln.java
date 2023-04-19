@@ -31,6 +31,7 @@ final class Stapeln extends Spiel.Mehrspieler {
             }
             if (spielBrett.verloren) {
                 spielBretterIterator.remove();
+                rangliste.add(spielBrett.spieler.id);
                 continue;
             }
             spielBrett.draw(index++);
@@ -141,11 +142,10 @@ final class Stapeln extends Spiel.Mehrspieler {
 
                 if (gefalleneSteine.isEmpty()) {
                     breite = START_BREITE;
-                    return;
+                } else {
+                    GefallenerStein obersterGefallenerStein = gefalleneSteine.get(gefalleneSteine.size() - 1);
+                    breite = obersterGefallenerStein.breite;
                 }
-
-                GefallenerStein obersterGefallenerStein = gefalleneSteine.get(gefalleneSteine.size() - 1);
-                breite = obersterGefallenerStein.breite;
 
                 x = applet.random(1-breite);
             }
@@ -221,7 +221,7 @@ final class Stapeln extends Spiel.Mehrspieler {
             private final float y;
             private final int farbe;
 
-            public GefallenerStein(float breite, float x, float y, int farbe) {
+            private GefallenerStein(float breite, float x, float y, int farbe) {
                 this.breite = breite;
                 this.x = x;
                 this.y = y;
