@@ -14,14 +14,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       
-    - name: Setup Processing 4
-      uses: pr1metine/setup-processing@v1.1.1
-      with:
-        version: 4.2
-        platform-filetype: windows64.zip
+    - name: Download and extract Processing 4
+      run: |
+        Invoke-WebRequest https://github.com/processing/processing4/releases/download/processing-1292-4.2/processing-4.2-windows-x64.zip -OutFile processing.zip
+        Expand-Archive processing.zip -DestinationPath processing
+        Remove-Item processing.zip
+
       
     - name: Build Processing sketch
-      run: processing-java --sketch="%cd%\HerderGames" --output="%cd%\build" --export
+      run: processing/processing-java --sketch="%cd%\HerderGames" --output="%cd%\build" --export
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
