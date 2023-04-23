@@ -22,7 +22,7 @@ jobs:
 
       
     - name: Build Processing sketch
-      run: processing/processing-java --sketch="%cd%\HerderGames" --output="%cd%\build" --export
+      run: .\processing\processing-java.exe --sketch=$pwd\HerderGames --output=$pwd\build --variant=windows-amd64 --force --export
       
     - name: Upload build artifacts
       uses: actions/upload-artifact@v2
