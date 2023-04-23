@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Setup Processing 4
+      uses: processing/setup-processing@v1
+      
+    - name: Build Processing sketch
+      run: processing-java --sketch="%cd%\HerderGames" --output="%cd%\build" --export
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: built-sketch
+        path: build
