@@ -100,6 +100,12 @@ final class TitleScreen {
                     (Spiel.Mehrspieler.Factory) HarryPotterQuiz::new,
                     UEBERGANG_1,
                     HarryPotterQuiz::init
+            ),
+            new SpielDaten(
+                    "Latein Formen",
+                    (Spiel.Mehrspieler.Factory) Latein::new,
+                    UEBERGANG_1,
+                    Latein::init
             )
     );
 
