@@ -15,7 +15,10 @@ jobs:
       uses: actions/checkout@v2
       
     - name: Setup Processing 4
-      uses: processing/setup-processing@v1
+      uses: pr1metine/setup-processing@v1.1.1
+      with:
+        version: 4.2
+        platform-filetype: windows64.zip
       
     - name: Build Processing sketch
       run: processing-java --sketch="%cd%\HerderGames" --output="%cd%\build" --export
