@@ -8,37 +8,39 @@ import java.util.stream.Stream;
 /**
  * Ein Spiel, das lateinische Nomen und Adjektive in KNG Kongruenz dynamisch aus einer Datenbank mit Grundformen
  * generieren kann. Die Spieler müssen daraufhin entscheiden, um welche Formen es sich dabei handeln kann.
+ *
+ * Features:
+ * - Nomen aller Deklinationen: o, a, kons, u, e
+ * - Vokativ auf e in der o-Deklination
+ * - Neutrumregel
+ * - Adjektive der ao-Deklination und kons-Deklination
+ * - Adjektive auf er (zB pulcher, pulchra, pulchrum)
+ * - Steigerungen von Adjektiven: Komperativ und Superlativ
+ * - Nominalisierte Adjektive
+ * - Unregelmäßige Adjektive: is, hic, ille
+ * - Unregelmäßige Komperrative und Superlative
+ *
+ * Herr Schwehmer wäre sicher stolz
  */
 final class Latein extends Spiel.Mehrspieler {
-    private static final String NOMEN_DATEI = "latein/nomen.txt";
     private static final String ADJEKTIV_DATEI = "latein/adjektive.txt";
+    private static final String NOMEN_DATEI = "latein/nomen.txt";
 
-    private static void loadNomen(PApplet applet) {
-        List<Nomen> result = new ArrayList<>();
-        String[] nomenEintraege = applet.loadStrings(NOMEN_DATEI);
-        for (String nomenEintrag : nomenEintraege) {
-            Optional<NomenWoerterbuchEintrag> eintrag = NomenWoerterbuchEintrag.parse(nomenEintrag);
-            if (eintrag.isEmpty()) {
-                PApplet.println("Nomen konnte nicht geladen geparst werden: " + nomenEintrag);
-                continue;
-            }
-            Optional<Nomen> nomen = eintrag.get().zuNomen();
-            if (nomen.isEmpty()) {
-                PApplet.println("Kein legales Nomen: " + nomenEintrag);
-                continue;
-            }
-            result.add(nomen.get());
-        }
-        nomen = Collections.unmodifiableList(result);
-    }
+    private static final int ADJEKTIV_GESTEIGERT_GEWICHTUNG = 1;
+    private static final int ADJEKTIV_GEWICHTUNG = ADJEKTIV_GESTEIGERT_GEWICHTUNG * 5;
+    private static final int UNREGELMAESSIGES_ADJEKTIV_GEWICHTUNG = ADJEKTIV_GEWICHTUNG * 25;
+
+    private static final int NOMINALISIERTES_ADJEKTIV_GEWICHTUNG = 1;
+    private static final int NOMEN_GEWICHTUNG = NOMINALISIERTES_ADJEKTIV_GEWICHTUNG * 30;
 
     private static void loadAdjektive(PApplet applet) {
-        List<Adjektiv> result = new ArrayList<>();
+        List<GewichteteListe.Eintrag<Adjektiv>> result = new ArrayList<>();
+
         String[] adjektivEintraege = applet.loadStrings(ADJEKTIV_DATEI);
         for (String adjektivEintrag : adjektivEintraege) {
             Optional<AdjektivWoerterbuchEintrag> eintrag = AdjektivWoerterbuchEintrag.parse(adjektivEintrag);
             if (eintrag.isEmpty()) {
-                PApplet.println("Adjektiv konnte nicht geladen geparst werden: " + adjektivEintrag);
+                PApplet.println("Kein legales Adjektiv: " + adjektivEintrag);
                 continue;
             }
             Optional<Adjektiv> adjektiv = eintrag.get().zuAdjektiv();
@@ -46,29 +48,68 @@ final class Latein extends Spiel.Mehrspieler {
                 PApplet.println("Kein legales Adjektiv: " + adjektivEintrag);
                 continue;
             }
-            result.add(adjektiv.get());
+
+            int gewichtung = ADJEKTIV_GEWICHTUNG;
+            if (adjektiv.get() instanceof UnregelmaessigesAdjektiv) {
+                gewichtung = UNREGELMAESSIGES_ADJEKTIV_GEWICHTUNG;
+            }
+            result.add(new GewichteteListe.Eintrag<>(adjektiv.get(), gewichtung));
         }
 
-        List<Adjektiv> steigerungen = new ArrayList<>();
-        for (Adjektiv adjektiv : result) {
-            steigerungen.add(adjektiv.steigern(Steigerung.KOMPERATIV));
-            steigerungen.add(adjektiv.steigern(Steigerung.SUPERLATIV));
+        List<GewichteteListe.Eintrag<Adjektiv>> steigerungen = new ArrayList<>();
+        for (GewichteteListe.Eintrag<Adjektiv> adjektiv : result) {
+            if (!adjektiv.wert.steigerbar) {
+                continue;
+            }
+
+            for (Steigerung steigerung : Steigerung.values()) {
+                steigerungen.add(new GewichteteListe.Eintrag<>(adjektiv.wert.steigern(steigerung), ADJEKTIV_GESTEIGERT_GEWICHTUNG));
+            }
         }
         result.addAll(steigerungen);
 
         adjektive = Collections.unmodifiableList(result);
     }
 
-    static void init(PApplet applet) {
-        loadNomen(applet);
-        loadAdjektive(applet);
+    private static void loadNomen(PApplet applet) {
+        List<GewichteteListe.Eintrag<Nomen>> result = new ArrayList<>();
+
+        String[] nomenEintraege = applet.loadStrings(NOMEN_DATEI);
+        for (String nomenEintrag : nomenEintraege) {
+            Optional<NomenWoerterbuchEintrag> eintrag = NomenWoerterbuchEintrag.parse(nomenEintrag);
+            if (eintrag.isEmpty()) {
+                PApplet.println("Kein legales Nomen: " + nomenEintrag);
+                continue;
+            }
+            Optional<Nomen> nomen = eintrag.get().zuNomen();
+            if (nomen.isEmpty()) {
+                PApplet.println("Kein legales Nomen: " + nomenEintrag);
+                continue;
+            }
+            result.add(new GewichteteListe.Eintrag<>(nomen.get(), NOMEN_GEWICHTUNG));
+        }
+
+        for (GewichteteListe.Eintrag<Adjektiv> adjektiv : adjektive) {
+            for (Genus genus : Genus.values()) {
+                result.add(new GewichteteListe.Eintrag<>(adjektiv.wert.substantivieren(genus), NOMINALISIERTES_ADJEKTIV_GEWICHTUNG));
+            }
+        }
+
+        nomen = Collections.unmodifiableList(result);
     }
 
-    private static final int ZEIT_PRO_FORM = 15*60; // Für Herr Schwehmer würde vermutlich eine Sekunde genügen, aber ich brauche etwas mehr
-    private static final int FORMEN_PRO_RUNDE = 20;
+    static void init(PApplet applet) {
+        // Zuerst Adjektive dann Nomen laden, denn Nomen brauchen Adjektive, um diese zu substantivieren
+        loadAdjektive(applet);
+        loadNomen(applet);
+    }
 
-    private static List<Nomen> nomen;
-    private static List<Adjektiv> adjektive;
+    // Für Herr Schwehmer würde vermutlich eine Sekunde genügen, aber ich brauche etwas mehr
+    private static final int FORMEN_PRO_RUNDE = 20;
+    private static final int ZEIT_PRO_FORM = 20*60;
+
+    private static List<GewichteteListe.Eintrag<Nomen>> nomen;
+    private static List<GewichteteListe.Eintrag<Adjektiv>> adjektive;
 
     private final PartikelManager partikelManager = new PartikelManager(applet);
     private final Counter counter = new Counter();
@@ -92,7 +133,7 @@ final class Latein extends Spiel.Mehrspieler {
 
     @Override
     Optional<List<Spieler.Id>> draw() {
-        if (--verbleibendeZeit <= 0) {
+        if ((verbleibendeZeit -= applet.keyPressed && applet.key == ' ' ? 5 : 1) <= 0) {
             int index = 0;
             for (FormenAuswahl formenAuswahl : formenAuswahlen) {
                 formenAuswahl.handleZeitVorbei(index++);
@@ -134,8 +175,8 @@ final class Latein extends Spiel.Mehrspieler {
 
     private void naechsteForm() {
         aktuelleForm = NomenForm.zufaellig(applet);
-        aktuellesNomen = nomen.get(applet.choice(nomen.size()));
-        aktuellesAdjektiv = adjektive.get(applet.choice(adjektive.size()));
+        aktuellesNomen = GewichteteListe.zufaellig(applet, nomen);
+        aktuellesAdjektiv = GewichteteListe.zufaellig(applet, adjektive);
         verbleibendeZeit = ZEIT_PRO_FORM;
     }
 
@@ -889,7 +930,10 @@ final class Latein extends Spiel.Mehrspieler {
         private Optional<Adjektiv> zuAdjektiv() {
             return Stream.of(
                             AOAdjektivDeklination.INSTANCE,
-                            KonsAdjektivDeklination.INSTANCE
+                            KonsAdjektivDeklination.INSTANCE,
+                            HicDeklination.INSTANCE,
+                            IlleDeklination.INSTANCE,
+                            IsDeklination.INSTANCE
                     ).map(adjektivDeklination -> adjektivDeklination.parse(this))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
@@ -907,9 +951,24 @@ final class Latein extends Spiel.Mehrspieler {
     }
 
     private static abstract class Adjektiv {
+        private final boolean steigerbar;
+
+        private Adjektiv(boolean steigerbar) {
+            this.steigerbar = steigerbar;
+        }
+
         abstract String deklinieren(Genus genus, Numerus numerus, Kasus kasus);
 
         abstract Adjektiv steigern(Steigerung steigerung);
+
+        private Nomen substantivieren(Genus genus) {
+            return new Nomen(genus) {
+                @Override
+                String deklinieren(Numerus numerus, Kasus kasus) {
+                    return Adjektiv.this.deklinieren(genus, numerus, kasus);
+                }
+            };
+        }
     }
 
     private static final class AOAdjektivDeklination extends AdjektivDeklination {
@@ -1058,6 +1117,7 @@ final class Latein extends Spiel.Mehrspieler {
         private final Optional<String> nominativSingularM;
 
         private AOAdjektiv(String stamm, Optional<String> nominativSingularM) {
+            super(true);
             this.stamm = Objects.requireNonNull(stamm);
             this.nominativSingularM = Objects.requireNonNull(nominativSingularM);
         }
@@ -1078,11 +1138,13 @@ final class Latein extends Spiel.Mehrspieler {
 
         @Override
         Adjektiv steigern(Steigerung steigerung) {
+            String nominativSingularMasklulinum = deklinieren(Genus.MASKULINUM, Numerus.SINGULAR, Kasus.NOMINATIV);
+
             switch (steigerung) {
                 case KOMPERATIV:
-                    return new KomperativAdjektiv(stamm);
+                    return new KomperativAdjektiv(nominativSingularMasklulinum, stamm);
                 case SUPERLATIV:
-                    return new SuperlativAdjektiv(deklinieren(Genus.MASKULINUM, Numerus.SINGULAR, Kasus.NOMINATIV), stamm);
+                    return new SuperlativAdjektiv(nominativSingularMasklulinum, stamm);
                 default:
                     throw new IllegalArgumentException();
             }
@@ -1238,6 +1300,7 @@ final class Latein extends Spiel.Mehrspieler {
                 String nominativSingularNeutrum,
                 String stamm
         ) {
+            super(true);
             this.nominativSingularMaskulinum = Objects.requireNonNull(nominativSingularMaskulinum);
             this.nominativSingularFemininum = Objects.requireNonNull(nominativSingularFemininum);
             this.nominativSingularNeutrum = Objects.requireNonNull(nominativSingularNeutrum);
@@ -1270,7 +1333,7 @@ final class Latein extends Spiel.Mehrspieler {
         Adjektiv steigern(Steigerung steigerung) {
             switch (steigerung) {
                 case KOMPERATIV:
-                    return new KomperativAdjektiv(stamm);
+                    return new KomperativAdjektiv(nominativSingularMaskulinum, stamm);
                 case SUPERLATIV:
                     return new SuperlativAdjektiv(nominativSingularMaskulinum, stamm);
                 default:
@@ -1279,14 +1342,255 @@ final class Latein extends Spiel.Mehrspieler {
         }
     }
 
+    private static abstract class UnregelmaessigeAdjektivDeklination extends AdjektivDeklination {
+        abstract Map<Genus, Map<Numerus, Map<Kasus, String>>> getFormen();
+
+        @Override
+        Optional<Adjektiv> parse(AdjektivWoerterbuchEintrag eintrag) {
+            String nominativSingularMaskulinum = getFormen().get(Genus.MASKULINUM).get(Numerus.SINGULAR).get(Kasus.NOMINATIV);
+            String nominativSingularFemininum = getFormen().get(Genus.FEMININUM).get(Numerus.SINGULAR).get(Kasus.NOMINATIV);
+            String nominativSingularNeutrum = getFormen().get(Genus.NEUTRUM).get(Numerus.SINGULAR).get(Kasus.NOMINATIV);
+
+            if (eintrag.ersteForm.isEmpty() || !eintrag.ersteForm.equals(nominativSingularMaskulinum) ||
+                    eintrag.zweiteForm.isEmpty() || !eintrag.zweiteForm.get().equals(nominativSingularFemininum) ||
+                    eintrag.dritteForm.isEmpty() || !eintrag.dritteForm.get().equals(nominativSingularNeutrum)) {
+                return Optional.empty();
+            }
+
+            return Optional.of(new UnregelmaessigesAdjektiv(this));
+        }
+    }
+
+    private static final class UnregelmaessigesAdjektiv extends Adjektiv {
+        private final UnregelmaessigeAdjektivDeklination deklination;
+
+        private UnregelmaessigesAdjektiv(UnregelmaessigeAdjektivDeklination deklination) {
+            super(false);
+            this.deklination = Objects.requireNonNull(deklination);
+        }
+
+        @Override
+        String deklinieren(Genus genus, Numerus numerus, Kasus kasus) {
+            return deklination.getFormen().get(genus).get(numerus).get(kasus);
+        }
+
+        @Override
+        Adjektiv steigern(Steigerung steigerung)  {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private static final class HicDeklination extends UnregelmaessigeAdjektivDeklination {
+        private static final HicDeklination INSTANCE = new HicDeklination();
+
+        @Override
+        Map<Genus, Map<Numerus, Map<Kasus, String>>> getFormen() {
+            return Map.of(
+                    Genus.MASKULINUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "hic",
+                                    Kasus.GENITIV, "huius",
+                                    Kasus.DATIV, "huic",
+                                    Kasus.AKKUSATIV, "hunc",
+                                    Kasus.ABLATIV, "hoc",
+                                    Kasus.VOKATIV, "hic"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "hi",
+                                    Kasus.GENITIV, "horum",
+                                    Kasus.DATIV, "his",
+                                    Kasus.AKKUSATIV, "hos",
+                                    Kasus.ABLATIV, "hic",
+                                    Kasus.VOKATIV, "hi"
+                            )
+                    ),
+                    Genus.FEMININUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "haec",
+                                    Kasus.GENITIV, "huius",
+                                    Kasus.DATIV, "huic",
+                                    Kasus.AKKUSATIV, "hanc",
+                                    Kasus.ABLATIV, "hac",
+                                    Kasus.VOKATIV, "haec"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "hae",
+                                    Kasus.GENITIV, "harum",
+                                    Kasus.DATIV, "his",
+                                    Kasus.AKKUSATIV, "has",
+                                    Kasus.ABLATIV, "his",
+                                    Kasus.VOKATIV, "hae"
+                            )
+                    ),
+                    Genus.NEUTRUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "hoc",
+                                    Kasus.GENITIV, "huius",
+                                    Kasus.DATIV, "huic",
+                                    Kasus.AKKUSATIV, "hoc",
+                                    Kasus.ABLATIV, "hoc",
+                                    Kasus.VOKATIV, "hoc"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "haec",
+                                    Kasus.GENITIV, "horum",
+                                    Kasus.DATIV, "his",
+                                    Kasus.AKKUSATIV, "haec",
+                                    Kasus.ABLATIV, "his",
+                                    Kasus.VOKATIV, "haec"
+                            )
+                    )
+            );
+        }
+    }
+
+    private static final class IlleDeklination extends UnregelmaessigeAdjektivDeklination {
+        private static final IlleDeklination INSTANCE = new IlleDeklination();
+
+        @Override
+        Map<Genus, Map<Numerus, Map<Kasus, String>>> getFormen() {
+            return Map.of(
+                    Genus.MASKULINUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "ille",
+                                    Kasus.GENITIV, "illius",
+                                    Kasus.DATIV, "illi",
+                                    Kasus.AKKUSATIV, "illum",
+                                    Kasus.ABLATIV, "illo",
+                                    Kasus.VOKATIV, "ille"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "illi",
+                                    Kasus.GENITIV, "illorum",
+                                    Kasus.DATIV, "illis",
+                                    Kasus.AKKUSATIV, "illos",
+                                    Kasus.ABLATIV, "illis",
+                                    Kasus.VOKATIV, "illi"
+                            )
+                    ),
+                    Genus.FEMININUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "illa",
+                                    Kasus.GENITIV, "illius",
+                                    Kasus.DATIV, "illi",
+                                    Kasus.AKKUSATIV, "illam",
+                                    Kasus.ABLATIV, "illa",
+                                    Kasus.VOKATIV, "illa"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "illae",
+                                    Kasus.GENITIV, "illarum",
+                                    Kasus.DATIV, "illis",
+                                    Kasus.AKKUSATIV, "illas",
+                                    Kasus.ABLATIV, "illis",
+                                    Kasus.VOKATIV, "illae"
+                            )
+                    ),
+                    Genus.NEUTRUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "illud",
+                                    Kasus.GENITIV, "illius",
+                                    Kasus.DATIV, "illi",
+                                    Kasus.AKKUSATIV, "illud",
+                                    Kasus.ABLATIV, "illo",
+                                    Kasus.VOKATIV, "illud"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "illa",
+                                    Kasus.GENITIV, "illorum",
+                                    Kasus.DATIV, "illis",
+                                    Kasus.AKKUSATIV, "illa",
+                                    Kasus.ABLATIV, "illis",
+                                    Kasus.VOKATIV, "illa"
+                            )
+                    )
+            );
+        }
+    }
+
+    private static final class IsDeklination extends UnregelmaessigeAdjektivDeklination {
+        private static final IsDeklination INSTANCE = new IsDeklination();
+
+        @Override
+        Map<Genus, Map<Numerus, Map<Kasus, String>>> getFormen() {
+            return Map.of(
+                    Genus.MASKULINUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "is",
+                                    Kasus.GENITIV, "eius",
+                                    Kasus.DATIV, "ei",
+                                    Kasus.AKKUSATIV, "eum",
+                                    Kasus.ABLATIV, "eo",
+                                    Kasus.VOKATIV, "is"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "ii",
+                                    Kasus.GENITIV, "eorum",
+                                    Kasus.DATIV, "iis",
+                                    Kasus.AKKUSATIV, "eos",
+                                    Kasus.ABLATIV, "iis",
+                                    Kasus.VOKATIV, "ii"
+                            )
+                    ),
+                    Genus.FEMININUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "ea",
+                                    Kasus.GENITIV, "eius",
+                                    Kasus.DATIV, "ei",
+                                    Kasus.AKKUSATIV, "eam",
+                                    Kasus.ABLATIV, "ea",
+                                    Kasus.VOKATIV, "ea"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "eae",
+                                    Kasus.GENITIV, "earum",
+                                    Kasus.DATIV, "eis",
+                                    Kasus.AKKUSATIV, "eas",
+                                    Kasus.ABLATIV, "eis",
+                                    Kasus.VOKATIV, "eae"
+                            )
+                    ),
+                    Genus.NEUTRUM, Map.of(
+                            Numerus.SINGULAR, Map.of(
+                                    Kasus.NOMINATIV, "id",
+                                    Kasus.GENITIV, "eius",
+                                    Kasus.DATIV, "ei",
+                                    Kasus.AKKUSATIV, "id",
+                                    Kasus.ABLATIV, "eo",
+                                    Kasus.VOKATIV, "id"
+                            ),
+                            Numerus.PLURAL, Map.of(
+                                    Kasus.NOMINATIV, "ea",
+                                    Kasus.GENITIV, "eorum",
+                                    Kasus.DATIV, "eis",
+                                    Kasus.AKKUSATIV, "ea",
+                                    Kasus.ABLATIV, "eis",
+                                    Kasus.VOKATIV, "ea"
+                            )
+                    )
+            );
+        }
+    }
+
     private static final class KomperativAdjektiv extends Adjektiv {
         private static final String NOMINATIV_SINGULAR_MASKULINUM_FEMININUM_ENDUNG = "ior";
         private static final String NOMINATIV_SINGULAR_NEUTRUM_ENDUNG = "ius";
         private static final String KENNZEICHEN = "ior";
 
+        private static final Map<String, String> UNREGELMAESSIGE_KOMPERATIVE = Map.of(
+            "bonus", "meli",
+            "malus", "pe",
+            "magnus", "ma"
+        );
+
         private final String stamm;
 
-        private KomperativAdjektiv(String stamm) {
+        private KomperativAdjektiv(String nominativSingularMaskulinum, String stamm) {
+            super(false);
+            if (UNREGELMAESSIGE_KOMPERATIVE.containsKey(nominativSingularMaskulinum)) {
+                this.stamm = UNREGELMAESSIGE_KOMPERATIVE.get(nominativSingularMaskulinum);
+                return;
+            }
             this.stamm = Objects.requireNonNull(stamm);
         }
 
@@ -1319,11 +1623,23 @@ final class Latein extends Spiel.Mehrspieler {
         private static final String KENNZEICHEN = "issim";
         private static final String KENNZEICHEN_ER = "rim";
 
+        private static final Map<String, String> UNREGELMAESSIGE_SUPERLATIVE = Map.of(
+                "bonus", "optim",
+                "malus", "pessim",
+                "magnus", "maxim"
+        );
+
         private final String nominativSingularMaskulinum;
         private final String stamm;
 
         private SuperlativAdjektiv(String nominativSingularMaskulinum, String stamm) {
+            super(false);
             this.nominativSingularMaskulinum = Objects.requireNonNull(nominativSingularMaskulinum);
+
+            if (UNREGELMAESSIGE_SUPERLATIVE.containsKey(nominativSingularMaskulinum)) {
+                this.stamm = UNREGELMAESSIGE_SUPERLATIVE.get(nominativSingularMaskulinum);
+                return;
+            }
             this.stamm = Objects.requireNonNull(stamm);
         }
 
