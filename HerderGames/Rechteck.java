@@ -43,6 +43,14 @@ final class Rechteck {
         return x+breite <= 0 || x >= 1 || y+hoehe <= 0 || y >= 1;
     }
 
+    float getXMitte() {
+        return x + breite/2;
+    }
+
+    float getYMitte() {
+        return y + hoehe/2;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

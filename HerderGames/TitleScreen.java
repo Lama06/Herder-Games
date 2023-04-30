@@ -106,6 +106,11 @@ final class TitleScreen {
                     (Spiel.Mehrspieler.Factory) Latein::new,
                     UEBERGANG_1,
                     Latein::init
+            ),
+            new SpielDaten(
+                    "Breakout",
+                    (Spiel.Mehrspieler.Factory) BreakOut::new,
+                    UEBERGANG_1
             )
     );
 
