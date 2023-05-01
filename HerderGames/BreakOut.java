@@ -2,9 +2,11 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 final class BreakOut extends Spiel.Mehrspieler {
     private final List<Welt> welten = new ArrayList<>();
+    private final List<Spieler.Id> rangliste = new ArrayList<>();
 
     BreakOut(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
@@ -16,10 +18,21 @@ final class BreakOut extends Spiel.Mehrspieler {
 
     @Override
     Optional<List<Spieler.Id>> draw() {
-        applet.background(0);
+        applet.background(255);
 
-        for (Welt welt : welten) {
+        Iterator<Welt> weltIterator = welten.iterator();
+        while (weltIterator.hasNext()) {
+            Welt welt = weltIterator.next();
+            if (welt.hatVerloren()) {
+                weltIterator.remove();
+                rangliste.add(0, welt.spieler.id);
+                continue;
+            }
             welt.draw();
+        }
+
+        if (welten.isEmpty()) {
+            return Optional.of(rangliste);
         }
 
         return Optional.empty();
@@ -40,11 +53,14 @@ final class BreakOut extends Spiel.Mehrspieler {
         private final PApplet applet;
         private final Spieler spieler;
         private final List<Entity> entities = new ArrayList<>();
+        private final Map<UpgradeType, Integer> aktivierteUpgrades = new EnumMap<>(UpgradeType.class);
+        private final PartikelManager partikelManager;
 
         private Welt(BreakOut spiel, Spieler spieler) {
             this.spiel = spiel;
             this.spieler = spieler;
             applet = spiel.applet;
+            partikelManager = new PartikelManager(applet);
 
             entities.add(new Platform(this));
             entities.add(new Ball(this));
@@ -57,7 +73,33 @@ final class BreakOut extends Spiel.Mehrspieler {
             }
         }
 
+        private void umrissMalen() {
+            applet.noFill();
+            applet.stroke(0);
+            applet.strokeWeight(4);
+            applet.rectMode(PConstants.CORNER);
+            applet.rect(getXStart() * applet.width, 0, getBreite() * applet.width, applet.height);
+        }
+
+        private void upgradesTicken() {
+            Iterator<Map.Entry<UpgradeType, Integer>> upgradeIterator = aktivierteUpgrades.entrySet().iterator();
+            while (upgradeIterator.hasNext()) {
+                Map.Entry<UpgradeType, Integer> upgradeEintrag = upgradeIterator.next();
+
+                if (upgradeEintrag.getValue() == 0) {
+                    upgradeIterator.remove();
+                    continue;
+                }
+
+                upgradeEintrag.setValue(upgradeEintrag.getValue()-1);
+            }
+        }
+
         private void draw() {
+            upgradesTicken();
+
+            partikelManager.draw();
+
             List<Runnable> nachDrawCallbacks = new ArrayList<>();
             for (Entity entity : entities) {
                 nachDrawCallbacks.addAll(entity.draw());
@@ -65,6 +107,8 @@ final class BreakOut extends Spiel.Mehrspieler {
             for (Runnable nachDrawCallback : nachDrawCallbacks) {
                 nachDrawCallback.run();
             }
+
+            umrissMalen();
         }
 
         private void keyPressed() {
@@ -85,6 +129,25 @@ final class BreakOut extends Spiel.Mehrspieler {
 
         private float getXStart() {
             return getIndex() * getBreite();
+        }
+
+        private boolean hatVerloren() {
+            return requireEntity(Ball.class).istUntenRaus();
+        }
+
+        @SuppressWarnings("unchecked")
+        private <T> Stream<T> getEntites(Class<T> type) {
+            return entities.stream()
+                    .filter(entity -> type == entity.getClass())
+                    .map(entity -> (T) entity);
+        }
+
+        private <T> Optional<T> getEntity(Class<T> type) {
+            return getEntites(type).findAny();
+        }
+
+        private <T> T requireEntity(Class<T> type) {
+            return getEntity(type).orElseThrow();
         }
     }
 
@@ -118,8 +181,12 @@ final class BreakOut extends Spiel.Mehrspieler {
             super(welt);
         }
 
-        private boolean kollidiertMitRandObenUnten() {
-            return y <= 0 || y+SIZE >= 1;
+        private boolean istUntenRaus() {
+            return y >= 1;
+        }
+
+        private boolean kollidiertMitRandOben() {
+            return y <= 0;
         }
 
         private boolean kollidiertMitRandLinksRechts() {
@@ -127,27 +194,23 @@ final class BreakOut extends Spiel.Mehrspieler {
         }
 
         private boolean kollidiertMitRand() {
-            return kollidiertMitRandObenUnten() || kollidiertMitRandLinksRechts();
+            return kollidiertMitRandOben() || kollidiertMitRandLinksRechts();
         }
 
         private Optional<Platform> getKollidierendePlatform() {
-            return welt.entities.stream()
-                    .filter(entity -> entity instanceof Platform)
-                    .map(entity -> ((Platform) entity))
-                    .filter(platform -> platform.getRechteck().kollidiertMit(getRechteck()))
+            return welt.getEntites(Platform.class)
+                    .filter((platform) -> platform.getRechteck().kollidiertMit(getRechteck()))
                     .findAny();
         }
 
         private Optional<Stein> getKollidierendenStein() {
-            return welt.entities.stream()
-                    .filter(entity -> entity instanceof Stein)
-                    .map(entity -> ((Stein) entity))
+            return welt.getEntites(Stein.class)
                     .filter(stein -> stein.getRechteck().kollidiertMit(getRechteck()))
                     .findAny();
         }
 
         private void vonRandAbprallen() {
-            if (kollidiertMitRandObenUnten()) {
+            if (kollidiertMitRandOben()) {
                 geschwindigkeitY *= -1;
             }
             if (kollidiertMitRandLinksRechts()) {
@@ -171,7 +234,16 @@ final class BreakOut extends Spiel.Mehrspieler {
         private List<Runnable> vonSteinAbprallen(Stein stein) {
             geschwindigkeitY *= -1;
 
-            return List.of(() -> welt.entities.remove(stein));
+            welt.partikelManager.spawnPartikel(
+                    welt.getXStart() + x*welt.getBreite(),
+                    y,
+                    50
+            );
+
+            return List.of(() -> {
+                welt.entities.remove(stein);
+                stein.upgrade.ifPresent(upgradeType -> welt.entities.add(new FallendesUpgrade(welt, upgradeType, stein.x, stein.y)));
+            });
         }
 
         private List<Runnable> bewegen() {
@@ -204,6 +276,7 @@ final class BreakOut extends Spiel.Mehrspieler {
         @Override
         List<Runnable> draw() {
             applet.ellipseMode(PConstants.CORNER);
+            applet.noStroke();
             applet.fill(applet.color(255, 0, 0));
             float size = Math.min(SIZE * welt.getBreite() * applet.width, SIZE * applet.height);
             applet.circle(
@@ -235,12 +308,35 @@ final class BreakOut extends Spiel.Mehrspieler {
         }
 
         private void bewegen() {
+            float geschwindigkeit = (welt.aktivierteUpgrades.containsKey(UpgradeType.SCHNELLER) ? 2 : 1) * BEWEGUNGS_GESCHWINDIGKEIT;
             if (steuerung.istLinksGedrueckt() && x > 0) {
-                x -= BEWEGUNGS_GESCHWINDIGKEIT;
+                x -= geschwindigkeit;
             }
-            if (steuerung.istRechtsGedrueckt() && x < 1) {
-                x += BEWEGUNGS_GESCHWINDIGKEIT;
+            if (steuerung.istRechtsGedrueckt() && x+BREITE < 1) {
+                x += geschwindigkeit;
             }
+        }
+
+        private List<Runnable> upgradesFangen() {
+            return welt.getEntites(FallendesUpgrade.class)
+                    .filter(fallendesUpgrade -> fallendesUpgrade.getRechteck().kollidiertMit(getRechteck()))
+                    .<Runnable>map(gefangenesUpgrade -> () -> {
+                        gefangenesUpgrade.upgrade.enable(welt);
+                        welt.entities.remove(gefangenesUpgrade);
+                    })
+                    .toList();
+        }
+
+        private List<Runnable> kanonenKugelnSpawnen() {
+            if (applet.frameCount % 60 != 0) {
+                return Collections.emptyList();
+            }
+
+            if (!welt.aktivierteUpgrades.containsKey(UpgradeType.KANONE)) {
+                return Collections.emptyList();
+            }
+
+            return List.of(() -> welt.entities.add(new KanonenKugel(welt, x + BREITE/2)));
         }
 
         @Override
@@ -248,6 +344,7 @@ final class BreakOut extends Spiel.Mehrspieler {
             bewegen();
 
             applet.rectMode(PConstants.CORNER);
+            applet.noStroke();
             applet.fill(applet.color(0, 0, 255));
             applet.rect(
                     (welt.getXStart() + x*welt.getBreite()) * applet.width,
@@ -256,7 +353,7 @@ final class BreakOut extends Spiel.Mehrspieler {
                     HOEHE * applet.height
             );
 
-            return Collections.emptyList();
+            return Stream.of(upgradesFangen(), kanonenKugelnSpawnen()).flatMap(List::stream).toList();
         }
 
         @Override
@@ -279,20 +376,28 @@ final class BreakOut extends Spiel.Mehrspieler {
         private static final float HOEHE = 0.03f;
         private static final float ABSTAND_X = BREITE / 2;
         private static final float ABSTAND_Y = HOEHE / 2;
+        private static final float UPGRADE_WAHRSCHEINLICHKEIT = 0.2f;
 
         private final float x;
         private final float y;
+        private final Optional<UpgradeType> upgrade;
 
         private Stein(Welt welt, float x, float y) {
             super(welt);
             this.x = x;
             this.y = y;
+            if (applet.random(1) <= UPGRADE_WAHRSCHEINLICHKEIT) {
+                upgrade = Optional.of(UpgradeType.zufaellig(applet));
+            } else {
+                upgrade = Optional.empty();
+            }
         }
 
         @Override
         List<Runnable> draw() {
             applet.rectMode(PConstants.CORNER);
-            applet.fill(applet.color(0, 0, 255));
+            applet.noStroke();
+            applet.fill(upgrade.map(upgrade -> upgrade.getColor(applet)).orElse(applet.color(79, 6, 71)));
             applet.rect(
                     (welt.getXStart() + x*welt.getBreite()) * applet.width,
                     y * applet.height,
@@ -305,6 +410,124 @@ final class BreakOut extends Spiel.Mehrspieler {
 
         private Rechteck getRechteck() {
             return new Rechteck(x, y, BREITE, HOEHE);
+        }
+    }
+
+    private enum UpgradeType {
+        SCHNELLER {
+            @Override
+            int getColor(PApplet applet) {
+                return applet.color(255, 0, 0);
+            }
+
+            @Override
+            void enable(Welt welt) {
+                welt.aktivierteUpgrades.put(this, 6*60);
+            }
+        },
+        KANONE {
+            @Override
+            int getColor(PApplet applet) {
+                return applet.color(0);
+            }
+
+            @Override
+            void enable(Welt welt) {
+                welt.aktivierteUpgrades.put(this, 6*60);
+            }
+        };
+
+        private static UpgradeType zufaellig(PApplet applet) {
+            return values()[applet.choice(values().length)];
+        }
+
+        abstract int getColor(PApplet applet);
+
+        abstract void enable(Welt welt);
+    }
+
+    private static final class FallendesUpgrade extends Entity {
+        private static final float SIZE = 0.02f;
+        private static final float Y_GESCHWINDIGKEIT = 0.002f;
+
+        private final UpgradeType upgrade;
+        private final float x;
+        private float y;
+
+        private FallendesUpgrade(Welt welt, UpgradeType upgrade, float x, float y) {
+            super(welt);
+            this.upgrade = upgrade;
+            this.x = x;
+            this.y = y;
+        }
+
+        private void bewegen() {
+            y += Y_GESCHWINDIGKEIT;
+        }
+
+        @Override
+        List<Runnable> draw() {
+            bewegen();
+
+            applet.ellipseMode(PConstants.CORNER);
+            applet.noStroke();
+            applet.fill(upgrade.getColor(applet));
+            float size = Math.min(SIZE * welt.getBreite() * applet.width, SIZE * applet.height);
+            applet.circle(
+                    (welt.getXStart() + x*welt.getBreite()) * applet.width,
+                    y * applet.height,
+                    size
+            );
+
+            if (y >= 1) {
+                return List.of(() -> welt.entities.remove(this));
+            }
+            return Collections.emptyList();
+        }
+
+        private Rechteck getRechteck() {
+            return new Rechteck(x, y, SIZE, SIZE);
+        }
+    }
+
+    private static final class KanonenKugel extends Entity {
+        private static final float SIZE = 0.02f;
+        private static final float Y_GESCHWINDIGKEIT = -0.015f;
+
+        private final float x;
+        private float y = Platform.Y;
+
+        private KanonenKugel(Welt welt, float x) {
+            super(welt);
+            this.x = x;
+        }
+
+        @Override
+        List<Runnable> draw() {
+            y += Y_GESCHWINDIGKEIT;
+
+            applet.ellipseMode(PConstants.CORNER);
+            applet.noStroke();
+            applet.fill(0);
+            float size = Math.min(SIZE * welt.getBreite() * applet.width, SIZE * applet.height);
+            applet.circle(
+                    (welt.getXStart() + x*welt.getBreite()) * applet.width,
+                    y * applet.height,
+                    size
+            );
+
+            return welt.getEntites(Stein.class)
+                    .filter(stein -> stein.getRechteck().kollidiertMit(getRechteck()))
+                    .findAny()
+                    .map(stein -> List.<Runnable>of(() -> {
+                        welt.entities.remove(stein);
+                        welt.entities.remove(this);
+                    }))
+                    .orElse(Collections.emptyList());
+        }
+
+        private Rechteck getRechteck() {
+            return new Rechteck(x, y, SIZE, SIZE);
         }
     }
 }
