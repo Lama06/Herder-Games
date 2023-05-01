@@ -47,9 +47,9 @@ func main() {
 	}
 
 	replacer := strings.NewReplacer(
-		"    ", " ",
-		"\t", "",
-		"\r", "",
+		//"    ", " ",
+		//"\t", "",
+		//"\r", "",
 	)
 
 	result := replacer.Replace(resultBuilder.String())
