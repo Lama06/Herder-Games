@@ -14,7 +14,6 @@ import herdergames.snake.Snake;
 import herdergames.spiel.Spiel;
 import herdergames.stapeln.Stapeln;
 import herdergames.tetris.Tetris;
-import herdergames.tic_tac_toe.TicTacToe;
 import herdergames.vier_gewinnt.VierGewinnt;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -65,12 +64,12 @@ public final class HerderGames {
 
             new SpielDaten(
                     "Tic Tac Toe",
-                    (Spiel.SpielerGegenSpieler.Factory) TicTacToe.SpielerGegenSpielerSpiel::new,
+                    (Spiel.SpielerGegenSpieler.Factory) herdergames.tic_tac_toe.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Tic Tac Toe AI",
-                    (Spiel.Einzelspieler.Factory) TicTacToe.SpielerGegenAISpiel::new,
+                    (Spiel.Einzelspieler.Factory) herdergames.tic_tac_toe.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
