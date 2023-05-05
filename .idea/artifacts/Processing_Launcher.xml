@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="Processing Launcher">
+    <output-path>$PROJECT_DIR$/out/artifacts/Processing_Launcher</output-path>
+    <root id="root">
+      <element id="directory" name="code">
+        <element id="archive" name="Herder-Games.jar">
+          <element id="module-output" name="Herder-Games" />
+        </element>
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/processing/HerderGamesLauncher.pde" />
+      <element id="directory" name="data">
+        <element id="dir-copy" path="$PROJECT_DIR$/src/main/rescources" />
+      </element>
+    </root>
+  </artifact>
+</component>
