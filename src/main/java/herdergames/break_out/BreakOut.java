@@ -229,7 +229,7 @@ public final class BreakOut extends Spiel.Mehrspieler {
             Rechteck platformRechteck = platform.getRechteck();
 
             float platformXMitte = platformRechteck.getXMitte();
-            float neueGeschwindigkeitX = MAX_GESCHWINDIGKEIT_X * (Math.abs(getRechteck().getXMitte() - platformXMitte) / (platformRechteck.breite/2));
+            float neueGeschwindigkeitX = MAX_GESCHWINDIGKEIT_X * (Math.abs(getRechteck().getXMitte() - platformXMitte) / (platformRechteck.breite()/2));
             if (getRechteck().getXMitte() < platformXMitte) {
                 neueGeschwindigkeitX *= -1;
             }

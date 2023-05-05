@@ -164,10 +164,10 @@ public final class FlappyOinky extends Spiel.Mehrspieler {
             Rechteck rechteck = getRechteck();
 
             applet.pushMatrix();
-            applet.translate(rechteck.x * applet.width, rechteck.y * applet.height);
+            applet.translate(rechteck.x() * applet.width, rechteck.y() * applet.height);
             applet.rotate(PApplet.radians(drehung));
             applet.imageMode(PApplet.CORNER);
-            float size = Math.max(rechteck.breite * applet.width, rechteck.hoehe * applet.height);
+            float size = Math.max(rechteck.breite() * applet.width, rechteck.hoehe() * applet.height);
             applet.image(oinky, 0, 0, size, size);
             applet.popMatrix();
 
@@ -176,8 +176,8 @@ public final class FlappyOinky extends Spiel.Mehrspieler {
                 applet.textSize(30);
                 applet.text(
                         "%s: %s".formatted(spieler.name(), Steuerung.Richtung.OBEN.getTasteName(spieler.id())),
-                        (rechteck.x + SIZE/2) * applet.width,
-                        (rechteck.y - SIZE) * applet.height
+                        (rechteck.x() + SIZE/2) * applet.width,
+                        (rechteck.y() - SIZE) * applet.height
                 );
                 helpTextTime++;
             }
@@ -218,17 +218,17 @@ public final class FlappyOinky extends Spiel.Mehrspieler {
         }
 
         private void drawTeil(Rechteck rechteck) {
-            float imageScaleFactor = (rechteck.breite * applet.width) / hindernis.width;
+            float imageScaleFactor = (rechteck.breite() * applet.width) / hindernis.width;
             float scaledImageWidth = hindernis.width * imageScaleFactor;
             float scaledImageHeight = hindernis.height * imageScaleFactor;
 
             for (
-                    float hindernisY = rechteck.y * applet.height;
-                    hindernisY < (rechteck.y + rechteck.hoehe) * applet.height;
+                    float hindernisY = rechteck.y() * applet.height;
+                    hindernisY < (rechteck.y() + rechteck.hoehe()) * applet.height;
                     hindernisY += scaledImageHeight
             ) {
                 applet.imageMode(PApplet.CORNER);
-                applet.image(hindernis, rechteck.x * applet.width, hindernisY, scaledImageWidth, scaledImageHeight);
+                applet.image(hindernis, rechteck.x() * applet.width, hindernisY, scaledImageWidth, scaledImageHeight);
             }
         }
 
