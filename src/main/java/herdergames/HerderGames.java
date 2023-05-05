@@ -2,7 +2,8 @@ package herdergames;
 
 import herdergames.baelle.Baelle;
 import herdergames.break_out.BreakOut;
-import herdergames.dame.Dame;
+import herdergames.dame.SpielerGegenAISpiel;
+import herdergames.dame.SpielerGegenSpielerSpiel;
 import herdergames.flappy_oinky.FlappyOinky;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
 import herdergames.latein.Latein;
@@ -30,12 +31,12 @@ public final class HerderGames {
     private static final List<SpielDaten> SPIELE = List.of(
             new SpielDaten(
                     "Dame",
-                    (Spiel.SpielerGegenSpieler.Factory) Dame.SpielerGegenSpielerSpiel::new,
+                    (Spiel.SpielerGegenSpieler.Factory) SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Dame AI",
-                    (Spiel.Einzelspieler.Factory) Dame.SpielerGegenAISpiel::new,
+                    (Spiel.Einzelspieler.Factory) SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 

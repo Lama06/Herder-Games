@@ -375,7 +375,7 @@ public final class TicTacToe {
         }
 
         @Override
-        public Brett getErgebnis() {
+        public Brett ergebnis() {
             return ergebnis;
         }
     }

@@ -858,7 +858,7 @@ public final class Schach {
         }
 
         @Override
-        public Brett getErgebnis() {
+        public Brett ergebnis() {
             return ergebnis;
         }
     }
@@ -910,7 +910,7 @@ public final class Schach {
             Set<Zug> moeglicheZuege = aktuellesBrett.getMoeglicheZuegeFuerPosition(ausgewaehltePosition.get());
             for (Zug moeglicherZug : moeglicheZuege) {
                 if (moeglicherZug.nach.equals(position.get())) {
-                    aktuellesBrett = moeglicherZug.getErgebnis();
+                    aktuellesBrett = moeglicherZug.ergebnis();
                     amZug = amZug.getGegner();
                     ausgewaehltePosition = Optional.empty();
                     return;
@@ -980,14 +980,14 @@ public final class Schach {
             Set<Zug> moeglicheZuege = aktuellesBrett.getMoeglicheZuegeFuerPosition(ausgewaehltePosition.get());
             for (Zug moeglicherZug : moeglicheZuege) {
                 if (moeglicherZug.nach.equals(position.get())) {
-                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.getErgebnis(), COMPUTER, AI_DEPTH);
+                    Optional<Zug> antwort = AI.bestenNaechstenZugBerechnen(moeglicherZug.ergebnis(), COMPUTER, AI_DEPTH);
                     if (antwort.isEmpty()) {
-                        aktuellesBrett = moeglicherZug.getErgebnis();
+                        aktuellesBrett = moeglicherZug.ergebnis();
                         ausgewaehltePosition = Optional.empty();
                         return;
                     }
 
-                    aktuellesBrett = antwort.get().getErgebnis();
+                    aktuellesBrett = antwort.get().ergebnis();
                     ausgewaehltePosition = Optional.empty();
                     return;
                 }

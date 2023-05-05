@@ -379,7 +379,7 @@ public final class VierGewinnt {
         }
 
         @Override
-        public Brett getErgebnis() {
+        public Brett ergebnis() {
             return ergebnis;
         }
     }

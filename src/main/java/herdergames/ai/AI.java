@@ -35,7 +35,7 @@ public final class AI {
         int besterFolgenderZugBewertung = 0;
         boolean first = true;
         for (Z folgenderZug : folgendeZuege) {
-            int folgenderZugBewertung = spielbrettRekursivBewerten(folgenderZug.getErgebnis(), perspektive, spielerAmZug.getGegner(), maximaleTiefe-1);
+            int folgenderZugBewertung = spielbrettRekursivBewerten(folgenderZug.ergebnis(), perspektive, spielerAmZug.getGegner(), maximaleTiefe-1);
             if (first) {
                 besterFolgenderZugBewertung = folgenderZugBewertung;
                 first = false;
@@ -63,7 +63,7 @@ public final class AI {
         Z besterZug = null;
         int besterZugBewertung = 0;
         for (Z moeglicherZug : moeglicheZuege) {
-            int zugErgebnisBewertung = spielbrettRekursivBewerten(moeglicherZug.getErgebnis(), spieler, spieler.getGegner(), maximaleTiefe-1);
+            int zugErgebnisBewertung = spielbrettRekursivBewerten(moeglicherZug.ergebnis(), spieler, spieler.getGegner(), maximaleTiefe-1);
             if (besterZug == null) {
                 besterZug = moeglicherZug;
                 besterZugBewertung = zugErgebnisBewertung;
