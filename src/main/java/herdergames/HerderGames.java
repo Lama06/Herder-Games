@@ -15,7 +15,6 @@ import herdergames.spiel.Spiel;
 import herdergames.spiel.Spieler;
 import herdergames.stapeln.Stapeln;
 import herdergames.tetris.Tetris;
-import herdergames.vier_gewinnt.VierGewinnt;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -42,12 +41,12 @@ public final class HerderGames {
 
             new SpielDaten(
                     "Vier Gewinnt",
-                    (Spiel.SpielerGegenSpieler.Factory) VierGewinnt.SpielerGegenSpielerSpiel::new,
+                    (Spiel.SpielerGegenSpieler.Factory) herdergames.vier_gewinnt.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Vier Gewinnt AI",
-                    (Spiel.Einzelspieler.Factory) VierGewinnt.SpielerGegenAISpiel::new,
+                    (Spiel.Einzelspieler.Factory) herdergames.vier_gewinnt.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
