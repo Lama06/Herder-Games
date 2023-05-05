@@ -16,7 +16,7 @@ public final class GewichteteListe {
             throw new IllegalArgumentException();
         }
 
-        int gewichtungGesamt = liste.stream().mapToInt(eintrag -> eintrag.gewichtung).sum();
+        int gewichtungGesamt = liste.stream().mapToInt(eintrag -> eintrag.gewichtung()).sum();
         int verbleibendeGewichtung = applet.choice(gewichtungGesamt);
         for (Eintrag<? extends T> eintrag : liste) {
             verbleibendeGewichtung -= eintrag.gewichtung;
@@ -28,17 +28,13 @@ public final class GewichteteListe {
         throw new IllegalStateException();
     }
 
-    public static final class Eintrag<T> {
-        public final T wert;
-        public final int gewichtung;
-
-        public Eintrag(T wert, int gewichtung) {
+    public record Eintrag<T>(T wert, int gewichtung) {
+        public Eintrag {
             if (gewichtung <= 0) {
                 throw new IllegalArgumentException();
             }
 
-            this.wert = Objects.requireNonNull(wert);
-            this.gewichtung = gewichtung;
+            Objects.requireNonNull(wert);
         }
     }
 }

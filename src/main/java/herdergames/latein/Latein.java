@@ -64,12 +64,12 @@ public final class Latein extends Spiel.Mehrspieler {
 
         List<GewichteteListe.Eintrag<Adjektiv>> steigerungen = new ArrayList<>();
         for (GewichteteListe.Eintrag<Adjektiv> adjektiv : result) {
-            if (!adjektiv.wert.steigerbar) {
+            if (!adjektiv.wert().steigerbar) {
                 continue;
             }
 
             for (Steigerung steigerung : Steigerung.values()) {
-                steigerungen.add(new GewichteteListe.Eintrag<>(adjektiv.wert.steigern(steigerung), ADJEKTIV_GESTEIGERT_GEWICHTUNG));
+                steigerungen.add(new GewichteteListe.Eintrag<>(adjektiv.wert().steigern(steigerung), ADJEKTIV_GESTEIGERT_GEWICHTUNG));
             }
         }
         result.addAll(steigerungen);
@@ -97,7 +97,7 @@ public final class Latein extends Spiel.Mehrspieler {
 
         for (GewichteteListe.Eintrag<Adjektiv> adjektiv : adjektive) {
             for (Genus genus : Genus.values()) {
-                result.add(new GewichteteListe.Eintrag<>(adjektiv.wert.substantivieren(genus), NOMINALISIERTES_ADJEKTIV_GEWICHTUNG));
+                result.add(new GewichteteListe.Eintrag<>(adjektiv.wert().substantivieren(genus), NOMINALISIERTES_ADJEKTIV_GEWICHTUNG));
             }
         }
 
