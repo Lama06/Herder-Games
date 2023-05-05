@@ -32,7 +32,7 @@ public final class Dame {
         }
     }
 
-    private enum Spieler implements AI.Spieler<Spieler> {
+    private enum Spieler implements herdergames.ai.Spieler<Spieler> {
         SPIELER_OBEN,
         SPIELER_UNTEN;
 
@@ -136,7 +136,7 @@ public final class Dame {
         }
     }
 
-    private static final class Brett implements AI.Brett<Brett, Zug, Spieler> {
+    private static final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         private static final int SIZE = 8;
 
         private static final Brett ANFANG = createAnfang();
@@ -663,7 +663,7 @@ public final class Dame {
         }
     }
 
-    private static final class Zug implements AI.Zug<Brett> {
+    private static final class Zug implements herdergames.ai.Zug<Brett> {
         private final Position von;
         private final Position nach;
         private final List<Brett> schritte;

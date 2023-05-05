@@ -33,7 +33,7 @@ public final class VierGewinnt {
         }
     }
 
-    private enum Spieler implements AI.Spieler<Spieler> {
+    private enum Spieler implements herdergames.ai.Spieler<Spieler> {
         SPIELER_1,
         SPIELER_2;
 
@@ -61,7 +61,7 @@ public final class VierGewinnt {
         }
     }
 
-    private static final class Brett implements AI.Brett<Brett, Zug, Spieler> {
+    private static final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         private static final int WIDTH = 7;
         private static final int HEIGHT = 6;
 
@@ -369,7 +369,7 @@ public final class VierGewinnt {
         }
     }
 
-    private static final class Zug implements AI.Zug<Brett> {
+    private static final class Zug implements herdergames.ai.Zug<Brett> {
         private final int spalte;
         private final Brett ergebnis;
 

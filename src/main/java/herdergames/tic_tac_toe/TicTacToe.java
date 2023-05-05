@@ -9,7 +9,7 @@ import java.util.*;
 public final class TicTacToe {
     private TicTacToe() {}
 
-    private enum Spieler implements AI.Spieler<Spieler> {
+    private enum Spieler implements herdergames.ai.Spieler<Spieler> {
         KREUZ {
             @Override
             void drawSymbol(PApplet applet, int x, int y, int size) {
@@ -45,7 +45,7 @@ public final class TicTacToe {
         }
     }
 
-    private static final class Brett implements AI.Brett<Brett, Zug, Spieler> {
+    private static final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         private static final int SIZE = 3;
 
         private static final Brett LEER = createLeer();
@@ -365,7 +365,7 @@ public final class TicTacToe {
         }
     }
 
-    private static final class Zug implements AI.Zug<Brett> {
+    private static final class Zug implements herdergames.ai.Zug<Brett> {
         private final Position position;
         private final Brett ergebnis;
 

@@ -9,20 +9,6 @@ https://www.youtube.com/watch?v=l-hh51ncgD
 */
 
 public final class AI {
-    public interface Brett<Self extends Brett<Self, Z, S>, Z extends Zug<Self>, S extends Spieler<S>> {
-        Set<Z> getMoeglicheZuegeFuerSpieler(S spieler);
-
-        int getBewertung(S perspektive);
-    }
-
-    public interface Zug<B extends Brett<B, ?, ?>> {
-        B getErgebnis();
-    }
-
-    public interface Spieler<Self extends Spieler<Self>> {
-        Self getGegner();
-    }
-
     /**
      * Bewertet ein Spielbrett
      * @param brett Das Spielbrett
