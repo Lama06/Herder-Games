@@ -13,7 +13,7 @@ public final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
     private static final herdergames.tic_tac_toe.Spieler COMPUTER = herdergames.tic_tac_toe.Spieler.KREUZ;
     private Brett aktuellesBrett;
 
-    public SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
+    public SpielerGegenAISpiel(PApplet applet, herdergames.spiel.Spieler spieler) {
         super(applet);
 
         Optional<Zug> ersterZug = AI.bestenNaechstenZugBerechnen(Brett.LEER, COMPUTER, AI_TIEFE);

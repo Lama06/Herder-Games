@@ -1,6 +1,7 @@
 package herdergames.snake;
 
 import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -103,7 +104,7 @@ public final class Snake extends Spiel.Mehrspieler {
             SchlangeKopf schlange = schlangenIterator.next();
             if (schlange.istTot()) {
                 schlangenIterator.remove();
-                rangliste.add(0, schlange.spieler.id);
+                rangliste.add(0, schlange.spieler.id());
                 continue;
             }
             schlange.draw();
@@ -246,7 +247,7 @@ public final class Snake extends Spiel.Mehrspieler {
         }
 
         private int getStartX() {
-            switch (spieler.id) {
+            switch (spieler.id()) {
                 case SPIELER_1:
                     return 0;
                 case SPIELER_2:
@@ -378,7 +379,7 @@ public final class Snake extends Spiel.Mehrspieler {
         }
 
         private void keyPressed() {
-            Steuerung.Richtung.getGedrueckt(applet, spieler.id).ifPresent(neueSteuerungRichtung -> {
+            Steuerung.Richtung.getGedrueckt(applet, spieler.id()).ifPresent(neueSteuerungRichtung -> {
                 Richtung neueRichtung = Richtung.mitVerschiebung(neueSteuerungRichtung.x, neueSteuerungRichtung.y);
 
                 if (!isValidNeueBewegungsRichtung(neueRichtung)) {

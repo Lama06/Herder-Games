@@ -1,6 +1,7 @@
 package herdergames.latein;
 
 import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import herdergames.util.GewichteteListe;
 import herdergames.util.PartikelManager;
 import herdergames.util.Steuerung;
@@ -129,7 +130,7 @@ public final class Latein extends Spiel.Mehrspieler {
 
     public Latein(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
-        List<Spieler> spielerSortiert = alleSpieler.stream().sorted(Comparator.comparing(spieler -> spieler.id)).toList();
+        List<Spieler> spielerSortiert = alleSpieler.stream().sorted(Comparator.comparing(Spieler::id)).toList();
         for (Spieler spieler : spielerSortiert) {
             formenAuswahlen.add(new FormenAuswahl(spieler));
         }
@@ -149,7 +150,7 @@ public final class Latein extends Spiel.Mehrspieler {
                 List<Spieler.Id> rangliste = formenAuswahlen
                         .stream()
                         .sorted(Collections.reverseOrder(Comparator.comparingInt(formenAuswahl -> formenAuswahl.punkte)))
-                        .map(formenAuswahl -> formenAuswahl.spieler.id)
+                        .map(formenAuswahl -> formenAuswahl.spieler.id())
                         .toList();
                 return Optional.of(rangliste);
             }
@@ -267,24 +268,24 @@ public final class Latein extends Spiel.Mehrspieler {
         }
 
         private void keyPressed() {
-            if (Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id)) {
+            if (Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id())) {
                 if (ausgewaehlteFormIndex > 0) {
                     ausgewaehlteFormIndex--;
                 } else {
                     ausgewaehlteFormIndex = NomenForm.ANZAHL-1;
                 }
             }
-            if (Steuerung.Richtung.UNTEN.istTasteGedrueckt(applet, spieler.id)) {
+            if (Steuerung.Richtung.UNTEN.istTasteGedrueckt(applet, spieler.id())) {
                 if (ausgewaehlteFormIndex < NomenForm.ANZAHL-1) {
                     ausgewaehlteFormIndex++;
                 } else {
                     ausgewaehlteFormIndex = 0;
                 }
             }
-            if (Steuerung.Richtung.LINKS.istTasteGedrueckt(applet, spieler.id)) {
+            if (Steuerung.Richtung.LINKS.istTasteGedrueckt(applet, spieler.id())) {
                 aktivierteFormen.remove(getAusgewaehlteForm());
             }
-            if (Steuerung.Richtung.RECHTS.istTasteGedrueckt(applet, spieler.id)) {
+            if (Steuerung.Richtung.RECHTS.istTasteGedrueckt(applet, spieler.id())) {
                 aktivierteFormen.add(getAusgewaehlteForm());
             }
         }

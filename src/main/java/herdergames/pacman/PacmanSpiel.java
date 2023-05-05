@@ -1,6 +1,7 @@
 package herdergames.pacman;
 
 import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import herdergames.util.Rechteck;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
@@ -158,11 +159,11 @@ public final class PacmanSpiel extends Spiel.Mehrspieler {
         if (punkte.isEmpty()) {
             List<Spieler.Id> rangliste = new ArrayList<>();
             for (Pacman pacman : pacmans) {
-                rangliste.add(pacman.spieler.id);
+                rangliste.add(pacman.spieler.id());
             }
             rangliste.addAll(totePacmans);
             for (Geist geist : geister) {
-                rangliste.add(geist.spieler.id);
+                rangliste.add(geist.spieler.id());
             }
             return Optional.of(rangliste);
         }
@@ -170,7 +171,7 @@ public final class PacmanSpiel extends Spiel.Mehrspieler {
         if (pacmans.isEmpty()) {
             List<Spieler.Id> rangliste = new ArrayList<>();
             for (Geist geist : geister) {
-                rangliste.add(geist.spieler.id);
+                rangliste.add(geist.spieler.id());
             }
             rangliste.addAll(totePacmans);
             return Optional.of(rangliste);
@@ -211,7 +212,7 @@ public final class PacmanSpiel extends Spiel.Mehrspieler {
         SpielerGesteuert(PacmanSpiel spiel, Spieler spieler) {
             this.spiel = spiel;
             this.spieler = spieler;
-            steuerung = new Steuerung(spiel.applet, spieler.id);
+            steuerung = new Steuerung(spiel.applet, spieler.id());
         }
 
         abstract float getStartX();
@@ -509,7 +510,7 @@ public final class PacmanSpiel extends Spiel.Mehrspieler {
         }
 
         private Name getName() {
-            switch (spieler.id) {
+            switch (spieler.id()) {
                 case SPIELER_1:
                     return Name.INKY;
                 case SPIELER_2:
@@ -561,7 +562,7 @@ public final class PacmanSpiel extends Spiel.Mehrspieler {
                 Pacman pacman = pacmanIterator.next();
                 if (pacman.getHitbox().kollidiertMit(hitbox)) {
                     pacmanIterator.remove();
-                    spiel.totePacmans.add(pacman.spieler.id);
+                    spiel.totePacmans.add(pacman.spieler.id());
                 }
             }
         }

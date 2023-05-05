@@ -1,5 +1,6 @@
 package herdergames.break_out;
 
+import herdergames.spiel.Spieler;
 import herdergames.util.PartikelManager;
 import herdergames.util.Rechteck;
 import herdergames.spiel.Spiel;
@@ -16,7 +17,7 @@ public final class BreakOut extends Spiel.Mehrspieler {
 
     public BreakOut(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
-        List<Spieler> spielerSortiert = alleSpieler.stream().sorted(Comparator.comparing(spieler -> spieler.id)).toList();
+        List<Spieler> spielerSortiert = alleSpieler.stream().sorted(Comparator.comparing(Spieler::id)).toList();
         for (Spieler spieler : spielerSortiert) {
             welten.add(new Welt(this, spieler));
         }
@@ -31,7 +32,7 @@ public final class BreakOut extends Spiel.Mehrspieler {
             Welt welt = weltIterator.next();
             if (welt.hatVerloren()) {
                 weltIterator.remove();
-                rangliste.add(0, welt.spieler.id);
+                rangliste.add(0, welt.spieler.id());
                 continue;
             }
             welt.draw();
@@ -310,7 +311,7 @@ public final class BreakOut extends Spiel.Mehrspieler {
 
         private Platform(Welt welt) {
             super(welt);
-            steuerung = new Steuerung(applet, welt.spieler.id);
+            steuerung = new Steuerung(applet, welt.spieler.id());
         }
 
         private void bewegen() {

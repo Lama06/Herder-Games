@@ -1,6 +1,7 @@
 package herdergames.rain_catcher;
 
 import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import herdergames.util.PartikelManager;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
@@ -62,7 +63,7 @@ public final class RainCatcher extends Spiel.Mehrspieler {
         while (platformenIterator.hasNext()) {
             Platform platform = platformenIterator.next();
             if (platform.gewonnen()) {
-                rangliste.add(platform.spieler.id);
+                rangliste.add(platform.spieler.id());
                 platformenIterator.remove();
                 continue;
             }
@@ -145,18 +146,18 @@ public final class RainCatcher extends Spiel.Mehrspieler {
 
         private Platform(Spieler spieler) {
             this.spieler = spieler;
-            steuerung = new Steuerung(applet, spieler.id);
+            steuerung = new Steuerung(applet, spieler.id());
             y = getStartY();
             yGeschwindigkeit = getStartYGeschwindigkeit();
         }
 
         private float getStartY() {
             float abstand = (MAX_Y-MIN_Y) / 3;
-            return MIN_Y+abstand*spieler.id.ordinal();
+            return MIN_Y+abstand*spieler.id().ordinal();
         }
 
         private float getStartYGeschwindigkeit() {
-            if (spieler.id == Spieler.Id.SPIELER_1) {
+            if (spieler.id() == Spieler.Id.SPIELER_1) {
                 return -Y_GESCHWINDIGKEIT;
             }
 

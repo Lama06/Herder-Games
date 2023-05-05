@@ -28,7 +28,7 @@ public final class HarryPotterQuiz extends Spiel.Mehrspieler {
     private List<String> antwortenReihenfolge;
     private int verbleibendeZeit;
 
-    public HarryPotterQuiz(PApplet applet, Set<Spiel.Spieler> alleSpieler) {
+    public HarryPotterQuiz(PApplet applet, Set<herdergames.spiel.Spieler> alleSpieler) {
         super(applet);
         verbleibendeFragen = new ArrayList<>(fragen);
         Collections.shuffle(verbleibendeFragen);
@@ -36,7 +36,7 @@ public final class HarryPotterQuiz extends Spiel.Mehrspieler {
             verbleibendeFragen.remove(0);
         }
 
-        for (Spiel.Spieler spieler : alleSpieler) {
+        for (herdergames.spiel.Spieler spieler : alleSpieler) {
             this.alleSpieler.add(new Spieler(spieler));
         }
         for (int i = 0; i < FrageDaten.ANTWORTEN; i++) {
@@ -54,7 +54,7 @@ public final class HarryPotterQuiz extends Spiel.Mehrspieler {
     }
 
     @Override
-    public Optional<List<Spiel.Spieler.Id>> draw() {
+    public Optional<List<herdergames.spiel.Spieler.Id>> draw() {
         applet.background(applet.color(255));
 
         verbleibendeZeit--;
@@ -67,10 +67,10 @@ public final class HarryPotterQuiz extends Spiel.Mehrspieler {
                 }
             }
             if (verbleibendeFragen.isEmpty()) {
-                List<Spiel.Spieler.Id> rangliste = alleSpieler
+                List<herdergames.spiel.Spieler.Id> rangliste = alleSpieler
                         .stream()
                         .sorted(Collections.reverseOrder(Comparator.comparingInt(spieler -> spieler.punkte)))
-                        .map(spieler -> spieler.spieler.id)
+                        .map(spieler -> spieler.spieler.id())
                         .toList();
                 return Optional.of(rangliste);
             }
@@ -177,23 +177,23 @@ public final class HarryPotterQuiz extends Spiel.Mehrspieler {
         private static final float START_X = 0.5f;
         private static final float START_Y = 0.5f;
 
-        private final Spiel.Spieler spieler;
+        private final herdergames.spiel.Spieler spieler;
         private final Steuerung steuerung;
         private final int farbe = applet.color(applet.choice(255), applet.choice(255), applet.choice(255));
         private float x = START_X;
         private float y = START_Y;
         private int punkte;
 
-        private Spieler(Spiel.Spieler spieler) {
+        private Spieler(herdergames.spiel.Spieler spieler) {
             this.spieler = spieler;
-            steuerung = new Steuerung(applet, spieler.id);
+            steuerung = new Steuerung(applet, spieler.id());
         }
 
         private void draw() {
             applet.textAlign(PConstants.CENTER, PConstants.BOTTOM);
             applet.textSize(TEXT_SIZE * applet.height);
             applet.fill(farbe);
-            applet.text(spieler.name, (x+SIZE/2) * applet.width, (y-TEXT_SIZE) * applet.height);
+            applet.text(spieler.name(), (x+SIZE/2) * applet.width, (y-TEXT_SIZE) * applet.height);
 
             applet.ellipseMode(PConstants.CORNER);
             applet.fill(farbe);

@@ -18,7 +18,7 @@ public final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
     private List<Brett> verbleibendeAiZugSchritte = Collections.emptyList();
     private int nextAiZugSchritt;
 
-    public SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
+    public SpielerGegenAISpiel(PApplet applet, herdergames.spiel.Spieler spieler) {
         super(applet);
     }
 

@@ -7,15 +7,15 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
-    private final Spieler spielerOben;
-    private final Spieler spielerUnten;
+    private final herdergames.spiel.Spieler spielerOben;
+    private final herdergames.spiel.Spieler spielerUnten;
     private Brett aktuellesBrett = Brett.ANFANG;
     private Optional<Position> ausgewaehltePosition = Optional.empty();
     private herdergames.dame.Spieler amZug = herdergames.dame.Spieler.SPIELER_UNTEN;
 
-    public SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
+    public SpielerGegenSpielerSpiel(PApplet applet, herdergames.spiel.Spieler spieler1, herdergames.spiel.Spieler spieler2) {
         super(applet);
-        if (spieler1.punkte < spieler2.punkte) {
+        if (spieler1.punkte() < spieler2.punkte()) {
             spielerUnten = spieler1;
             spielerOben = spieler2;
         } else {
@@ -67,14 +67,14 @@ public final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
     }
 
     @Override
-    public Optional<Optional<Spieler.Id>> draw() {
+    public Optional<Optional<herdergames.spiel.Spieler.Id>> draw() {
         aktuellesBrett.draw(applet, ausgewaehltePosition);
 
         if (aktuellesBrett.hatVerloren(herdergames.dame.Spieler.SPIELER_OBEN)) {
-            return Optional.of(Optional.of(spielerUnten.id));
+            return Optional.of(Optional.of(spielerUnten.id()));
         }
         if (aktuellesBrett.hatVerloren(herdergames.dame.Spieler.SPIELER_UNTEN)) {
-            return Optional.of(Optional.of(spielerOben.id));
+            return Optional.of(Optional.of(spielerOben.id()));
         }
         return Optional.empty();
     }

@@ -1,6 +1,7 @@
 package herdergames.tetris;
 
 import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -19,7 +20,7 @@ public final class Tetris extends Spiel.Mehrspieler {
     public Tetris(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         List<Spieler> spielerSortiert = new ArrayList<>(alleSpieler);
-        spielerSortiert.sort(Comparator.comparing(spieler -> spieler.id));
+        spielerSortiert.sort(Comparator.comparing(Spieler::id));
         spielerSortiert.stream().map(SpielBrett::new).forEach(spielBretter::add);
     }
 
@@ -31,7 +32,7 @@ public final class Tetris extends Spiel.Mehrspieler {
             spielBretter.get(i).draw(i);
         }
 
-        spielBretter.stream().filter(SpielBrett::hatVerloren).forEach(brett -> rangliste.add(0, brett.spieler.id));
+        spielBretter.stream().filter(SpielBrett::hatVerloren).forEach(brett -> rangliste.add(0, brett.spieler.id()));
         spielBretter.removeIf(SpielBrett::hatVerloren);
         if (spielBretter.isEmpty()) {
             return Optional.of(rangliste);
@@ -244,13 +245,13 @@ public final class Tetris extends Spiel.Mehrspieler {
             }
 
             private void keyPressed() {
-                if (Steuerung.Richtung.LINKS.istTasteGedrueckt(applet, spieler.id) && getKleinstesX() != 0) {
+                if (Steuerung.Richtung.LINKS.istTasteGedrueckt(applet, spieler.id()) && getKleinstesX() != 0) {
                     x--;
-                } else if (Steuerung.Richtung.RECHTS.istTasteGedrueckt(applet, spieler.id) && getGroesstesX() != BREITE-1) {
+                } else if (Steuerung.Richtung.RECHTS.istTasteGedrueckt(applet, spieler.id()) && getGroesstesX() != BREITE-1) {
                     x++;
-                } else if (Steuerung.Richtung.UNTEN.istTasteGedrueckt(applet, spieler.id)) {
+                } else if (Steuerung.Richtung.UNTEN.istTasteGedrueckt(applet, spieler.id())) {
                     y++;
-                } else if (Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id)) {
+                } else if (Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id())) {
                     drehen();
                 }
             }

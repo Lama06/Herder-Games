@@ -1,6 +1,7 @@
 package herdergames.stapeln;
 
 import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -14,7 +15,7 @@ public final class Stapeln extends Spiel.Mehrspieler {
     public Stapeln(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         List<Spieler> spielerSortiert = new ArrayList<>(alleSpieler);
-        spielerSortiert.sort(Comparator.comparing(spieler -> spieler.id));
+        spielerSortiert.sort(Comparator.comparing(Spieler::id));
         for (Spieler spieler : spielerSortiert) {
             spielBretter.add(new SpielBrett(spieler));
         }
@@ -30,12 +31,12 @@ public final class Stapeln extends Spiel.Mehrspieler {
             SpielBrett spielBrett = spielBretterIterator.next();
             if (spielBrett.gewonnen()) {
                 spielBretterIterator.remove();
-                rangliste.add(0, spielBrett.spieler.id);
+                rangliste.add(0, spielBrett.spieler.id());
                 continue;
             }
             if (spielBrett.verloren) {
                 spielBretterIterator.remove();
-                rangliste.add(spielBrett.spieler.id);
+                rangliste.add(spielBrett.spieler.id());
                 continue;
             }
             spielBrett.draw(index++);
@@ -75,7 +76,7 @@ public final class Stapeln extends Spiel.Mehrspieler {
 
         private SpielBrett(Spieler spieler) {
             this.spieler = spieler;
-            steuerung = new Steuerung(applet, spieler.id);
+            steuerung = new Steuerung(applet, spieler.id());
 
             gefalleneSteine = new ArrayList<>();
 
@@ -95,7 +96,7 @@ public final class Stapeln extends Spiel.Mehrspieler {
             applet.textAlign(PConstants.CENTER, PConstants.CENTER);
             applet.textSize(40);
             applet.fill(fallenderStein.farbe);
-            applet.text(spieler.name, spielBrettBreite*index + spielBrettBreite/2, (float) applet.height/10);
+            applet.text(spieler.name(), spielBrettBreite*index + spielBrettBreite/2, (float) applet.height/10);
 
             fallenderStein.draw(index);
             for (GefallenerStein gefallenerStein : gefalleneSteine) {

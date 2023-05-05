@@ -12,6 +12,7 @@ import herdergames.rain_catcher.RainCatcher;
 import herdergames.schach.Schach;
 import herdergames.snake.Snake;
 import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import herdergames.stapeln.Stapeln;
 import herdergames.tetris.Tetris;
 import herdergames.vier_gewinnt.VierGewinnt;
@@ -132,13 +133,13 @@ public final class HerderGames {
     );
 
     private final PApplet applet;
-    private final Map<Spiel.Spieler.Id, SpielerDaten> alleSpielerDaten = new HashMap<>();
+    private final Map<Spieler.Id, SpielerDaten> alleSpielerDaten = new HashMap<>();
     private State currentState;
 
     public HerderGames(PApplet applet) {
         this.applet = applet;
 
-        for (Spiel.Spieler.Id spielerId : Spiel.Spieler.Id.values()) {
+        for (Spieler.Id spielerId : Spieler.Id.values()) {
             alleSpielerDaten.put(spielerId, new SpielerDaten(spielerId));
         }
     }
@@ -205,18 +206,18 @@ public final class HerderGames {
     }
 
     private static final class SpielerDaten {
-        private final Spiel.Spieler.Id id;
+        private final Spieler.Id id;
         private String name;
         private int punkte = 0;
         private boolean aktiviert;
 
-        private SpielerDaten(Spiel.Spieler.Id id) {
+        private SpielerDaten(Spieler.Id id) {
             this.id = id;
             name = id.toString();
         }
 
-        private Spiel.Spieler convert() {
-            return new Spiel.Spieler(id, name, punkte);
+        private Spieler convert() {
+            return new Spieler(id, name, punkte);
         }
     }
 
@@ -285,7 +286,7 @@ public final class HerderGames {
                 }
             }
 
-            for (Spiel.Spieler.Id spielerId : Spiel.Spieler.Id.values()) {
+            for (Spieler.Id spielerId : Spieler.Id.values()) {
                 spielerStatuse.add(new SpielerStatus(spielerId));
             }
         }
@@ -483,9 +484,9 @@ public final class HerderGames {
             private static final float HEIGHT = 0.02f;
             private static final float MARGIN = 0.02f;
 
-            private final Spiel.Spieler.Id spielerId;
+            private final Spieler.Id spielerId;
 
-            private SpielerStatus(Spiel.Spieler.Id spielerId) {
+            private SpielerStatus(Spieler.Id spielerId) {
                 this.spielerId = spielerId;
             }
 
@@ -766,37 +767,37 @@ public final class HerderGames {
             if (spielDaten.factory instanceof Spiel.Einzelspieler.Factory) {
                 Spiel.Einzelspieler.Factory einzelspielerFactory = (Spiel.Einzelspieler.Factory) spielDaten.factory;
                 if (aktivierteSpielerDaten.size() != 1) {
-                    SpielerDaten spieler1Daten = alleSpielerDaten.get(Spiel.Spieler.Id.SPIELER_1);
+                    SpielerDaten spieler1Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_1);
                     spieler1Daten.aktiviert = true;
                     spiel = einzelspielerFactory.neuesSpiel(applet, spieler1Daten.convert());
                     return;
                 }
-                Spiel.Spieler spieler = aktivierteSpielerDaten.get(0).convert();
+                Spieler spieler = aktivierteSpielerDaten.get(0).convert();
                 spiel = einzelspielerFactory.neuesSpiel(applet, spieler);
             } else if (spielDaten.factory instanceof Spiel.SpielerGegenSpieler.Factory) {
                 Spiel.SpielerGegenSpieler.Factory spielerGegenSpielerFactory = (Spiel.SpielerGegenSpieler.Factory) spielDaten.factory;
                 if (aktivierteSpielerDaten.size() != 2) {
-                    SpielerDaten spieler1Daten = alleSpielerDaten.get(Spiel.Spieler.Id.SPIELER_1);
+                    SpielerDaten spieler1Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_1);
                     spieler1Daten.aktiviert = true;
-                    SpielerDaten spieler2Daten = alleSpielerDaten.get(Spiel.Spieler.Id.SPIELER_2);
+                    SpielerDaten spieler2Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_2);
                     spieler2Daten.aktiviert = true;
                     spiel = spielerGegenSpielerFactory.neuesSpiel(applet, spieler1Daten.convert(), spieler2Daten.convert());
                     return;
                 }
-                Spiel.Spieler spieler1 = aktivierteSpielerDaten.get(0).convert();
-                Spiel.Spieler spieler2 = aktivierteSpielerDaten.get(1).convert();
+                Spieler spieler1 = aktivierteSpielerDaten.get(0).convert();
+                Spieler spieler2 = aktivierteSpielerDaten.get(1).convert();
                 spiel = spielerGegenSpielerFactory.neuesSpiel(applet, spieler1, spieler2);
             } else {
                 Spiel.Mehrspieler.Factory mehrspielerFactory = (Spiel.Mehrspieler.Factory) spielDaten.factory;
                 if (aktivierteSpielerDaten.isEmpty()) {
-                    SpielerDaten spieler1Daten = alleSpielerDaten.get(Spiel.Spieler.Id.SPIELER_1);
+                    SpielerDaten spieler1Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_1);
                     spieler1Daten.aktiviert = true;
-                    SpielerDaten spieler2Daten = alleSpielerDaten.get(Spiel.Spieler.Id.SPIELER_2);
+                    SpielerDaten spieler2Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_2);
                     spieler2Daten.aktiviert = true;
                     spiel = mehrspielerFactory.neuesSpiel(applet, Set.of(spieler1Daten.convert(), spieler2Daten.convert()));
                     return;
                 }
-                Set<Spiel.Spieler> aktivierteSpieler = new HashSet<>();
+                Set<Spieler> aktivierteSpieler = new HashSet<>();
                 for (SpielerDaten aktivierterSpielerDaten : aktivierteSpielerDaten) {
                     aktivierteSpieler.add(aktivierterSpielerDaten.convert());
                 }
@@ -864,14 +865,14 @@ public final class HerderGames {
 
         private void drawSpielerGegenSpielerSpiel() {
             Spiel.SpielerGegenSpieler spielerGegenSpielerSpiel = (Spiel.SpielerGegenSpieler) spiel;
-            Optional<Optional<Spiel.Spieler.Id>> result = spielerGegenSpielerSpiel.draw();
+            Optional<Optional<Spieler.Id>> result = spielerGegenSpielerSpiel.draw();
             if (result.isEmpty()) {
                 return;
             }
 
             currentState = new SpielBeendetState(spielDaten);
 
-            Optional<Spiel.Spieler.Id> gewinnerId = result.get();
+            Optional<Spieler.Id> gewinnerId = result.get();
             if (gewinnerId.isEmpty()) {
                 return;
             }
@@ -881,7 +882,7 @@ public final class HerderGames {
 
         private void drawMehrspielerSpiel() {
             Spiel.Mehrspieler mehspielerSpiel = (Spiel.Mehrspieler) spiel;
-            Optional<List<Spiel.Spieler.Id>> rangliste = mehspielerSpiel.draw();
+            Optional<List<Spieler.Id>> rangliste = mehspielerSpiel.draw();
             if (rangliste.isEmpty()) {
                 return;
             }
@@ -890,7 +891,7 @@ public final class HerderGames {
 
             int punkte = rangliste.get().size() - 1;
             for (int i = 0; i < rangliste.get().size(); i++, punkte--) {
-                Spiel.Spieler.Id spielerId = rangliste.get().get(i);
+                Spieler.Id spielerId = rangliste.get().get(i);
                 SpielerDaten spielerDaten = alleSpielerDaten.get(spielerId);
                 spielerDaten.punkte += punkte;
             }

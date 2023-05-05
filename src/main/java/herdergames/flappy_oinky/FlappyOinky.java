@@ -1,5 +1,6 @@
 package herdergames.flappy_oinky;
 
+import herdergames.spiel.Spieler;
 import herdergames.util.Rechteck;
 import herdergames.spiel.Spiel;
 import herdergames.util.Steuerung;
@@ -63,7 +64,7 @@ public final class FlappyOinky extends Spiel.Mehrspieler {
             Oinky oinky = oinkyIterator.next();
             if (oinky.istRaus()) {
                 oinkyIterator.remove();
-                rangliste.add(0, oinky.spieler.id);
+                rangliste.add(0, oinky.spieler.id());
                 continue;
             }
             oinky.draw();
@@ -108,7 +109,7 @@ public final class FlappyOinky extends Spiel.Mehrspieler {
         }
 
         private float getXPosition() {
-            switch (spieler.id) {
+            switch (spieler.id()) {
                 case SPIELER_1:
                     return X - SIZE*3;
                 case SPIELER_2:
@@ -127,7 +128,7 @@ public final class FlappyOinky extends Spiel.Mehrspieler {
                 return;
             }
 
-            if (!Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id)) {
+            if (!Steuerung.Richtung.OBEN.istTasteGedrueckt(applet, spieler.id())) {
                 return;
             }
 
@@ -174,7 +175,7 @@ public final class FlappyOinky extends Spiel.Mehrspieler {
                 applet.textAlign(PConstants.CENTER);
                 applet.textSize(30);
                 applet.text(
-                        "%s: %s".formatted(spieler.name, Steuerung.Richtung.OBEN.getTasteName(spieler.id)),
+                        "%s: %s".formatted(spieler.name(), Steuerung.Richtung.OBEN.getTasteName(spieler.id())),
                         (rechteck.x + SIZE/2) * applet.width,
                         (rechteck.y - SIZE) * applet.height
                 );

@@ -1,6 +1,6 @@
 package herdergames.util;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.Spieler;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -8,11 +8,11 @@ import java.util.*;
 
 public final class Steuerung {
     private final PApplet applet;
-    private final Spiel.Spieler.Id spieler;
+    private final Spieler.Id spieler;
     private final Set<Richtung> gedrueckt = new HashSet<>();
     private Optional<Richtung> zuletztGedrueckt = Optional.empty();
 
-    public Steuerung(PApplet applet, Spiel.Spieler.Id spieler) {
+    public Steuerung(PApplet applet, Spieler.Id spieler) {
         this.applet = applet;
         this.spieler = spieler;
     }
@@ -71,7 +71,7 @@ public final class Steuerung {
     public enum Richtung {
         OBEN(0, -1) {
             @Override
-            public boolean istTasteGedrueckt(PApplet applet, Spiel.Spieler.Id spieler) {
+            public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return applet.key == 'w';
@@ -87,7 +87,7 @@ public final class Steuerung {
             }
 
             @Override
-            public String getTasteName(Spiel.Spieler.Id spieler) {
+            public String getTasteName(Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return "W";
@@ -104,7 +104,7 @@ public final class Steuerung {
         },
         LINKS(-1, 0) {
             @Override
-            public boolean istTasteGedrueckt(PApplet applet, Spiel.Spieler.Id spieler) {
+            public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return applet.key == 'a';
@@ -120,7 +120,7 @@ public final class Steuerung {
             }
 
             @Override
-            public String getTasteName(Spiel.Spieler.Id spieler) {
+            public String getTasteName(Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return "A";
@@ -137,7 +137,7 @@ public final class Steuerung {
         },
         RECHTS(1, 0) {
             @Override
-            public boolean istTasteGedrueckt(PApplet applet, Spiel.Spieler.Id spieler) {
+            public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return applet.key == 'd';
@@ -153,7 +153,7 @@ public final class Steuerung {
             }
 
             @Override
-            public String getTasteName(Spiel.Spieler.Id spieler) {
+            public String getTasteName(Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return "D";
@@ -170,7 +170,7 @@ public final class Steuerung {
         },
         UNTEN(0, 1) {
             @Override
-            public boolean istTasteGedrueckt(PApplet applet, Spiel.Spieler.Id spieler) {
+            public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return applet.key == 's';
@@ -186,7 +186,7 @@ public final class Steuerung {
             }
 
             @Override
-            public String getTasteName(Spiel.Spieler.Id spieler) {
+            public String getTasteName(Spieler.Id spieler) {
                 switch (spieler) {
                     case SPIELER_1:
                         return "S";
@@ -202,7 +202,7 @@ public final class Steuerung {
             }
         };
 
-        public static Optional<Richtung> getGedrueckt(PApplet applet, Spiel.Spieler.Id spieler) {
+        public static Optional<Richtung> getGedrueckt(PApplet applet, Spieler.Id spieler) {
             return Arrays.stream(Richtung.values()).filter(richtung -> richtung.istTasteGedrueckt(applet, spieler)).findFirst();
         }
 
@@ -214,8 +214,8 @@ public final class Steuerung {
             this.y = y;
         }
 
-        public abstract boolean istTasteGedrueckt(PApplet applet, Spiel.Spieler.Id spieler);
+        public abstract boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler);
 
-        public abstract String getTasteName(Spiel.Spieler.Id spieler);
+        public abstract String getTasteName(Spieler.Id spieler);
     }
 }

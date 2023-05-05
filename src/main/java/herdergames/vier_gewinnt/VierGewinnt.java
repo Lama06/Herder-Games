@@ -385,14 +385,14 @@ public final class VierGewinnt {
     }
 
     public static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
-        private final Spieler spieler1;
-        private final Spieler spieler2;
+        private final herdergames.spiel.Spieler spieler1;
+        private final herdergames.spiel.Spieler spieler2;
         private Brett aktuellesBrett = Brett.LEER;
         private VierGewinnt.Spieler amZug = VierGewinnt.Spieler.SPIELER_1;
 
-        public SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
+        public SpielerGegenSpielerSpiel(PApplet applet, herdergames.spiel.Spieler spieler1, herdergames.spiel.Spieler spieler2) {
             super(applet);
-            if (spieler1.punkte < spieler2.punkte) {
+            if (spieler1.punkte() < spieler2.punkte()) {
                 this.spieler1 = spieler1;
                 this.spieler2 = spieler2;
             } else {
@@ -419,14 +419,14 @@ public final class VierGewinnt {
         }
 
         @Override
-        public Optional<Optional<Spieler.Id>> draw() {
+        public Optional<Optional<herdergames.spiel.Spieler.Id>> draw() {
             aktuellesBrett.draw(applet);
 
             if (aktuellesBrett.hatGewonnen(VierGewinnt.Spieler.SPIELER_1)) {
-                return Optional.of(Optional.of(spieler1.id));
+                return Optional.of(Optional.of(spieler1.id()));
             }
             if (aktuellesBrett.hatGewonnen(VierGewinnt.Spieler.SPIELER_2)) {
-                return Optional.of(Optional.of(spieler2.id));
+                return Optional.of(Optional.of(spieler2.id()));
             }
             if (aktuellesBrett.getMoeglicheZuegeFuerSpieler(amZug).isEmpty()) {
                 return Optional.of(Optional.empty());
@@ -445,7 +445,7 @@ public final class VierGewinnt {
         // Unsere AI guckt aber nicht weit genug in die Zukunft, um das zu verstehen, also geben wir ihr einen kleinen Tipp.
         private Brett aktuellesBrett = Brett.LEER.mitStein(new Position(5, 3), Optional.of(COMPUTER));
 
-        public SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
+        public SpielerGegenAISpiel(PApplet applet, herdergames.spiel.Spieler spieler) {
             super(applet);
         }
 

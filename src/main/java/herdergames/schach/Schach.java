@@ -865,15 +865,15 @@ public final class Schach {
 
 
     public static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
-        private final Spieler weiss;
-        private final Spieler schwarz;
+        private final herdergames.spiel.Spieler weiss;
+        private final herdergames.spiel.Spieler schwarz;
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
         private Schach.Spieler amZug = Schach.Spieler.WEISS;
 
-        public SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
+        public SpielerGegenSpielerSpiel(PApplet applet, herdergames.spiel.Spieler spieler1, herdergames.spiel.Spieler spieler2) {
             super(applet);
-            if (spieler1.punkte < spieler2.punkte) {
+            if (spieler1.punkte() < spieler2.punkte()) {
                 weiss = spieler1;
                 schwarz = spieler2;
             } else {
@@ -925,14 +925,14 @@ public final class Schach {
         }
 
         @Override
-        public Optional<Optional<Spieler.Id>> draw() {
+        public Optional<Optional<herdergames.spiel.Spieler.Id>> draw() {
             aktuellesBrett.draw(applet, ausgewaehltePosition);
 
             if (aktuellesBrett.hatVerloren(Schach.Spieler.WEISS)) {
-                return Optional.of(Optional.of(schwarz.id));
+                return Optional.of(Optional.of(schwarz.id()));
             }
             if (aktuellesBrett.hatVerloren(Schach.Spieler.SCHWARZ)) {
-                return Optional.of(Optional.of(weiss.id));
+                return Optional.of(Optional.of(weiss.id()));
             }
 
             return Optional.empty();
@@ -948,7 +948,7 @@ public final class Schach {
         private Brett aktuellesBrett = Brett.ANFANG;
         private Optional<Position> ausgewaehltePosition = Optional.empty();
 
-        public SpielerGegenAISpiel(PApplet applet, Spieler spieler) {
+        public SpielerGegenAISpiel(PApplet applet, herdergames.spiel.Spieler spieler) {
             super(applet);
         }
 

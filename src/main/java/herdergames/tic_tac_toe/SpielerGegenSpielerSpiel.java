@@ -7,14 +7,14 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
-    private final Spieler spielerKreuz;
-    private final Spieler spielerKreis;
+    private final herdergames.spiel.Spieler spielerKreuz;
+    private final herdergames.spiel.Spieler spielerKreis;
     private Brett aktuellesBrett = Brett.LEER;
     private herdergames.tic_tac_toe.Spieler amZug = herdergames.tic_tac_toe.Spieler.KREUZ;
 
-    public SpielerGegenSpielerSpiel(PApplet applet, Spieler spieler1, Spieler spieler2) {
+    public SpielerGegenSpielerSpiel(PApplet applet, herdergames.spiel.Spieler spieler1, herdergames.spiel.Spieler spieler2) {
         super(applet);
-        if (spieler1.punkte < spieler2.punkte) {
+        if (spieler1.punkte() < spieler2.punkte()) {
             spielerKreuz = spieler1;
             spielerKreis = spieler2;
         } else {
@@ -41,14 +41,14 @@ public final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
     }
 
     @Override
-    public Optional<Optional<Spieler.Id>> draw() {
+    public Optional<Optional<herdergames.spiel.Spieler.Id>> draw() {
         aktuellesBrett.draw(applet);
 
         if (aktuellesBrett.hatGewonnen(herdergames.tic_tac_toe.Spieler.KREUZ)) {
-            return Optional.of(Optional.of(spielerKreuz.id));
+            return Optional.of(Optional.of(spielerKreuz.id()));
         }
         if (aktuellesBrett.hatGewonnen(herdergames.tic_tac_toe.Spieler.KREIS)) {
-            return Optional.of(Optional.of(spielerKreis.id));
+            return Optional.of(Optional.of(spielerKreis.id()));
         }
         if (aktuellesBrett.getMoeglicheZuegeFuerSpieler(amZug).isEmpty()) {
             return Optional.of(Optional.empty());

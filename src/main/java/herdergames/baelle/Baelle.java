@@ -15,17 +15,17 @@ public final class Baelle extends Spiel.Mehrspieler {
     private int nextBall = BALL_DELAY;
 
     private final Set<Spieler> spieler = new HashSet<>();
-    private final List<Spiel.Spieler.Id> rangliste = new ArrayList<>();
+    private final List<herdergames.spiel.Spieler.Id> rangliste = new ArrayList<>();
 
-    public Baelle(PApplet applet, Set<Spiel.Spieler> alleSpieler) {
+    public Baelle(PApplet applet, Set<herdergames.spiel.Spieler> alleSpieler) {
         super(applet);
-        for (Spiel.Spieler spieler : alleSpieler) {
+        for (herdergames.spiel.Spieler spieler : alleSpieler) {
             this.spieler.add(new Spieler(spieler));
         }
     }
 
     @Override
-    public Optional<List<Spiel.Spieler.Id>> draw() {
+    public Optional<List<herdergames.spiel.Spieler.Id>> draw() {
         applet.background(255);
 
         nextBall--;
@@ -47,7 +47,7 @@ public final class Baelle extends Spiel.Mehrspieler {
             Spieler spieler = spielerIterator.next();
             if (spieler.istTot()) {
                 spielerIterator.remove();
-                rangliste.add(0, spieler.spieler.id);
+                rangliste.add(0, spieler.spieler.id());
                 continue;
             }
             spieler.draw();
@@ -166,19 +166,19 @@ public final class Baelle extends Spiel.Mehrspieler {
         private static final float X_START = 0.5f;
         private static final float Y_START = 0.5f;
 
-        private final Spiel.Spieler spieler;
+        private final herdergames.spiel.Spieler spieler;
         private final Steuerung steuerung;
         private float x;
         private float y = Y_START;
 
-        private Spieler(Spiel.Spieler spieler) {
+        private Spieler(herdergames.spiel.Spieler spieler) {
             this.spieler = spieler;
-            steuerung = new Steuerung(applet, spieler.id);
+            steuerung = new Steuerung(applet, spieler.id());
             x = X_START + getXOffset();
         }
 
         private float getXOffset() {
-            switch (spieler.id) {
+            switch (spieler.id()) {
                 case SPIELER_1:
                     return -RADIUS*6;
                 case SPIELER_2:
