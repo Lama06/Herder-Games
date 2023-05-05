@@ -72,133 +72,85 @@ public final class Steuerung {
         OBEN(0, -1) {
             @Override
             public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return applet.key == 'w';
-                    case SPIELER_2:
-                        return applet.key == 't';
-                    case SPIELER_3:
-                        return applet.key == 'i';
-                    case SPIELER_4:
-                        return applet.key == PConstants.CODED && applet.keyCode == PConstants.UP;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> applet.key == 'w';
+                    case SPIELER_2 -> applet.key == 't';
+                    case SPIELER_3 -> applet.key == 'i';
+                    case SPIELER_4 -> applet.key == PConstants.CODED && applet.keyCode == PConstants.UP;
+                };
             }
 
             @Override
             public String getTasteName(Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return "W";
-                    case SPIELER_2:
-                        return "T";
-                    case SPIELER_3:
-                        return "I";
-                    case SPIELER_4:
-                        return "Pfeiltaste Hoch";
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> "W";
+                    case SPIELER_2 -> "T";
+                    case SPIELER_3 -> "I";
+                    case SPIELER_4 -> "Pfeiltaste Hoch";
+                };
             }
         },
         LINKS(-1, 0) {
             @Override
             public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return applet.key == 'a';
-                    case SPIELER_2:
-                        return applet.key == 'f';
-                    case SPIELER_3:
-                        return applet.key == 'j';
-                    case SPIELER_4:
-                        return applet.key == PConstants.CODED && applet.keyCode == PConstants.LEFT;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> applet.key == 'a';
+                    case SPIELER_2 -> applet.key == 'f';
+                    case SPIELER_3 -> applet.key == 'j';
+                    case SPIELER_4 -> applet.key == PConstants.CODED && applet.keyCode == PConstants.LEFT;
+                };
             }
 
             @Override
             public String getTasteName(Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return "A";
-                    case SPIELER_2:
-                        return "F";
-                    case SPIELER_3:
-                        return "J";
-                    case SPIELER_4:
-                        return "Pfeiltaste Links";
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> "A";
+                    case SPIELER_2 -> "F";
+                    case SPIELER_3 -> "J";
+                    case SPIELER_4 -> "Pfeiltaste Links";
+                };
             }
         },
         RECHTS(1, 0) {
             @Override
             public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return applet.key == 'd';
-                    case SPIELER_2:
-                        return applet.key == 'h';
-                    case SPIELER_3:
-                        return applet.key == 'l';
-                    case SPIELER_4:
-                        return applet.key == PConstants.CODED && applet.keyCode == PConstants.RIGHT;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> applet.key == 'd';
+                    case SPIELER_2 -> applet.key == 'h';
+                    case SPIELER_3 -> applet.key == 'l';
+                    case SPIELER_4 -> applet.key == PConstants.CODED && applet.keyCode == PConstants.RIGHT;
+                };
             }
 
             @Override
             public String getTasteName(Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return "D";
-                    case SPIELER_2:
-                        return "H";
-                    case SPIELER_3:
-                        return "L";
-                    case SPIELER_4:
-                        return "Pfeiltaste Rechts";
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> "D";
+                    case SPIELER_2 -> "H";
+                    case SPIELER_3 -> "L";
+                    case SPIELER_4 -> "Pfeiltaste Rechts";
+                };
             }
         },
         UNTEN(0, 1) {
             @Override
             public boolean istTasteGedrueckt(PApplet applet, Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return applet.key == 's';
-                    case SPIELER_2:
-                        return applet.key == 'g';
-                    case SPIELER_3:
-                        return applet.key == 'k';
-                    case SPIELER_4:
-                        return applet.key == PConstants.CODED && applet.keyCode == PConstants.DOWN;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> applet.key == 's';
+                    case SPIELER_2 -> applet.key == 'g';
+                    case SPIELER_3 -> applet.key == 'k';
+                    case SPIELER_4 -> applet.key == PConstants.CODED && applet.keyCode == PConstants.DOWN;
+                };
             }
 
             @Override
             public String getTasteName(Spieler.Id spieler) {
-                switch (spieler) {
-                    case SPIELER_1:
-                        return "S";
-                    case SPIELER_2:
-                        return "G";
-                    case SPIELER_3:
-                        return "K";
-                    case SPIELER_4:
-                        return "Pfeiltaste Unten";
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (spieler) {
+                    case SPIELER_1 -> "S";
+                    case SPIELER_2 -> "G";
+                    case SPIELER_3 -> "K";
+                    case SPIELER_4 -> "Pfeiltaste Unten";
+                };
             }
         };
 
