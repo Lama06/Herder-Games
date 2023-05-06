@@ -163,47 +163,31 @@ public final class Schach {
 
         @Override
         public Spieler getGegner() {
-            switch (this) {
-                case SCHWARZ:
-                    return WEISS;
-                case WEISS:
-                    return SCHWARZ;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (this) {
+                case SCHWARZ -> WEISS;
+                case WEISS -> SCHWARZ;
+            };
         }
 
         private Verschiebung1D.Vertikal getBauerBewegenVerschiebung() {
-            switch (this) {
-                case SCHWARZ:
-                    return Verschiebung1D.Vertikal.OBEN;
-                case WEISS:
-                    return Verschiebung1D.Vertikal.UNTEN;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (this) {
+                case SCHWARZ -> Verschiebung1D.Vertikal.OBEN;
+                case WEISS -> Verschiebung1D.Vertikal.UNTEN;
+            };
         }
 
         private int getBauernUmwandlungsZeile() {
-            switch (this) {
-                case SCHWARZ:
-                    return 0;
-                case WEISS:
-                    return 7;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (this) {
+                case SCHWARZ -> 0;
+                case WEISS -> 7;
+            };
         }
 
         private int getBauernStartZeile() {
-            switch (this) {
-                case SCHWARZ:
-                    return 6;
-                case WEISS:
-                    return 1;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (this) {
+                case SCHWARZ -> 6;
+                case WEISS -> 1;
+            };
         }
     }
 
@@ -222,76 +206,35 @@ public final class Schach {
         }
     }
 
-    private static final class Stein {
-        private final Spieler spieler;
-        private final Figur figur;
-
-        private Stein(Spieler spieler, Figur figur) {
-            this.spieler = spieler;
-            this.figur = figur;
-        }
-
+    private record Stein(Spieler spieler, Figur figur) {
         private PImage getImage() {
-            switch (spieler) {
-                case WEISS:
-                    switch (figur) {
-                        case BAUER:
-                            return WEISS_BAUER;
-                        case LAEUFER:
-                            return WEISS_LAEUFER;
-                        case SPRINGER:
-                            return WEISS_SPRINGER;
-                        case TURM:
-                            return WEISS_TURM;
-                        case DAME:
-                            return WEISS_DAME;
-                        case KOENIG:
-                            return WEISS_KOENIG;
-                        default:
-                            throw new IllegalArgumentException();
-                    }
-                case SCHWARZ:
-                    switch (figur) {
-                        case BAUER:
-                            return SCHWARZ_BAUER;
-                        case LAEUFER:
-                            return SCHWARZ_LAEUFER;
-                        case SPRINGER:
-                            return SCHWARZ_SPRINGER;
-                        case TURM:
-                            return SCHWARZ_TURM;
-                        case DAME:
-                            return SCHWARZ_DAME;
-                        case KOENIG:
-                            return SCHWARZ_KOENIG;
-                        default:
-                            throw new IllegalArgumentException();
-                    }
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (spieler) {
+                case WEISS -> switch (figur) {
+                    case BAUER -> WEISS_BAUER;
+                    case LAEUFER -> WEISS_LAEUFER;
+                    case SPRINGER -> WEISS_SPRINGER;
+                    case TURM -> WEISS_TURM;
+                    case DAME -> WEISS_DAME;
+                    case KOENIG -> WEISS_KOENIG;
+                };
+                case SCHWARZ -> switch (figur) {
+                    case BAUER -> SCHWARZ_BAUER;
+                    case LAEUFER -> SCHWARZ_LAEUFER;
+                    case SPRINGER -> SCHWARZ_SPRINGER;
+                    case TURM -> SCHWARZ_TURM;
+                    case DAME -> SCHWARZ_DAME;
+                    case KOENIG -> SCHWARZ_KOENIG;
+                };
+            };
         }
 
         private void draw(PApplet applet, int x, int y, int width, int height) {
             applet.imageMode(PConstants.CORNER);
             applet.image(getImage(), x, y, width, height);
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Stein stein = (Stein) o;
-            return spieler == stein.spieler && figur == stein.figur;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(spieler, figur);
-        }
     }
 
-    private static class Position {
+    private record Position(int zeile, int spalte) {
         private static boolean isValid(int zeile, int spalte) {
             return zeile >= 0 && zeile < Brett.SIZE && spalte >= 0 && spalte < Brett.SIZE;
         }
@@ -312,16 +255,10 @@ public final class Schach {
             return Position.create(zeile, spalte);
         }
 
-        private final int zeile;
-        private final int spalte;
-
-        private Position(int zeile, int spalte) {
+        private Position {
             if (!isValid(zeile, spalte)) {
                 throw new IllegalArgumentException();
             }
-
-            this.zeile = zeile;
-            this.spalte = spalte;
         }
 
         private Optional<Position> add(int zeilen, int spalten) {
@@ -329,20 +266,7 @@ public final class Schach {
         }
 
         private boolean isSchwarz() {
-            return zeile%2 == spalte%2;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Position position = (Position) o;
-            return zeile == position.zeile && spalte == position.spalte;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(zeile, spalte);
+            return zeile % 2 == spalte % 2;
         }
     }
 
@@ -846,23 +770,7 @@ public final class Schach {
         }
     }
 
-    private static final class Zug implements herdergames.ai.Zug<Brett> {
-        private final Position von;
-        private final Position nach;
-        private final Brett ergebnis;
-
-        private Zug(Position von, Position nach, Brett ergebnis) {
-            this.von = von;
-            this.nach = nach;
-            this.ergebnis = ergebnis;
-        }
-
-        @Override
-        public Brett ergebnis() {
-            return ergebnis;
-        }
-    }
-
+    private record Zug(Position von, Position nach, Brett ergebnis) implements herdergames.ai.Zug<Brett> { }
 
     public static final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGegenSpielerSpiel {
         private final herdergames.spiel.Spieler weiss;

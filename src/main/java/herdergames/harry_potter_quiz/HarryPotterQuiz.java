@@ -215,13 +215,13 @@ public final class HarryPotterQuiz extends MehrspielerSpiel {
         }
     }
 
-    private static final class FrageDaten {
+    private record FrageDaten(String frage, String richtigeAntwort, List<String> falscheAntworten) {
         private static final int ANTWORTEN = 4;
 
         private static List<FrageDaten> loadFragen(PApplet applet, String path) {
             String[] zeilen = applet.loadStrings(path);
             List<FrageDaten> result = new ArrayList<>();
-            for (int zeile = 0; zeile < zeilen.length;) {
+            for (int zeile = 0; zeile < zeilen.length; ) {
                 String frage = zeilen[zeile++];
                 String richtigeAntwort = zeilen[zeile++];
                 List<String> falscheAntworten = new ArrayList<>();
@@ -240,12 +240,8 @@ public final class HarryPotterQuiz extends MehrspielerSpiel {
             return result;
         }
 
-        private final String frage;
-        private final String richtigeAntwort;
-        private final List<String> falscheAntworten;
-
         private FrageDaten(String frage, String richtigeAntwort, List<String> falscheAntworten) {
-            if (falscheAntworten.size() != ANTWORTEN-1) {
+            if (falscheAntworten.size() != ANTWORTEN - 1) {
                 throw new IllegalArgumentException();
             }
 

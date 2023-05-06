@@ -384,33 +384,21 @@ public final class PacmanSpiel extends MehrspielerSpiel {
             UNTEN_2(1, 3);
 
             private static Grafik fuerRichtung1(Richtung richtung) {
-                switch (richtung) {
-                    case RECHTS:
-                        return RECHTS_1;
-                    case LINKS:
-                        return LINKS_1;
-                    case OBEN:
-                        return OBEN_1;
-                    case UNTEN:
-                        return UNTEN_1;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (richtung) {
+                    case RECHTS -> RECHTS_1;
+                    case LINKS -> LINKS_1;
+                    case OBEN -> OBEN_1;
+                    case UNTEN -> UNTEN_1;
+                };
             }
 
             private static Grafik fuerRichtung2(Richtung richtung) {
-                switch (richtung) {
-                    case RECHTS:
-                        return RECHTS_2;
-                    case LINKS:
-                        return LINKS_2;
-                    case OBEN:
-                        return OBEN_2;
-                    case UNTEN:
-                        return UNTEN_2;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (richtung) {
+                    case RECHTS -> RECHTS_2;
+                    case LINKS -> LINKS_2;
+                    case OBEN -> OBEN_2;
+                    case UNTEN -> UNTEN_2;
+                };
             }
 
             private static final int SPRITE_SHEET_X_START = 14;
@@ -430,18 +418,8 @@ public final class PacmanSpiel extends MehrspielerSpiel {
         }
     }
 
-    private static final class Punkt {
+    private record Punkt(PacmanSpiel spiel, int x, int y) {
         private static final int SIZE = 2;
-
-        private final PacmanSpiel spiel;
-        private final int x;
-        private final int y;
-
-        private Punkt(PacmanSpiel spiel, int x, int y) {
-            this.spiel = spiel;
-            this.x = x;
-            this.y = y;
-        }
 
         private void draw() {
             spiel.applet.rectMode(PConstants.CORNER);
@@ -455,18 +433,8 @@ public final class PacmanSpiel extends MehrspielerSpiel {
         }
     }
 
-    private static final class SuperPunkt {
+    private record SuperPunkt(PacmanSpiel spiel, int x, int y) {
         private static final int SIZE = 2;
-
-        private final PacmanSpiel spiel;
-        private final int x;
-        private final int y;
-
-        private SuperPunkt(PacmanSpiel spiel, int x, int y) {
-            this.spiel = spiel;
-            this.x = x;
-            this.y = y;
-        }
 
         private void draw() {
             spiel.applet.rectMode(PConstants.CORNER);
@@ -510,18 +478,12 @@ public final class PacmanSpiel extends MehrspielerSpiel {
         }
 
         private Name getName() {
-            switch (spieler.id()) {
-                case SPIELER_1:
-                    return Name.INKY;
-                case SPIELER_2:
-                    return Name.BLINKY;
-                case SPIELER_3:
-                    return Name.PINKY;
-                case SPIELER_4:
-                    return Name.CLYDE;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (spieler.id()) {
+                case SPIELER_1 -> Name.INKY;
+                case SPIELER_2 -> Name.BLINKY;
+                case SPIELER_3 -> Name.PINKY;
+                case SPIELER_4 -> Name.CLYDE;
+            };
         }
 
         @Override
@@ -578,33 +540,21 @@ public final class PacmanSpiel extends MehrspielerSpiel {
             UNTEN_2(7);
 
             private static Grafik fuerRichtung1(Richtung richtung) {
-                switch (richtung) {
-                    case RECHTS:
-                        return RECHTS_1;
-                    case LINKS:
-                        return LINKS_1;
-                    case OBEN:
-                        return OBEN_1;
-                    case UNTEN:
-                        return UNTEN_1;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (richtung) {
+                    case RECHTS -> RECHTS_1;
+                    case LINKS -> LINKS_1;
+                    case OBEN -> OBEN_1;
+                    case UNTEN -> UNTEN_1;
+                };
             }
 
             private static Grafik fuerRichtung2(Richtung richtung) {
-                switch (richtung) {
-                    case RECHTS:
-                        return RECHTS_2;
-                    case LINKS:
-                        return LINKS_2;
-                    case OBEN:
-                        return OBEN_2;
-                    case UNTEN:
-                        return UNTEN_2;
-                    default:
-                        throw new IllegalArgumentException();
-                }
+                return switch (richtung) {
+                    case RECHTS -> RECHTS_2;
+                    case LINKS -> LINKS_2;
+                    case OBEN -> OBEN_2;
+                    case UNTEN -> UNTEN_2;
+                };
             }
 
             private static final int SIZE = 16;
@@ -650,41 +600,14 @@ public final class PacmanSpiel extends MehrspielerSpiel {
         UNTEN;
 
         private static Richtung vonSteuerungRichtung(Steuerung.Richtung richtung) {
-            switch (richtung) {
-                case LINKS:
-                    return LINKS;
-                case RECHTS:
-                    return RECHTS;
-                case OBEN:
-                    return OBEN;
-                case UNTEN:
-                    return UNTEN;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (richtung) {
+                case LINKS -> LINKS;
+                case RECHTS -> RECHTS;
+                case OBEN -> OBEN;
+                case UNTEN -> UNTEN;
+            };
         }
     }
 
-    private static final class Position {
-        private final int x;
-        private final int y;
-
-        private Position(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Position position = (Position) o;
-            return x == position.x && y == position.y;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(x, y);
-        }
-    }
+    private record Position(int x, int y) { }
 }

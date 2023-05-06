@@ -178,18 +178,12 @@ public final class Baelle extends MehrspielerSpiel {
         }
 
         private float getXOffset() {
-            switch (spieler.id()) {
-                case SPIELER_1:
-                    return -RADIUS*6;
-                case SPIELER_2:
-                    return -RADIUS*2;
-                case SPIELER_3:
-                    return RADIUS*2;
-                case SPIELER_4:
-                    return RADIUS*6;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (spieler.id()) {
+                case SPIELER_1 -> -RADIUS * 6;
+                case SPIELER_2 -> -RADIUS * 2;
+                case SPIELER_3 -> RADIUS * 2;
+                case SPIELER_4 -> RADIUS * 6;
+            };
         }
 
         private void draw() {

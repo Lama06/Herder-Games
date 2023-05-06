@@ -109,18 +109,12 @@ public final class FlappyOinky extends MehrspielerSpiel {
         }
 
         private float getXPosition() {
-            switch (spieler.id()) {
-                case SPIELER_1:
-                    return X - SIZE*3;
-                case SPIELER_2:
-                    return X - SIZE;
-                case SPIELER_3:
-                    return X + SIZE;
-                case SPIELER_4:
-                    return X + SIZE*3;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (spieler.id()) {
+                case SPIELER_1 -> X - SIZE * 3;
+                case SPIELER_2 -> X - SIZE;
+                case SPIELER_3 -> X + SIZE;
+                case SPIELER_4 -> X + SIZE * 3;
+            };
         }
 
         private void keyPressed() {
