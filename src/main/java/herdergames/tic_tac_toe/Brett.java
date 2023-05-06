@@ -17,9 +17,33 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         ));
     }
 
+    static int getSize(PApplet applet) {
+        return Math.min(applet.width, applet.height);
+    }
+
+    static int getAbstandHorizontal(PApplet applet) {
+        return (applet.width - getSize(applet)) / 2;
+    }
+
+    static int getAbstandVertikal(PApplet applet) {
+        return (applet.height - getSize(applet)) / 2;
+    }
+
+    static int getFeldSize(PApplet applet) {
+        return getSize(applet) / SIZE;
+    }
+
+    static int getSymbolSize(PApplet applet) {
+        return (getFeldSize(applet) / 3) * 2;
+    }
+
+    static int getSymbolAbstand(PApplet applet) {
+        return (getFeldSize(applet) - getSymbolSize(applet)) / 2;
+    }
+
     private final List<List<Optional<Spieler>>> zeilen;
 
-    private Brett(List<List<Optional<Spieler>>> zeilen) {
+    Brett(List<List<Optional<Spieler>>> zeilen) {
         if (zeilen.size() != SIZE) {
             throw new IllegalArgumentException();
         }
@@ -177,30 +201,6 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         }
 
         return 0;
-    }
-
-    private static int getSize(PApplet applet) {
-        return Math.min(applet.width, applet.height);
-    }
-
-    static int getAbstandHorizontal(PApplet applet) {
-        return (applet.width - getSize(applet)) / 2;
-    }
-
-    static int getAbstandVertikal(PApplet applet) {
-        return (applet.height - getSize(applet)) / 2;
-    }
-
-    static int getFeldSize(PApplet applet) {
-        return getSize(applet) / SIZE;
-    }
-
-    private static int getSymbolSize(PApplet applet) {
-        return (getFeldSize(applet) / 3) * 2;
-    }
-
-    private static int getSymbolAbstand(PApplet applet) {
-        return (getFeldSize(applet) - getSymbolSize(applet)) / 2;
     }
 
     private void drawLinien(PApplet applet) {
