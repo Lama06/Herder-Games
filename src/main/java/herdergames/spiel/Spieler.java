@@ -2,7 +2,7 @@ package herdergames.spiel;
 
 import java.util.Objects;
 
-public record Spieler(herdergames.spiel.Spieler.Id id, String name, int punkte) {
+public record Spieler(Spieler.Id id, String name, int punkte) {
     public Spieler {
         Objects.requireNonNull(id);
         Objects.requireNonNull(name);
