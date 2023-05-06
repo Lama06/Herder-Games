@@ -77,6 +77,35 @@ record Brett(List<List<Optional<Stein>>> zeilen) implements herdergames.ai.Brett
         ));
     }
 
+    static Optional<Brett> parse(List<String> zeilenText) {
+        if (zeilenText.size() != SIZE) {
+            return Optional.empty();
+        }
+
+        List<List<Optional<Stein>>> zeilen = new ArrayList<>();
+
+        for (int zeileIndex = 0; zeileIndex < SIZE; zeileIndex++) {
+            String zeileText = zeilenText.get(zeileIndex);
+            if (zeileText.length() != SIZE) {
+                return Optional.empty();
+            }
+
+            List<Optional<Stein>> zeile = new ArrayList<>();
+            zeilen.add(zeile);
+
+            for (int spalteIndex = 0; spalteIndex < SIZE; spalteIndex++) {
+                char steinBuchstabe = zeileText.charAt(spalteIndex);
+                Optional<Optional<Stein>> stein = Stein.buchstabeZuStein(steinBuchstabe);
+                if (stein.isEmpty()) {
+                    return Optional.empty();
+                }
+                zeile.add(stein.get());
+            }
+        }
+
+        return Optional.of(new Brett(zeilen));
+    }
+
     static int getSize(PApplet applet) {
         return Math.min(applet.width, applet.height);
     }
@@ -487,5 +516,22 @@ record Brett(List<List<Optional<Stein>>> zeilen) implements herdergames.ai.Brett
                 stein.get().draw(applet, screenX + steinAbstand, screenY + steinAbstand, steinSize, steinSize);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+
+        for (int zeile = 0; zeile < SIZE; zeile++) {
+            if (zeile != 0) {
+                result.append('\n');
+            }
+
+            for (int spalte = 0; spalte < SIZE; spalte++) {
+                result.append(Stein.steinZuBuchstabe(getStein(new Position(zeile, spalte))));
+            }
+        }
+
+        return result.toString();
     }
 }

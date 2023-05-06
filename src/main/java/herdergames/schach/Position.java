@@ -5,11 +5,11 @@ import processing.core.PApplet;
 import java.util.Optional;
 
 record Position(int zeile, int spalte) {
-    private static boolean isValid(int zeile, int spalte) {
+    static boolean isValid(int zeile, int spalte) {
         return zeile >= 0 && zeile < Brett.SIZE && spalte >= 0 && spalte < Brett.SIZE;
     }
 
-    private static Optional<Position> create(int zeile, int spalte) {
+    static Optional<Position> create(int zeile, int spalte) {
         if (!isValid(zeile, spalte)) {
             return Optional.empty();
         }
