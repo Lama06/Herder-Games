@@ -1,5 +1,6 @@
 package herdergames.latein;
 
+import java.util.Objects;
 import java.util.Set;
 
 final class KonsNomenN extends Nomen {
@@ -8,8 +9,8 @@ final class KonsNomenN extends Nomen {
 
     KonsNomenN(Genus genus, String nominativSingular, String stamm) {
         super(genus);
-        this.nominativSingular = nominativSingular;
-        this.stamm = stamm;
+        this.nominativSingular = Objects.requireNonNull(nominativSingular);
+        this.stamm = Objects.requireNonNull(stamm);
     }
 
     @Override

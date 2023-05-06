@@ -64,7 +64,7 @@ final class AOAdjektivDeklination extends AdjektivDeklination {
     );
 
     private Optional<Adjektiv> parseAUmKurz(AdjektivWoerterbuchEintrag eintrag) {
-        // bonus a um
+        // bonus
 
         if (!eintrag.ersteForm().endsWith("us")) {
             return Optional.empty();

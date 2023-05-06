@@ -16,7 +16,7 @@ final class KonsAdjektivDeklination extends AdjektivDeklination {
                     ),
                     Numerus.PLURAL, Map.of(
                             Kasus.NOMINATIV, "es",
-                            Kasus.GENITIV, "um",
+                            Kasus.GENITIV, "ium",
                             Kasus.DATIV, "ibus",
                             Kasus.AKKUSATIV, "es",
                             Kasus.ABLATIV, "ibus",
@@ -32,7 +32,7 @@ final class KonsAdjektivDeklination extends AdjektivDeklination {
                     ),
                     Numerus.PLURAL, Map.of(
                             Kasus.NOMINATIV, "es",
-                            Kasus.GENITIV, "um",
+                            Kasus.GENITIV, "ium",
                             Kasus.DATIV, "ibus",
                             Kasus.AKKUSATIV, "es",
                             Kasus.ABLATIV, "ibus",
@@ -47,7 +47,7 @@ final class KonsAdjektivDeklination extends AdjektivDeklination {
                     ),
                     Numerus.PLURAL, Map.of(
                             Kasus.NOMINATIV, "ia",
-                            Kasus.GENITIV, "um",
+                            Kasus.GENITIV, "ium",
                             Kasus.DATIV, "ibus",
                             Kasus.AKKUSATIV, "ia",
                             Kasus.ABLATIV, "ibus",

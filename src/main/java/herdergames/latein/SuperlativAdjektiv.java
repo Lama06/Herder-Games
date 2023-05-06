@@ -13,30 +13,24 @@ final class SuperlativAdjektiv extends Adjektiv {
             "magnus", "maxim"
     );
 
-    private final String nominativSingularMaskulinum;
     private final String stamm;
 
     SuperlativAdjektiv(String nominativSingularMaskulinum, String stamm) {
         super(false);
-        this.nominativSingularMaskulinum = Objects.requireNonNull(nominativSingularMaskulinum);
 
         if (UNREGELMAESSIGE_SUPERLATIVE.containsKey(nominativSingularMaskulinum)) {
             this.stamm = UNREGELMAESSIGE_SUPERLATIVE.get(nominativSingularMaskulinum);
-            return;
+        } else if (nominativSingularMaskulinum.endsWith("er")) {
+            this.stamm = nominativSingularMaskulinum + KENNZEICHEN_ER;
+        } else {
+            this.stamm = Objects.requireNonNull(stamm) + KENNZEICHEN;
         }
-        this.stamm = Objects.requireNonNull(stamm);
     }
 
     @Override
     String deklinieren(Genus genus, Numerus numerus, Kasus kasus) {
         String endung = AOAdjektivDeklination.ENDUNGEN.get(genus).get(numerus).get(kasus);
-
-        if (nominativSingularMaskulinum.endsWith("er")) {
-            // Der Superlativ von pulcher ist pulcherrimus
-            return nominativSingularMaskulinum + KENNZEICHEN_ER + endung;
-        }
-
-        return stamm + KENNZEICHEN + endung;
+        return stamm + endung;
     }
 
     @Override

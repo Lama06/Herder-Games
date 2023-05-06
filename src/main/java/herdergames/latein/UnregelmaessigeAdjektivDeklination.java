@@ -7,7 +7,7 @@ abstract class UnregelmaessigeAdjektivDeklination extends AdjektivDeklination {
     abstract Map<Genus, Map<Numerus, Map<Kasus, String>>> getFormen();
 
     @Override
-    Optional<Adjektiv> parse(AdjektivWoerterbuchEintrag eintrag) {
+    final Optional<Adjektiv> parse(AdjektivWoerterbuchEintrag eintrag) {
         String nominativSingularMaskulinum = getFormen().get(Genus.MASKULINUM).get(Numerus.SINGULAR).get(Kasus.NOMINATIV);
         String nominativSingularFemininum = getFormen().get(Genus.FEMININUM).get(Numerus.SINGULAR).get(Kasus.NOMINATIV);
         String nominativSingularNeutrum = getFormen().get(Genus.NEUTRUM).get(Numerus.SINGULAR).get(Kasus.NOMINATIV);

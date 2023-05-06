@@ -13,7 +13,7 @@ abstract class StammNomenDeklination extends NomenDeklination {
     }
 
     @Override
-    Optional<Nomen> parseImpl(String nominativ, Optional<String> genitiv, Genus genus) {
+    final Optional<Nomen> parseImpl(String nominativ, Optional<String> genitiv, Genus genus) {
         String nominativEndung = getEndungen().get(Numerus.SINGULAR).get(Kasus.NOMINATIV);
         String genitivEndung = getEndungen().get(Numerus.SINGULAR).get(Kasus.GENITIV);
 

@@ -11,7 +11,7 @@ abstract class Adjektiv {
 
     abstract Adjektiv steigern(Steigerung steigerung);
 
-    Nomen substantivieren(Genus genus) {
+    final Nomen substantivieren(Genus genus) {
         return new Nomen(genus) {
             @Override
             String deklinieren(Numerus numerus, Kasus kasus) {

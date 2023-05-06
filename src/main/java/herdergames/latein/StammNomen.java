@@ -1,13 +1,15 @@
 package herdergames.latein;
 
+import java.util.Objects;
+
 final class StammNomen extends Nomen {
     private final StammNomenDeklination deklination;
     private final String stamm;
 
     StammNomen(Genus genus, StammNomenDeklination deklination, String stamm) {
         super(genus);
-        this.stamm = stamm;
-        this.deklination = deklination;
+        this.stamm = Objects.requireNonNull(stamm);
+        this.deklination = Objects.requireNonNull(deklination);
     }
 
     @Override

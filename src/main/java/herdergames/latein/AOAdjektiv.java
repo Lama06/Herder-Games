@@ -15,11 +15,10 @@ final class AOAdjektiv extends Adjektiv {
 
     @Override
     String deklinieren(Genus genus, Numerus numerus, Kasus kasus) {
-        if (
-                genus == Genus.MASKULINUM &&
-                        numerus == Numerus.SINGULAR &&
-                        (kasus == Kasus.NOMINATIV || kasus == Kasus.VOKATIV) &&
-                        nominativSingularM.isPresent()
+        if (genus == Genus.MASKULINUM &&
+                numerus == Numerus.SINGULAR &&
+                (kasus == Kasus.NOMINATIV || kasus == Kasus.VOKATIV) &&
+                nominativSingularM.isPresent()
         ) {
             return nominativSingularM.get();
         }

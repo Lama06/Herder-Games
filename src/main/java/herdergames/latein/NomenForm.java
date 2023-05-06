@@ -5,7 +5,7 @@ import processing.core.PApplet;
 import java.util.Objects;
 
 record NomenForm(Numerus numerus, Kasus kasus) {
-    static final int ANZAHL = 12;
+    static final int ANZAHL = Numerus.values().length * Kasus.values().length;
 
     static NomenForm zufaellig(PApplet applet) {
         Numerus numerus = Numerus.values()[applet.choice(Numerus.values().length)];
@@ -13,9 +13,9 @@ record NomenForm(Numerus numerus, Kasus kasus) {
         return new NomenForm(numerus, kasus);
     }
 
-    NomenForm(Numerus numerus, Kasus kasus) {
-        this.numerus = Objects.requireNonNull(numerus);
-        this.kasus = Objects.requireNonNull(kasus);
+    NomenForm {
+        Objects.requireNonNull(numerus);
+        Objects.requireNonNull(kasus);
     }
 
     String zuWort(Nomen nomen, Adjektiv adjektiv) {
