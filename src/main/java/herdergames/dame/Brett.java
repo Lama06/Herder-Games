@@ -44,6 +44,65 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         ));
     }
 
+    static Optional<Brett> parse(List<String> zeilenText) {
+        if (zeilenText.size() != SIZE) {
+            return Optional.empty();
+        }
+
+        List<List<Optional<Stein>>> zeilen = new ArrayList<>();
+
+        for (int zeileIndex = 0; zeileIndex < SIZE; zeileIndex++) {
+            String zeileText = zeilenText.get(zeileIndex);
+            if (zeileText.length() != SIZE) {
+                return Optional.empty();
+            }
+
+            List<Optional<Stein>> zeile = new ArrayList<>();
+            zeilen.add(zeile);
+
+            for (int spalteIndex = 0; spalteIndex < SIZE; spalteIndex++) {
+                char feldBuchstabe = zeileText.charAt(spalteIndex);
+                if (!Position.isValid(zeileIndex, spalteIndex)) {
+                    if (feldBuchstabe != ' ') {
+                        return Optional.empty();
+                    }
+                    continue;
+                }
+                Optional<Optional<Stein>> feld = Stein.buchstabeZuFeld(feldBuchstabe);
+                if (feld.isEmpty()) {
+                    return Optional.empty();
+                }
+                zeile.add(feld.get());
+            }
+        }
+
+        return Optional.of(new Brett(zeilen));
+    }
+
+    static int calculateSize(PApplet applet) {
+        return Math.min(applet.width, applet.height);
+    }
+
+    static int calculateAbstandX(PApplet applet) {
+        return (applet.width - calculateSize(applet)) / 2;
+    }
+
+    static int calculateAbstandY(PApplet applet) {
+        return (applet.height - calculateSize(applet)) / 2;
+    }
+
+    static int calculateFeldSize(PApplet applet) {
+        return calculateSize(applet) / SIZE;
+    }
+
+    static int calculateSteinSize(PApplet applet) {
+        return (calculateFeldSize(applet) / 3) * 2;
+    }
+
+    static int calculateSteinAbstand(PApplet applet) {
+        return (calculateFeldSize(applet) - calculateSteinSize(applet)) / 2;
+    }
+
     private final List<List<Optional<Stein>>> zeilen;
 
     private Brett(List<List<Optional<Stein>>> zeilen) {
@@ -96,22 +155,9 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         return new Brett(neueZeilen);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Brett brett = (Brett) o;
-        return Objects.equals(zeilen, brett.zeilen);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(zeilen);
-    }
-
     private Set<Zug> getMoeglicheSteinBewegenZuege(Position startPosition) {
         Optional<Stein> stein = getStein(startPosition);
-        if (stein.isEmpty() || !stein.get().isStein()) {
+        if (stein.isEmpty() || !stein.get().istStein()) {
             return Collections.emptySet();
         }
         Spieler spieler = stein.get().getSpieler();
@@ -140,7 +186,7 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
 
     private Set<Zug> getMoeglicheSteinSchlagenZuege(Position startPosition, boolean rueckwaerts) {
         Optional<Stein> stein = getStein(startPosition);
-        if (stein.isEmpty() || !stein.get().isStein()) {
+        if (stein.isEmpty() || !stein.get().istStein()) {
             return Collections.emptySet();
         }
         Spieler spieler = stein.get().getSpieler();
@@ -199,7 +245,7 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
 
     private Set<Zug> getMoeglicheDameBewegenZuege(Position startPosition) {
         Optional<Stein> stein = getStein(startPosition);
-        if (stein.isEmpty() || !stein.get().isDame()) {
+        if (stein.isEmpty() || !stein.get().istDame()) {
             return Collections.emptySet();
         }
         Spieler spieler = stein.get().getSpieler();
@@ -235,7 +281,7 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
 
     private Set<Zug> getMoeglicheDameSchlagenZuege(Position startPosition) {
         Optional<Stein> stein = getStein(startPosition);
-        if (stein.isEmpty() || !stein.get().isDame()) {
+        if (stein.isEmpty() || !stein.get().istDame()) {
             return Collections.emptySet();
         }
         Spieler spieler = stein.get().getSpieler();
@@ -405,30 +451,6 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         return insgesamtPerspektive - insgesamtGegner;
     }
 
-    private static int calculateSize(PApplet applet) {
-        return Math.min(applet.width, applet.height);
-    }
-
-    static int calculateAbstandX(PApplet applet) {
-        return (applet.width - calculateSize(applet)) / 2;
-    }
-
-    static int calculateAbstandY(PApplet applet) {
-        return (applet.height - calculateSize(applet)) / 2;
-    }
-
-    static int calculateFeldSize(PApplet applet) {
-        return calculateSize(applet) / SIZE;
-    }
-
-    private static int calculateSteinSize(PApplet applet) {
-        return (calculateFeldSize(applet) / 3) * 2;
-    }
-
-    private static int calculateSteinAbstand(PApplet applet) {
-        return (calculateFeldSize(applet) - calculateSteinSize(applet)) / 2;
-    }
-
     void draw(PApplet applet, Optional<Position> ausgewaehltePosition) {
         applet.background(applet.color(0));
 
@@ -480,5 +502,40 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
                 applet.circle(screenX + steinAbstand, screenY + steinAbstand, steinSize);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+
+        for (int zeile = 0; zeile < SIZE; zeile++) {
+            if (zeile != 0) {
+                result.append('\n');
+            }
+
+            for (int spalte = 0; spalte < SIZE; spalte++) {
+                if (!Position.isValid(zeile, spalte)) {
+                    result.append(' ');
+                    continue;
+                }
+
+                result.append(Stein.feldZuBuchstabe(getStein(new Position(zeile, spalte))));
+            }
+        }
+
+        return result.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Brett brett = (Brett) o;
+        return Objects.equals(zeilen, brett.zeilen);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(zeilen);
     }
 }

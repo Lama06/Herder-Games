@@ -10,7 +10,7 @@ public final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGeg
     private final herdergames.spiel.Spieler spielerUnten;
     private Brett aktuellesBrett = Brett.ANFANG;
     private Optional<Position> ausgewaehltePosition = Optional.empty();
-    private herdergames.dame.Spieler amZug = herdergames.dame.Spieler.SPIELER_UNTEN;
+    private Spieler amZug = Spieler.SPIELER_UNTEN;
 
     public SpielerGegenSpielerSpiel(PApplet applet, herdergames.spiel.Spieler spieler1, herdergames.spiel.Spieler spieler2) {
         super(applet);
@@ -69,10 +69,10 @@ public final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGeg
     public Optional<Optional<herdergames.spiel.Spieler.Id>> draw() {
         aktuellesBrett.draw(applet, ausgewaehltePosition);
 
-        if (aktuellesBrett.hatVerloren(herdergames.dame.Spieler.SPIELER_OBEN)) {
+        if (aktuellesBrett.hatVerloren(Spieler.SPIELER_OBEN)) {
             return Optional.of(Optional.of(spielerUnten.id()));
         }
-        if (aktuellesBrett.hatVerloren(herdergames.dame.Spieler.SPIELER_UNTEN)) {
+        if (aktuellesBrett.hatVerloren(Spieler.SPIELER_UNTEN)) {
             return Optional.of(Optional.of(spielerOben.id()));
         }
         return Optional.empty();
