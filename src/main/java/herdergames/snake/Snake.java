@@ -247,18 +247,12 @@ public final class Snake extends MehrspielerSpiel {
         }
 
         private int getStartX() {
-            switch (spieler.id()) {
-                case SPIELER_1:
-                    return 0;
-                case SPIELER_2:
-                    return SIZE / 3;
-                case SPIELER_3:
-                    return (int) (SIZE * (2f/3f));
-                case SPIELER_4:
-                    return SIZE-1;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (spieler.id()) {
+                case SPIELER_1 -> 0;
+                case SPIELER_2 -> SIZE / 3;
+                case SPIELER_3 -> (int) (SIZE * (2f / 3f));
+                case SPIELER_4 -> SIZE - 1;
+            };
         }
 
         private boolean istWegVomBildschirm() {
@@ -341,18 +335,12 @@ public final class Snake extends MehrspielerSpiel {
         }
 
         private PImage getImage() {
-            switch (getBlickRichtung()) {
-                case UNTEN:
-                    return kopfUnten;
-                case OBEN:
-                    return kopfOben;
-                case LINKS:
-                    return kopfLinks;
-                case RECHTS:
-                    return kopfRechts;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (getBlickRichtung()) {
+                case UNTEN -> kopfUnten;
+                case OBEN -> kopfOben;
+                case LINKS -> kopfLinks;
+                case RECHTS -> kopfRechts;
+            };
         }
 
         @Override
@@ -393,7 +381,7 @@ public final class Snake extends MehrspielerSpiel {
 
     private final class SchlangeKoerper extends SchlangeTeil {
         private SchlangeTeil davor;
-        private SchlangeTeil dahinter;
+        private final SchlangeTeil dahinter;
 
         private SchlangeKoerper(int x, int y, SchlangeTeil davor, SchlangeTeil dahinter) {
             this.x = x;
@@ -485,18 +473,12 @@ public final class Snake extends MehrspielerSpiel {
         }
 
         private PImage getImage() {
-            switch (getRichtungVonDavor()) {
-                case UNTEN:
-                    return endeUnten;
-                case OBEN:
-                    return endeOben;
-                case LINKS:
-                    return endeLinks;
-                case RECHTS:
-                    return endeRechts;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            return switch (getRichtungVonDavor()) {
+                case UNTEN -> endeUnten;
+                case OBEN -> endeOben;
+                case LINKS -> endeLinks;
+                case RECHTS -> endeRechts;
+            };
         }
 
         @Override
