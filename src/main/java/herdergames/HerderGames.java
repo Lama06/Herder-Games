@@ -54,13 +54,13 @@ public final class HerderGames {
 
             new SpielDaten(
                     "Schach",
-                    (herdergames.spiel.SpielerGegenSpielerSpiel.Factory) Schach.SpielerGegenSpielerSpiel::new,
+                    (herdergames.spiel.SpielerGegenSpielerSpiel.Factory) herdergames.schach.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1,
                     Schach::init
             ),
             new SpielDaten(
                     "Schach AI",
-                    (EinzelspielerSpiel.Factory) Schach.SpielerGegenAISpiel::new,
+                    (EinzelspielerSpiel.Factory) herdergames.schach.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
