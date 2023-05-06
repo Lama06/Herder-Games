@@ -5,7 +5,7 @@ import processing.core.PConstants;
 
 import java.util.*;
 
-final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
+record Brett(List<List<Optional<Stein>>> zeilen) implements herdergames.ai.Brett<Brett, Zug, Spieler> {
     static final int SIZE = 8;
 
     static final Brett ANFANG = createAnfang();
@@ -103,9 +103,7 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         return (calculateFeldSize(applet) - calculateSteinSize(applet)) / 2;
     }
 
-    private final List<List<Optional<Stein>>> zeilen;
-
-    private Brett(List<List<Optional<Stein>>> zeilen) {
+    Brett(List<List<Optional<Stein>>> zeilen) {
         if (zeilen.size() != SIZE) {
             throw new IllegalArgumentException();
         }

@@ -4,7 +4,7 @@ import processing.core.PApplet;
 
 import java.util.*;
 
-final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
+record Brett(List<List<Optional<Spieler>>> zeilen) implements herdergames.ai.Brett<Brett, Zug, Spieler> {
     static final int WIDTH = 7;
     static final int HEIGHT = 6;
 
@@ -24,9 +24,7 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
         return new Brett(zeilen);
     }
 
-    private final List<List<Optional<Spieler>>> zeilen;
-
-    private Brett(List<List<Optional<Spieler>>> zeilen) {
+    Brett(List<List<Optional<Spieler>>> zeilen) {
         if (zeilen.size() != HEIGHT) {
             throw new IllegalArgumentException();
         }

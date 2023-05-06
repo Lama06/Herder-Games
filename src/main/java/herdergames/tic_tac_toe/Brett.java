@@ -4,7 +4,7 @@ import processing.core.PApplet;
 
 import java.util.*;
 
-final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
+record Brett(List<List<Optional<Spieler>>> zeilen) implements herdergames.ai.Brett<Brett, Zug, Spieler> {
     static final int SIZE = 3;
 
     static final Brett LEER = createLeer();
@@ -40,8 +40,6 @@ final class Brett implements herdergames.ai.Brett<Brett, Zug, Spieler> {
     static int getSymbolAbstand(PApplet applet) {
         return (getFeldSize(applet) - getSymbolSize(applet)) / 2;
     }
-
-    private final List<List<Optional<Spieler>>> zeilen;
 
     Brett(List<List<Optional<Spieler>>> zeilen) {
         if (zeilen.size() != SIZE) {
