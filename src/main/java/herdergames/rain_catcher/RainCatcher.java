@@ -1,6 +1,6 @@
 package herdergames.rain_catcher;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.PartikelManager;
 import herdergames.util.Steuerung;
@@ -10,7 +10,7 @@ import processing.core.PImage;
 
 import java.util.*;
 
-public final class RainCatcher extends Spiel.Mehrspieler {
+public final class RainCatcher extends MehrspielerSpiel {
     public static void init(PApplet applet) {
         tropfenBild = applet.loadImage("raincatcher/tropfen", "jpg");
         tropfenNichtFangenBild = applet.loadImage("raincatcher/tropfen_nicht_fangen", "jpg");

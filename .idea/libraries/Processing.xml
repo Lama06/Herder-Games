@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="processing">
+  <library name="Processing">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/libs/processing.jar!/" />
     </CLASSES>

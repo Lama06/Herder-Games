@@ -11,6 +11,8 @@ import herdergames.pacman.PacmanSpiel;
 import herdergames.rain_catcher.RainCatcher;
 import herdergames.schach.Schach;
 import herdergames.snake.Snake;
+import herdergames.spiel.EinzelspielerSpiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spiel;
 import herdergames.spiel.Spieler;
 import herdergames.stapeln.Stapeln;
@@ -30,103 +32,103 @@ public final class HerderGames {
     private static final List<SpielDaten> SPIELE = List.of(
             new SpielDaten(
                     "Dame",
-                    (Spiel.SpielerGegenSpieler.Factory) SpielerGegenSpielerSpiel::new,
+                    (herdergames.spiel.SpielerGegenSpielerSpiel.Factory) SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Dame AI",
-                    (Spiel.Einzelspieler.Factory) SpielerGegenAISpiel::new,
+                    (EinzelspielerSpiel.Factory) SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Vier Gewinnt",
-                    (Spiel.SpielerGegenSpieler.Factory) herdergames.vier_gewinnt.SpielerGegenSpielerSpiel::new,
+                    (herdergames.spiel.SpielerGegenSpielerSpiel.Factory) herdergames.vier_gewinnt.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Vier Gewinnt AI",
-                    (Spiel.Einzelspieler.Factory) herdergames.vier_gewinnt.SpielerGegenAISpiel::new,
+                    (EinzelspielerSpiel.Factory) herdergames.vier_gewinnt.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Schach",
-                    (Spiel.SpielerGegenSpieler.Factory) Schach.SpielerGegenSpielerSpiel::new,
+                    (herdergames.spiel.SpielerGegenSpielerSpiel.Factory) Schach.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1,
                     Schach::init
             ),
             new SpielDaten(
                     "Schach AI",
-                    (Spiel.Einzelspieler.Factory) Schach.SpielerGegenAISpiel::new,
+                    (EinzelspielerSpiel.Factory) Schach.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Tic Tac Toe",
-                    (Spiel.SpielerGegenSpieler.Factory) herdergames.tic_tac_toe.SpielerGegenSpielerSpiel::new,
+                    (herdergames.spiel.SpielerGegenSpielerSpiel.Factory) herdergames.tic_tac_toe.SpielerGegenSpielerSpiel::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Tic Tac Toe AI",
-                    (Spiel.Einzelspieler.Factory) herdergames.tic_tac_toe.SpielerGegenAISpiel::new,
+                    (EinzelspielerSpiel.Factory) herdergames.tic_tac_toe.SpielerGegenAISpiel::new,
                     UEBERGANG_1
             ),
 
             new SpielDaten(
                     "Flappy Oinky",
-                    (Spiel.Mehrspieler.Factory) FlappyOinky::new,
+                    (MehrspielerSpiel.Factory) FlappyOinky::new,
                     UEBERGANG_1,
                     FlappyOinky::init
             ),
             new SpielDaten(
                     "Bälle",
-                    (Spiel.Mehrspieler.Factory) Baelle::new,
+                    (MehrspielerSpiel.Factory) Baelle::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Snake",
-                    (Spiel.Mehrspieler.Factory) Snake::new,
+                    (MehrspielerSpiel.Factory) Snake::new,
                     UEBERGANG_1,
                     Snake::init
             ),
             new SpielDaten(
                     "Tetris",
-                    (Spiel.Mehrspieler.Factory) Tetris::new,
+                    (MehrspielerSpiel.Factory) Tetris::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Stapeln",
-                    (Spiel.Mehrspieler.Factory) Stapeln::new,
+                    (MehrspielerSpiel.Factory) Stapeln::new,
                     UEBERGANG_1
             ),
             new SpielDaten(
                     "Rain Catcher",
-                    (Spiel.Mehrspieler.Factory) RainCatcher::new,
+                    (MehrspielerSpiel.Factory) RainCatcher::new,
                     UEBERGANG_1,
                     RainCatcher::init
             ),
             new SpielDaten(
                     "Pacman",
-                    (Spiel.Mehrspieler.Factory) PacmanSpiel::new,
+                    (MehrspielerSpiel.Factory) PacmanSpiel::new,
                     UEBERGANG_1,
                     PacmanSpiel::init
             ),
             new SpielDaten(
                     "Harry Potter Trivia",
-                    (Spiel.Mehrspieler.Factory) HarryPotterQuiz::new,
+                    (MehrspielerSpiel.Factory) HarryPotterQuiz::new,
                     UEBERGANG_1,
                     HarryPotterQuiz::init
             ),
             new SpielDaten(
                     "Latein Formen",
-                    (Spiel.Mehrspieler.Factory) Latein::new,
+                    (MehrspielerSpiel.Factory) Latein::new,
                     UEBERGANG_1,
                     Latein::init
             ),
             new SpielDaten(
                     "Breakout",
-                    (Spiel.Mehrspieler.Factory) BreakOut::new,
+                    (MehrspielerSpiel.Factory) BreakOut::new,
                     UEBERGANG_1
             )
     );
@@ -763,8 +765,8 @@ public final class HerderGames {
 
             List<SpielerDaten> aktivierteSpielerDaten = getAktivierteSpielerDaten();
 
-            if (spielDaten.factory instanceof Spiel.Einzelspieler.Factory) {
-                Spiel.Einzelspieler.Factory einzelspielerFactory = (Spiel.Einzelspieler.Factory) spielDaten.factory;
+            if (spielDaten.factory instanceof EinzelspielerSpiel.Factory) {
+                EinzelspielerSpiel.Factory einzelspielerFactory = (EinzelspielerSpiel.Factory) spielDaten.factory;
                 if (aktivierteSpielerDaten.size() != 1) {
                     SpielerDaten spieler1Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_1);
                     spieler1Daten.aktiviert = true;
@@ -773,8 +775,8 @@ public final class HerderGames {
                 }
                 Spieler spieler = aktivierteSpielerDaten.get(0).convert();
                 spiel = einzelspielerFactory.neuesSpiel(applet, spieler);
-            } else if (spielDaten.factory instanceof Spiel.SpielerGegenSpieler.Factory) {
-                Spiel.SpielerGegenSpieler.Factory spielerGegenSpielerFactory = (Spiel.SpielerGegenSpieler.Factory) spielDaten.factory;
+            } else if (spielDaten.factory instanceof herdergames.spiel.SpielerGegenSpielerSpiel.Factory) {
+                herdergames.spiel.SpielerGegenSpielerSpiel.Factory spielerGegenSpielerFactory = (herdergames.spiel.SpielerGegenSpielerSpiel.Factory) spielDaten.factory;
                 if (aktivierteSpielerDaten.size() != 2) {
                     SpielerDaten spieler1Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_1);
                     spieler1Daten.aktiviert = true;
@@ -787,7 +789,7 @@ public final class HerderGames {
                 Spieler spieler2 = aktivierteSpielerDaten.get(1).convert();
                 spiel = spielerGegenSpielerFactory.neuesSpiel(applet, spieler1, spieler2);
             } else {
-                Spiel.Mehrspieler.Factory mehrspielerFactory = (Spiel.Mehrspieler.Factory) spielDaten.factory;
+                MehrspielerSpiel.Factory mehrspielerFactory = (MehrspielerSpiel.Factory) spielDaten.factory;
                 if (aktivierteSpielerDaten.isEmpty()) {
                     SpielerDaten spieler1Daten = alleSpielerDaten.get(Spieler.Id.SPIELER_1);
                     spieler1Daten.aktiviert = true;
@@ -831,8 +833,8 @@ public final class HerderGames {
         }
 
         private void drawEinzelspielerSpiel() {
-            Spiel.Einzelspieler einzelspielerSpiel = (Spiel.Einzelspieler) spiel;
-            Optional<Spiel.Einzelspieler.Ergebnis> ergebnis = einzelspielerSpiel.draw();
+            EinzelspielerSpiel einzelspielerSpiel = (EinzelspielerSpiel) spiel;
+            Optional<EinzelspielerSpiel.Ergebnis> ergebnis = einzelspielerSpiel.draw();
             if (ergebnis.isEmpty()) {
                 return;
             }
@@ -863,7 +865,7 @@ public final class HerderGames {
         }
 
         private void drawSpielerGegenSpielerSpiel() {
-            Spiel.SpielerGegenSpieler spielerGegenSpielerSpiel = (Spiel.SpielerGegenSpieler) spiel;
+            herdergames.spiel.SpielerGegenSpielerSpiel spielerGegenSpielerSpiel = (herdergames.spiel.SpielerGegenSpielerSpiel) spiel;
             Optional<Optional<Spieler.Id>> result = spielerGegenSpielerSpiel.draw();
             if (result.isEmpty()) {
                 return;
@@ -880,7 +882,7 @@ public final class HerderGames {
         }
 
         private void drawMehrspielerSpiel() {
-            Spiel.Mehrspieler mehspielerSpiel = (Spiel.Mehrspieler) spiel;
+            MehrspielerSpiel mehspielerSpiel = (MehrspielerSpiel) spiel;
             Optional<List<Spieler.Id>> rangliste = mehspielerSpiel.draw();
             if (rangliste.isEmpty()) {
                 return;
@@ -898,9 +900,9 @@ public final class HerderGames {
 
         @Override
         void draw() {
-            if (spiel instanceof Spiel.Einzelspieler) {
+            if (spiel instanceof EinzelspielerSpiel) {
                 drawEinzelspielerSpiel();
-            } else if (spiel instanceof Spiel.SpielerGegenSpieler) {
+            } else if (spiel instanceof herdergames.spiel.SpielerGegenSpielerSpiel) {
                 drawSpielerGegenSpielerSpiel();
             } else {
                 drawMehrspielerSpiel();

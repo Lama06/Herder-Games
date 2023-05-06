@@ -1,6 +1,6 @@
 package herdergames.snake;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
@@ -10,7 +10,7 @@ import processing.core.PImage;
 import java.util.*;
 import java.util.List;
 
-public final class Snake extends Spiel.Mehrspieler {
+public final class Snake extends MehrspielerSpiel {
     private static PImage apfel;
 
     private static PImage kopfOben;

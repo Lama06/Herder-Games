@@ -1,14 +1,14 @@
 package herdergames.baelle;
 
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.util.Kreis;
-import herdergames.spiel.Spiel;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
 import java.util.*;
 
-public final class Baelle extends Spiel.Mehrspieler {
+public final class Baelle extends MehrspielerSpiel {
     private static final int BALL_DELAY = 30;
 
     private final Set<Ball> baelle = new HashSet<>();

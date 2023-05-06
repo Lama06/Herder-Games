@@ -1,6 +1,6 @@
 package herdergames.stapeln;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
@@ -8,7 +8,7 @@ import processing.core.PConstants;
 
 import java.util.*;
 
-public final class Stapeln extends Spiel.Mehrspieler {
+public final class Stapeln extends MehrspielerSpiel {
     private final List<SpielBrett> spielBretter = new ArrayList<>();
     private final List<Spieler.Id> rangliste = new ArrayList<>();
 

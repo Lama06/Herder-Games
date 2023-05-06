@@ -1,12 +1,11 @@
 package herdergames.tic_tac_toe;
 
-import herdergames.spiel.Spiel;
 import processing.core.PApplet;
 
 import java.util.Optional;
 import java.util.Set;
 
-public final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+public final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGegenSpielerSpiel {
     private final herdergames.spiel.Spieler spielerKreuz;
     private final herdergames.spiel.Spieler spielerKreis;
     private Brett aktuellesBrett = Brett.LEER;

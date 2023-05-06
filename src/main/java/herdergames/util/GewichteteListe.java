@@ -16,7 +16,7 @@ public final class GewichteteListe {
             throw new IllegalArgumentException();
         }
 
-        int gewichtungGesamt = liste.stream().mapToInt(eintrag -> eintrag.gewichtung()).sum();
+        int gewichtungGesamt = liste.stream().mapToInt(Eintrag::gewichtung).sum();
         int verbleibendeGewichtung = applet.choice(gewichtungGesamt);
         for (Eintrag<? extends T> eintrag : liste) {
             verbleibendeGewichtung -= eintrag.gewichtung;

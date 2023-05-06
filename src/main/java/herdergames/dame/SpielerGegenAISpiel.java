@@ -1,12 +1,12 @@
 package herdergames.dame;
 
 import herdergames.ai.AI;
-import herdergames.spiel.Spiel;
+import herdergames.spiel.EinzelspielerSpiel;
 import processing.core.PApplet;
 
 import java.util.*;
 
-public final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+public final class SpielerGegenAISpiel extends EinzelspielerSpiel {
     private static final herdergames.dame.Spieler COMPUTER = herdergames.dame.Spieler.SPIELER_OBEN;
     private static final herdergames.dame.Spieler MENSCH = herdergames.dame.Spieler.SPIELER_UNTEN;
     private static final int AI_DEPTH = 6;

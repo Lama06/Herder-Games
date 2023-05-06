@@ -1,8 +1,8 @@
 package herdergames.flappy_oinky;
 
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.Rechteck;
-import herdergames.spiel.Spiel;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -10,7 +10,7 @@ import processing.core.PImage;
 
 import java.util.*;
 
-public final class FlappyOinky extends Spiel.Mehrspieler {
+public final class FlappyOinky extends MehrspielerSpiel {
     public static void init(PApplet applet) {
         hindernis = applet.loadImage("flappyoinky/obstacle.png");
         oinky = applet.loadImage("flappyoinky/oinky.png");

@@ -1,13 +1,12 @@
 package herdergames.vier_gewinnt;
 
-import herdergames.spiel.Spiel;
 import processing.core.PApplet;
 
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 
-public final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+public final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGegenSpielerSpiel {
     private final herdergames.spiel.Spieler spieler1;
     private final herdergames.spiel.Spieler spieler2;
     private Brett aktuellesBrett = Brett.LEER;

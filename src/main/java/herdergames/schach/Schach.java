@@ -1,6 +1,6 @@
 package herdergames.schach;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.EinzelspielerSpiel;
 import herdergames.ai.AI;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -864,7 +864,7 @@ public final class Schach {
     }
 
 
-    public static final class SpielerGegenSpielerSpiel extends Spiel.SpielerGegenSpieler {
+    public static final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGegenSpielerSpiel {
         private final herdergames.spiel.Spieler weiss;
         private final herdergames.spiel.Spieler schwarz;
         private Brett aktuellesBrett = Brett.ANFANG;
@@ -939,7 +939,7 @@ public final class Schach {
         }
     }
 
-    public static final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+    public static final class SpielerGegenAISpiel extends EinzelspielerSpiel {
         private static final int AI_DEPTH = 2;
 
         private static final Schach.Spieler COMPUTER = Schach.Spieler.WEISS;

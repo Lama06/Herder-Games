@@ -1,6 +1,6 @@
 package herdergames.pacman;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.Rechteck;
 import herdergames.util.Steuerung;
@@ -10,7 +10,7 @@ import processing.core.PImage;
 
 import java.util.*;
 
-public final class PacmanSpiel extends Spiel.Mehrspieler {
+public final class PacmanSpiel extends MehrspielerSpiel {
     public static void init(PApplet applet) {
         spriteSheet = applet.loadImage("pacman/pacman.png");
 

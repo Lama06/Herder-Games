@@ -1,9 +1,9 @@
 package herdergames.break_out;
 
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.PartikelManager;
 import herdergames.util.Rechteck;
-import herdergames.spiel.Spiel;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -11,7 +11,7 @@ import processing.core.PConstants;
 import java.util.*;
 import java.util.stream.Stream;
 
-public final class BreakOut extends Spiel.Mehrspieler {
+public final class BreakOut extends MehrspielerSpiel {
     private final List<Welt> welten = new ArrayList<>();
     private final List<Spieler.Id> rangliste = new ArrayList<>();
 

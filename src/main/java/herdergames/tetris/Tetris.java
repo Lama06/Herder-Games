@@ -1,6 +1,6 @@
 package herdergames.tetris;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 // In diesem Spiel habe ichs ein bischen mit funktionaler Programmierung übertrieben
 
-public final class Tetris extends Spiel.Mehrspieler {
+public final class Tetris extends MehrspielerSpiel {
     private final List<SpielBrett> spielBretter = new ArrayList<>();
     private final List<Spieler.Id> rangliste = new ArrayList<>();
 

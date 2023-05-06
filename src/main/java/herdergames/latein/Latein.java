@@ -1,6 +1,6 @@
 package herdergames.latein;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
 import herdergames.util.GewichteteListe;
 import herdergames.util.PartikelManager;
@@ -28,7 +28,11 @@ import java.util.stream.Collectors;
  *
  * Herr Schwehmer wäre sicher stolz
  */
-public final class Latein extends Spiel.Mehrspieler {
+public final class Latein extends MehrspielerSpiel {
+    private static final int ZEIT_PRO_FORM = 20*60;
+    // Für Herr Schwehmer würde vermutlich eine Sekunde genügen, aber ich brauche etwas mehr
+    private static final int FORMEN_PRO_RUNDE = 20;
+
     private static final String ADJEKTIV_DATEI = "latein/adjektive.txt";
     private static final String NOMEN_DATEI = "latein/nomen.txt";
 
@@ -38,6 +42,9 @@ public final class Latein extends Spiel.Mehrspieler {
 
     private static final int NOMINALISIERTES_ADJEKTIV_GEWICHTUNG = 1;
     private static final int NOMEN_GEWICHTUNG = NOMINALISIERTES_ADJEKTIV_GEWICHTUNG * 30;
+
+    private static List<GewichteteListe.Eintrag<Nomen>> nomen;
+    private static List<GewichteteListe.Eintrag<Adjektiv>> adjektive;
 
     private static void loadAdjektive(PApplet applet) {
         List<GewichteteListe.Eintrag<Adjektiv>> result = new ArrayList<>();
@@ -109,13 +116,6 @@ public final class Latein extends Spiel.Mehrspieler {
         loadAdjektive(applet);
         loadNomen(applet);
     }
-
-    // Für Herr Schwehmer würde vermutlich eine Sekunde genügen, aber ich brauche etwas mehr
-    private static final int FORMEN_PRO_RUNDE = 20;
-    private static final int ZEIT_PRO_FORM = 20*60;
-
-    private static List<GewichteteListe.Eintrag<Nomen>> nomen;
-    private static List<GewichteteListe.Eintrag<Adjektiv>> adjektive;
 
     private final PartikelManager partikelManager = new PartikelManager(applet);
     private final Counter counter = new Counter();

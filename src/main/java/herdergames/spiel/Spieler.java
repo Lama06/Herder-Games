@@ -6,6 +6,10 @@ public record Spieler(herdergames.spiel.Spieler.Id id, String name, int punkte) 
     public Spieler {
         Objects.requireNonNull(id);
         Objects.requireNonNull(name);
+
+        if (punkte < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public enum Id {

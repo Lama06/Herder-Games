@@ -1,6 +1,6 @@
 package herdergames.harry_potter_quiz;
 
-import herdergames.spiel.Spiel;
+import herdergames.spiel.MehrspielerSpiel;
 import herdergames.util.PartikelManager;
 import herdergames.util.Steuerung;
 import processing.core.PApplet;
@@ -8,7 +8,7 @@ import processing.core.PConstants;
 
 import java.util.*;
 
-public final class HarryPotterQuiz extends Spiel.Mehrspieler {
+public final class HarryPotterQuiz extends MehrspielerSpiel {
     public static void init(PApplet applet) {
         fragen = Collections.unmodifiableList(FrageDaten.loadFragen(applet, "harrypotter/fragen.txt"));
     }

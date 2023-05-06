@@ -1,14 +1,14 @@
 package herdergames.vier_gewinnt;
 
 import herdergames.ai.AI;
-import herdergames.spiel.Spiel;
+import herdergames.spiel.EinzelspielerSpiel;
 import processing.core.PApplet;
 
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 
-public final class SpielerGegenAISpiel extends Spiel.Einzelspieler {
+public final class SpielerGegenAISpiel extends EinzelspielerSpiel {
     private static final int AI_TIEFE = 6;
     private static final Spieler MENSCH = Spieler.SPIELER_1;
     private static final Spieler COMPUTER = Spieler.SPIELER_2;
