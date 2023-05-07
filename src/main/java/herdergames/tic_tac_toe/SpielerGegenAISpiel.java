@@ -9,8 +9,8 @@ import java.util.Set;
 
 public final class SpielerGegenAISpiel extends EinzelspielerSpiel {
     private static final int AI_TIEFE = 9; // Ein Tic Tac Toe Spiel ist nach spätestens 9 Zügen beendet, weil dann das Brett voll ist
-    private static final herdergames.tic_tac_toe.Spieler MENSCH = herdergames.tic_tac_toe.Spieler.KREIS;
-    private static final herdergames.tic_tac_toe.Spieler COMPUTER = herdergames.tic_tac_toe.Spieler.KREUZ;
+    private static final Spieler MENSCH = Spieler.KREIS;
+    private static final Spieler COMPUTER = Spieler.KREUZ;
     private Brett aktuellesBrett;
 
     public SpielerGegenAISpiel(PApplet applet, herdergames.spiel.Spieler spieler) {

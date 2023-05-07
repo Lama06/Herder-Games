@@ -9,7 +9,7 @@ public final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGeg
     private final herdergames.spiel.Spieler spielerKreuz;
     private final herdergames.spiel.Spieler spielerKreis;
     private Brett aktuellesBrett = Brett.LEER;
-    private herdergames.tic_tac_toe.Spieler amZug = herdergames.tic_tac_toe.Spieler.KREUZ;
+    private Spieler amZug = Spieler.KREUZ;
 
     public SpielerGegenSpielerSpiel(PApplet applet, herdergames.spiel.Spieler spieler1, herdergames.spiel.Spieler spieler2) {
         super(applet);
@@ -43,10 +43,10 @@ public final class SpielerGegenSpielerSpiel extends herdergames.spiel.SpielerGeg
     public Optional<Optional<herdergames.spiel.Spieler.Id>> draw() {
         aktuellesBrett.draw(applet);
 
-        if (aktuellesBrett.hatGewonnen(herdergames.tic_tac_toe.Spieler.KREUZ)) {
+        if (aktuellesBrett.hatGewonnen(Spieler.KREUZ)) {
             return Optional.of(Optional.of(spielerKreuz.id()));
         }
-        if (aktuellesBrett.hatGewonnen(herdergames.tic_tac_toe.Spieler.KREIS)) {
+        if (aktuellesBrett.hatGewonnen(Spieler.KREIS)) {
             return Optional.of(Optional.of(spielerKreis.id()));
         }
         if (aktuellesBrett.getMoeglicheZuegeFuerSpieler(amZug).isEmpty()) {
