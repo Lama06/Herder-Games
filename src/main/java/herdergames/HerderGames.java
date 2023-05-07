@@ -8,14 +8,14 @@ import java.util.*;
 
 public final class HerderGames {
     private final PApplet applet;
-    private final Map<Spieler.Id, SpielerDaten> alleSpielerDaten = new HashMap<>();
+    private final Map<Spieler.Id, SpielerDaten> spielerDaten = new EnumMap<>(Spieler.Id.class);
     private Screen currentScreen;
 
     public HerderGames(PApplet applet) {
         this.applet = applet;
 
         for (Spieler.Id spielerId : Spieler.Id.values()) {
-            alleSpielerDaten.put(spielerId, new SpielerDaten(spielerId));
+            spielerDaten.put(spielerId, new SpielerDaten(spielerId));
         }
     }
 
@@ -81,11 +81,11 @@ public final class HerderGames {
     }
 
     List<SpielerDaten> getAktivierteSpielerDaten() {
-        return alleSpielerDaten.values().stream().filter(spieler -> spieler.aktiviert).toList();
+        return spielerDaten.values().stream().filter(spieler -> spieler.aktiviert).toList();
     }
 
     Map<Spieler.Id, SpielerDaten> getSpielerDaten() {
-        return alleSpielerDaten;
+        return spielerDaten;
     }
 
     void openScreen(Screen currentScreen) {

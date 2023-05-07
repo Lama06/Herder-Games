@@ -12,9 +12,15 @@ public abstract non-sealed class EinzelspielerSpiel extends Spiel {
     public abstract Optional<Ergebnis> draw();
 
     public enum Ergebnis {
-        GEWONNEN,
-        UNENTSCHIEDEN,
-        VERLOREN
+        GEWONNEN(1),
+        UNENTSCHIEDEN(0),
+        VERLOREN(-1);
+
+        public final int punkte;
+
+        Ergebnis(int punkte) {
+            this.punkte = punkte;
+        }
     }
 
     @FunctionalInterface

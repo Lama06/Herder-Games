@@ -13,12 +13,9 @@ abstract class Screen {
 
     abstract void draw();
 
-    void keyPressed() {
-    }
+    void keyPressed() { }
 
-    void keyReleased() {
-    }
+    void keyReleased() { }
 
-    void mousePressed() {
-    }
+    void mousePressed() { }
 }

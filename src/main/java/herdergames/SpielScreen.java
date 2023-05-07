@@ -27,7 +27,7 @@ final class SpielScreen extends Screen {
             }
             Spieler spieler = aktivierteSpielerDaten.get(0).convert();
             spiel = einzelspielerFactory.neuesSpiel(applet, spieler);
-        } else if (spielDaten.factory() instanceof herdergames.spiel.SpielerGegenSpielerSpiel.Factory spielerGegenSpielerFactory) {
+        } else if (spielDaten.factory() instanceof SpielerGegenSpielerSpiel.Factory spielerGegenSpielerFactory) {
             if (aktivierteSpielerDaten.size() != 2) {
                 SpielerDaten spieler1Daten = herderGames.getSpielerDaten().get(Spieler.Id.SPIELER_1);
                 spieler1Daten.aktiviert = true;
@@ -97,17 +97,11 @@ final class SpielScreen extends Screen {
         }
         SpielerDaten spielerDaten = herderGames.getAktivierteSpielerDaten().get(0);
 
-        int punkte = switch (ergebnis.get()) {
-            case GEWONNEN -> 1;
-            case UNENTSCHIEDEN -> 0;
-            case VERLOREN -> -1;
-        };
-
-        spielerDaten.punkte += punkte;
+        spielerDaten.punkte += ergebnis.get().punkte;
     }
 
     private void drawSpielerGegenSpielerSpiel() {
-        herdergames.spiel.SpielerGegenSpielerSpiel spielerGegenSpielerSpiel = (herdergames.spiel.SpielerGegenSpielerSpiel) spiel;
+        SpielerGegenSpielerSpiel spielerGegenSpielerSpiel = (SpielerGegenSpielerSpiel) spiel;
         Optional<Optional<Spieler.Id>> result = spielerGegenSpielerSpiel.draw();
         if (result.isEmpty()) {
             return;
@@ -144,7 +138,7 @@ final class SpielScreen extends Screen {
     void draw() {
         if (spiel instanceof EinzelspielerSpiel) {
             drawEinzelspielerSpiel();
-        } else if (spiel instanceof herdergames.spiel.SpielerGegenSpielerSpiel) {
+        } else if (spiel instanceof SpielerGegenSpielerSpiel) {
             drawSpielerGegenSpielerSpiel();
         } else {
             drawMehrspielerSpiel();

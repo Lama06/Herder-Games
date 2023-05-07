@@ -14,6 +14,7 @@ import herdergames.tetris.Tetris;
 import processing.core.PApplet;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebergang, Consumer<PApplet> init) {
@@ -120,6 +121,13 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     SpielUebergang.UEBERGANG_1
             )
     );
+
+    public SpielDaten {
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(factory);
+        Objects.requireNonNull(uebergang);
+        Objects.requireNonNull(init);
+    }
 
     public SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebergang) {
         this(name, factory, uebergang, applet -> { });

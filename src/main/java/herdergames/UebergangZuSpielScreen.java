@@ -19,6 +19,15 @@ final class UebergangZuSpielScreen extends Screen {
     }
 
     @Override
+    void keyPressed() {
+        if (applet.key != ' ') {
+            return;
+        }
+
+        herderGames.openScreen(new SpielScreen(herderGames, spiel));
+    }
+
+    @Override
     void draw() {
         applet.background(0);
 

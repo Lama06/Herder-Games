@@ -1,7 +1,17 @@
 package herdergames.video;
 
+import java.util.Objects;
+
 public record Video(String path, int frames) {
     public static final Video LOOP_VIDEO = new Video("titlescreen/loop", 504);
+
+    public Video {
+        Objects.requireNonNull(path);
+
+        if (frames <= 0) {
+            throw new IllegalArgumentException();
+        }
+    }
 
     public String getFrameFileName(int frame) {
         String fileName = Integer.toString(frame + 1);

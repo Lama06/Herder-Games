@@ -27,16 +27,11 @@ public final class Steuerung {
     public void keyReleased() {
         Richtung.getGedrueckt(applet, spieler).ifPresent(richtung -> {
             gedrueckt.remove(richtung);
-            zuletztGedrueckt.ifPresent(zuletztGedrueckt -> {
-                if (gedrueckt.contains(zuletztGedrueckt)) {
-                    return;
-                }
+
+            if (zuletztGedrueckt.isPresent() && zuletztGedrueckt.get() == richtung && !gedrueckt.isEmpty()) {
                 List<Richtung> gedruecktListe = gedrueckt.stream().toList();
-                if (gedruecktListe.isEmpty()) {
-                    return;
-                }
                 this.zuletztGedrueckt = Optional.of(gedruecktListe.get(applet.choice(gedruecktListe.size())));
-            });
+            }
         });
     }
 

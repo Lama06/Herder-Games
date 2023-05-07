@@ -76,7 +76,7 @@ final class SpielAuswahlScreen extends Screen {
         uiEnabled = !uiEnabled;
     }
 
-    private void neuInstalisieren() {
+    private void neuInstalisieren() { // :)
         if (applet.key != 'x') {
             return;
         }

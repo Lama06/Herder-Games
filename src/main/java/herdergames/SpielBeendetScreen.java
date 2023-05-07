@@ -17,12 +17,15 @@ final class SpielBeendetScreen extends Screen {
     }
 
     @Override
-    void draw() {
-    }
+    void draw() { }
 
     @Override
     void keyPressed() {
-        if (applet.key == ' ' || applet.key == PConstants.ENTER || applet.key == PConstants.RETURN) {
+        if (applet.key == ' ' ||
+                applet.key == PConstants.ENTER ||
+                applet.key == PConstants.RETURN ||
+                applet.key == PConstants.DELETE
+        ) {
             herderGames.openScreen(new SpielScreen(herderGames, spiel));
             return;
         }

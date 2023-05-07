@@ -12,7 +12,7 @@ public final class LoopVideoPlayer {
     private PImage lastFrame;
 
     public LoopVideoPlayer(PApplet applet, Video video, float speed, int startFrame) {
-        if (startFrame < 0 || startFrame >= video.frames()) {
+        if (startFrame < 0 || startFrame >= video.frames() || speed <= 0) {
             throw new IllegalArgumentException();
         }
 

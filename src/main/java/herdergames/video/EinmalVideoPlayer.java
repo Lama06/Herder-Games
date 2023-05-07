@@ -22,6 +22,10 @@ public final class EinmalVideoPlayer {
             throw new IllegalArgumentException();
         }
 
+        if (speed <= 0) {
+            throw new IllegalArgumentException();
+        }
+
         this.applet = applet;
         this.speed = speed;
         this.destination = destination;
