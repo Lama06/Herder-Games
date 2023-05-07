@@ -48,8 +48,8 @@ public final class HarryPotterQuiz extends MehrspielerSpiel {
     private void naechsteFrage() {
         verbleibendeZeit = ZEIT_PRO_FRAGE;
         aktuelleFrage = verbleibendeFragen.remove(0);
-        antwortenReihenfolge = new ArrayList<>(aktuelleFrage.falscheAntworten);
-        antwortenReihenfolge.add(aktuelleFrage.richtigeAntwort);
+        antwortenReihenfolge = new ArrayList<>(aktuelleFrage.falscheAntworten());
+        antwortenReihenfolge.add(aktuelleFrage.richtigeAntwort());
         Collections.shuffle(antwortenReihenfolge);
     }
 
@@ -59,7 +59,7 @@ public final class HarryPotterQuiz extends MehrspielerSpiel {
 
         verbleibendeZeit--;
         if (verbleibendeZeit <= 0) {
-            Antwort richtigeAntwort = antworten.get(antwortenReihenfolge.indexOf(aktuelleFrage.richtigeAntwort));
+            Antwort richtigeAntwort = antworten.get(antwortenReihenfolge.indexOf(aktuelleFrage.richtigeAntwort()));
             for (Spieler spieler : alleSpieler) {
                 if (richtigeAntwort.isInside(spieler.x, spieler.y)) {
                     spieler.punkte++;
@@ -129,7 +129,7 @@ public final class HarryPotterQuiz extends MehrspielerSpiel {
             applet.textAlign(PConstants.CENTER, PConstants.CENTER);
             applet.textSize(TEXT_SIZE * applet.height);
             applet.fill(applet.color(0));
-            applet.text(aktuelleFrage.frage, X * applet.width, Y * applet.height);
+            applet.text(aktuelleFrage.frage(), X * applet.width, Y * applet.height);
         }
     }
 
@@ -212,42 +212,6 @@ public final class HarryPotterQuiz extends MehrspielerSpiel {
 
         private void keyReleased() {
             steuerung.keyReleased();
-        }
-    }
-
-    private record FrageDaten(String frage, String richtigeAntwort, List<String> falscheAntworten) {
-        private static final int ANTWORTEN = 4;
-
-        private static List<FrageDaten> loadFragen(PApplet applet, String path) {
-            String[] zeilen = applet.loadStrings(path);
-            List<FrageDaten> result = new ArrayList<>();
-            for (int zeile = 0; zeile < zeilen.length; ) {
-                String frage = zeilen[zeile++];
-                String richtigeAntwort = zeilen[zeile++];
-                List<String> falscheAntworten = new ArrayList<>();
-                while (true) {
-                    if (zeile >= zeilen.length) {
-                        break;
-                    }
-                    String falscheAntwort = zeilen[zeile++];
-                    if (falscheAntwort.isEmpty()) {
-                        break;
-                    }
-                    falscheAntworten.add(falscheAntwort);
-                }
-                result.add(new FrageDaten(frage, richtigeAntwort, falscheAntworten));
-            }
-            return result;
-        }
-
-        private FrageDaten(String frage, String richtigeAntwort, List<String> falscheAntworten) {
-            if (falscheAntworten.size() != ANTWORTEN - 1) {
-                throw new IllegalArgumentException();
-            }
-
-            this.frage = Objects.requireNonNull(frage);
-            this.richtigeAntwort = Objects.requireNonNull(richtigeAntwort);
-            this.falscheAntworten = List.copyOf(falscheAntworten);
         }
     }
 }
