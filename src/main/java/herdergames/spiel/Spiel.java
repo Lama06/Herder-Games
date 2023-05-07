@@ -3,7 +3,7 @@ package herdergames.spiel;
 import processing.core.PApplet;
 
 public abstract sealed class Spiel permits EinzelspielerSpiel, SpielerGegenSpielerSpiel, MehrspielerSpiel {
-    protected final PApplet applet;
+    public final PApplet applet;
 
     protected Spiel(PApplet applet) {
         this.applet = applet;
