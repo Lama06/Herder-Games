@@ -523,17 +523,4 @@ record Brett(List<List<Optional<Stein>>> zeilen) implements herdergames.ai.Brett
 
         return result.toString();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Brett brett = (Brett) o;
-        return Objects.equals(zeilen, brett.zeilen);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(zeilen);
-    }
 }

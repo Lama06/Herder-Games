@@ -28,8 +28,7 @@ record Stein(Spieler spieler, Figur figur) {
 
         Spieler spieler = Character.isLowerCase(buchstabe) ? Spieler.WEISS : Spieler.SCHWARZ;
         Optional<Figur> figur = Arrays.stream(Figur.values()).filter(f -> f.buchstabe == Character.toLowerCase(buchstabe)).findAny();
-        return figur.map(value -> Optional.of(new Stein(spieler, value)));
-
+        return figur.map(f -> Optional.of(new Stein(spieler, f)));
     }
 
     private PImage getImage() {

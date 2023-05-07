@@ -23,7 +23,7 @@ final class SuperlativAdjektiv extends Adjektiv {
         } else if (nominativSingularMaskulinum.endsWith("er")) {
             this.stamm = nominativSingularMaskulinum + KENNZEICHEN_ER;
         } else {
-            this.stamm = Objects.requireNonNull(stamm) + KENNZEICHEN;
+            this.stamm = stamm + KENNZEICHEN;
         }
     }
 
