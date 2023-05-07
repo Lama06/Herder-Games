@@ -107,3 +107,49 @@ Arrays.stream(Numerus.values())
       .filter(form -> form.zuWort(aktuellesNomen, aktuellesAdjektiv).equals(getAktuellesWort()))
       .collect(Collectors.toUnmodifiableSet())
 ```
+
+## Unit Tests
+Weil der Code von Herder Games einfach so lang ist, habe ich für einige kompilizierte Teile des Codes Unit-Tests erstellt.
+Ein Unit-Test ist Code, der automatisch ausgeführt wird und automatisiert testet, ob alles noch funktioniert.
+Das ist zum Beispiel praktisch, um nach einer Änderung zu wissen, ob man versehentlich irgendwas kaputt gemacht hat.
+Ich benutze die Unit-Testing Libary JUnit 5, die der Standard für Java ist.
+
+Hier ein Beispiel für einen Unit-Test, der die e-Deklination im Latein Formen Spiel anhand des Wortes res testet:
+
+```
+@Test
+void testEDeklination() {
+    testDeklination(
+            Set.of(
+                    new NomenWoerterbuchEintrag("res", Optional.of("rei"), Optional.empty()),
+                    new NomenWoerterbuchEintrag("res", Optional.of("rei"), Optional.of(Genus.FEMININUM))
+            ),
+            Genus.FEMININUM,
+            Map.of(
+                    Numerus.SINGULAR, Map.of(
+                            Kasus.NOMINATIV, "res",
+                            Kasus.GENITIV, "rei",
+                            Kasus.DATIV, "rei",
+                            Kasus.AKKUSATIV, "rem",
+                            Kasus.ABLATIV, "re",
+                            Kasus.VOKATIV, "res"
+                    ),
+                    Numerus.PLURAL, Map.of(
+                            Kasus.NOMINATIV, "res",
+                            Kasus.GENITIV, "rerum",
+                            Kasus.DATIV, "rebus",
+                            Kasus.AKKUSATIV, "res",
+                            Kasus.ABLATIV, "rebus",
+                            Kasus.VOKATIV, "res"
+                    )
+            )
+    );
+}
+```
+
+## Intellij-Idea
+Weil unser Code über 10.000 Zeilen lang ist und hunderte Klassen, Interfaces, Records und Enums erstellt, war es nicht mehr
+möglich, das Ganze in der Processing IDE zu schreiben, denn in der Processing IDE kann man zum Beispiel noch nicht einmal
+packages erstellen. Deswegen waren die Dateien teilweise über 1600 Zeilen lang.
+Dann haben wir uns dazu entschieden, zu einer richtigen Ide zu wechseln, nämlich Intellij Idea: https://www.jetbrains.com/de-de/idea/.
+Diese Ide ist zwar im Vergleich zur Processing IDE deutlich komplizierter, aber auch viel, viel besser.
