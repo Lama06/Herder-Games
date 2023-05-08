@@ -65,7 +65,7 @@ public final class PartikelManager {
 
             applet.rectMode(PConstants.CENTER);
             applet.noStroke();
-            applet.fill(farbe);
+            applet.fill(farbe, transparenz);
             float size = Math.max(applet.width * SIZE, applet.height * SIZE);
             applet.rect(x * applet.width, y * applet.height, size, size);
         }
