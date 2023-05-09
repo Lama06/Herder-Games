@@ -10,6 +10,7 @@ public final class HerderGames {
     private final PApplet applet;
     private final Map<Spieler.Id, SpielerDaten> spielerDaten = new EnumMap<>(Spieler.Id.class);
     private Screen currentScreen;
+    private Fliege fliege;
 
     public HerderGames(PApplet applet) {
         this.applet = applet;
@@ -24,6 +25,8 @@ public final class HerderGames {
     }
 
     public void setup() {
+        applet.getSurface().setTitle("Herder Games");
+
         for (SpielDaten spielDaten : SpielDaten.SPIELE) {
             try {
                 spielDaten.init().accept(applet);
@@ -34,6 +37,7 @@ public final class HerderGames {
         }
 
         currentScreen = new VideosSkalierenScreen(this);
+        fliege = new Fliege(applet);
     }
 
     public void draw() {
@@ -46,6 +50,8 @@ public final class HerderGames {
         } finally {
             applet.popStyle();
         }
+
+        fliege.draw();
     }
 
     public void mousePressed() {
