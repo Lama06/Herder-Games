@@ -47,13 +47,13 @@ final class VideosSkalierenScreen extends Screen {
             return;
         }
 
-        PImage image = applet.loadImage(frame.video().getOriginalFrameFileName(frame.frame()));
+        PImage image = applet.loadImage(frame.video().getOriginalFramePath(frame.frame()));
         PGraphics graphics = applet.createGraphics(applet.width, applet.height);
         graphics.beginDraw();
         graphics.imageMode(PConstants.CORNER);
         graphics.image(image, 0, 0, applet.width, applet.height);
         graphics.endDraw();
-        graphics.save(frame.video().getSkaliertFrameFileName(applet, frame.frame()));
+        graphics.save(frame.video().getSkaliertFramePath(applet, frame.frame()));
     }
 
     @Override
@@ -104,7 +104,7 @@ final class VideosSkalierenScreen extends Screen {
             applet.textAlign(PConstants.CENTER, PConstants.TOP);
             applet.textSize(TEXT_SIZE * applet.height);
             applet.text(
-                    frame.video().getOriginalFrameFileName(frame.frame()) + " skalieren... (Überspringen mit W)",
+                    frame.video().getOriginalFramePath(frame.frame()) + " skalieren... (Überspringen mit W)",
                     X * applet.width,
                     Y * applet.height
             );

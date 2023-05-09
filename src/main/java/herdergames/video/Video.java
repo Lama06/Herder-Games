@@ -35,23 +35,23 @@ public record Video(String path, int frames) {
         return fileName + ".png";
     }
 
-    public String getOriginalFrameFileName(int frame) {
+    public String getOriginalFramePath(int frame) {
         return path + "/" + getFrameFileName(frame);
     }
 
-    public String getSkaliertFrameFileName(PApplet applet, int frame) {
+    public String getSkaliertFramePath(PApplet applet, int frame) {
         return "skaliert" + applet.width + "x" + applet.height + "/" + path + "/" + getFrameFileName(frame);
     }
 
     public boolean istSkaliert(PApplet applet, int frame) {
-        String skaliertFrameFileName = getSkaliertFrameFileName(applet, frame);
+        String skaliertFrameFileName = getSkaliertFramePath(applet, frame);
         return Files.exists(applet.sketchFile(skaliertFrameFileName).toPath());
     }
 
-    public String getFrameFileName(PApplet applet, int frame) {
+    public String getFramePath(PApplet applet, int frame) {
         if (istSkaliert(applet, frame)) {
-            return getSkaliertFrameFileName(applet, frame);
+            return getSkaliertFramePath(applet, frame);
         }
-        return getOriginalFrameFileName(frame);
+        return getOriginalFramePath(frame);
     }
 }
