@@ -18,7 +18,7 @@ final class CreditsScreen extends Screen {
     CreditsScreen(HerderGames herderGames, int currentFrame) {
         super(herderGames);
         this.currentFrame = currentFrame;
-        backgroundImage = applet.loadImage(Video.LOOP_VIDEO.getFrameFileName(currentFrame));
+        backgroundImage = applet.loadImage(Video.LOOP_VIDEO.getFrameFileName(applet, currentFrame));
         creditsZeilen = applet.loadStrings(CREDITS_FILE);
     }
 

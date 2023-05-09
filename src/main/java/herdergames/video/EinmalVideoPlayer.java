@@ -34,11 +34,11 @@ public final class EinmalVideoPlayer {
 
         if (startFrame < destination) {
             for (int frame = startFrame; frame <= destination; frame++) {
-                frames[frame] = applet.requestImage(video.getFrameFileName(frame));
+                frames[frame] = applet.requestImage(video.getFrameFileName(applet, frame));
             }
         } else {
             for (int frame = startFrame; frame >= destination; frame--) {
-                frames[frame] = applet.requestImage(video.getFrameFileName(frame));
+                frames[frame] = applet.requestImage(video.getFrameFileName(applet, frame));
             }
         }
 

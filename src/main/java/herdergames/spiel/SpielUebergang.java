@@ -5,7 +5,7 @@ import herdergames.video.Video;
 import java.util.Objects;
 
 public record SpielUebergang(Video video, int frame) {
-    public static final SpielUebergang UEBERGANG_1 = new SpielUebergang(new Video("titlescreen/uebergaenge/1", 351), Video.LOOP_VIDEO.frames()-1);
+    public static final SpielUebergang UEBERGANG_1 = new SpielUebergang(Video.UEBERGANG_1, Video.LOOP_VIDEO.frames()-1);
 
     public SpielUebergang {
         Objects.requireNonNull(video);

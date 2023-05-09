@@ -20,8 +20,7 @@ public final class HerderGames {
     }
 
     public void settings() {
-        applet.size(applet.displayWidth, applet.displayHeight, PConstants.JAVA2D);
-        applet.fullScreen();
+        applet.fullScreen(PConstants.JAVA2D);
     }
 
     public void setup() {
@@ -34,7 +33,7 @@ public final class HerderGames {
             }
         }
 
-        currentScreen = new SpielAuswahlScreen(this, 0);
+        currentScreen = new VideosSkalierenScreen(this);
     }
 
     public void draw() {

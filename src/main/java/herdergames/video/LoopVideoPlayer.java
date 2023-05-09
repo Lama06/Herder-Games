@@ -21,10 +21,10 @@ public final class LoopVideoPlayer {
 
         frames = new PImage[video.frames()];
         for (int frame = startFrame; frame < video.frames(); frame++) {
-            frames[frame] = applet.requestImage(video.getFrameFileName(frame));
+            frames[frame] = applet.requestImage(video.getFrameFileName(applet, frame));
         }
         for (int frame = 0; frame < startFrame; frame++) {
-            frames[frame] = applet.requestImage(video.getFrameFileName(frame));
+            frames[frame] = applet.requestImage(video.getFrameFileName(applet, frame));
         }
 
         currentFrame = startFrame;
