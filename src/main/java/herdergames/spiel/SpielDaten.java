@@ -6,6 +6,7 @@ import herdergames.flappy_oinky.FlappyOinky;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
 import herdergames.latein.Latein;
 import herdergames.pacman.PacmanSpiel;
+import herdergames.perfektion.Perfektion;
 import herdergames.rain_catcher.RainCatcher;
 import herdergames.schach.Schach;
 import herdergames.snake.Snake;
@@ -118,6 +119,11 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
             new SpielDaten(
                     "Breakout",
                     (MehrspielerSpiel.Factory) BreakOut::new,
+                    SpielUebergang.UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Perfektion",
+                    (MehrspielerSpiel.Factory) Perfektion::new,
                     SpielUebergang.UEBERGANG_1
             )
     );
