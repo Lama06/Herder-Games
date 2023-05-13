@@ -1,15 +1,8 @@
 package herdergames.video;
 
-import processing.core.PApplet;
-
-import java.nio.file.Files;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 public record Video(String path, int frames) {
-    public static final Set<Video> VIDEOS = new HashSet<>();
-
     public static final Video LOOP_VIDEO = new Video("titlescreen/loop", 504);
     public static final Video UEBERGANG_1 = new Video("titlescreen/uebergaenge/1", 351);
 
@@ -19,11 +12,9 @@ public record Video(String path, int frames) {
         if (frames <= 0) {
             throw new IllegalArgumentException();
         }
-
-        VIDEOS.add(this);
     }
 
-    private String getFrameFileName(int frame) {
+    public String getFramePath(int frame) {
         String fileName = Integer.toString(frame + 1);
         if (fileName.length() == 1) {
             fileName = "000" + fileName;
@@ -32,26 +23,6 @@ public record Video(String path, int frames) {
         } else if (fileName.length() == 3) {
             fileName = "0" + fileName;
         }
-        return fileName + ".png";
-    }
-
-    public String getOriginalFramePath(int frame) {
-        return path + "/" + getFrameFileName(frame);
-    }
-
-    public String getSkaliertFramePath(PApplet applet, int frame) {
-        return "skaliert" + applet.width + "x" + applet.height + "/" + path + "/" + getFrameFileName(frame);
-    }
-
-    public boolean istSkaliert(PApplet applet, int frame) {
-        String skaliertFrameFileName = getSkaliertFramePath(applet, frame);
-        return Files.exists(applet.sketchFile(skaliertFrameFileName).toPath());
-    }
-
-    public String getFramePath(PApplet applet, int frame) {
-        if (istSkaliert(applet, frame)) {
-            return getSkaliertFramePath(applet, frame);
-        }
-        return getOriginalFramePath(frame);
+        return path + "/" + fileName + ".png";
     }
 }

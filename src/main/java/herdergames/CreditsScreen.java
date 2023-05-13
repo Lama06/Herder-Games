@@ -1,5 +1,6 @@
 package herdergames;
 
+import herdergames.util.ImageUtil;
 import herdergames.video.Video;
 import processing.core.PConstants;
 import processing.core.PImage;
@@ -18,7 +19,7 @@ final class CreditsScreen extends Screen {
     CreditsScreen(HerderGames herderGames, int currentFrame) {
         super(herderGames);
         this.currentFrame = currentFrame;
-        backgroundImage = applet.loadImage(Video.LOOP_VIDEO.getFramePath(applet, currentFrame));
+        backgroundImage = applet.loadImage(Video.LOOP_VIDEO.getFramePath(currentFrame));
         creditsZeilen = applet.loadStrings(CREDITS_FILE);
     }
 
@@ -35,8 +36,7 @@ final class CreditsScreen extends Screen {
 
         y += SCROLL_GESCHWINDIGKEIT * (applet.keyPressed && applet.key == ' ' ? 2 : 1);
 
-        applet.imageMode(PConstants.CORNER);
-        applet.image(backgroundImage, 0, 0, applet.width, applet.height);
+        ImageUtil.imageVollbildZeichnen(applet, backgroundImage);
 
         applet.textAlign(PConstants.CENTER, PConstants.TOP);
         applet.textSize(TEXT_SIZE * (float) applet.height);

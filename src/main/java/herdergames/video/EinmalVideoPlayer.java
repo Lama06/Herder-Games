@@ -1,7 +1,7 @@
 package herdergames.video;
 
+import herdergames.util.ImageUtil;
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PImage;
 
 public final class EinmalVideoPlayer {
@@ -34,11 +34,11 @@ public final class EinmalVideoPlayer {
 
         if (startFrame < destination) {
             for (int frame = startFrame; frame <= destination; frame++) {
-                frames[frame] = applet.requestImage(video.getFramePath(applet, frame));
+                frames[frame] = applet.requestImage(video.getFramePath(frame));
             }
         } else {
             for (int frame = startFrame; frame >= destination; frame--) {
-                frames[frame] = applet.requestImage(video.getFramePath(applet, frame));
+                frames[frame] = applet.requestImage(video.getFramePath(frame));
             }
         }
 
@@ -63,18 +63,16 @@ public final class EinmalVideoPlayer {
     }
 
     public void draw() {
-        applet.imageMode(PConstants.CORNER);
-
         PImage frame = frames[(int) currentFrame];
         if (frame.width == 0) {
             if (lastFrame == null) {
                 return;
             }
-            applet.image(lastFrame, 0, 0, applet.width, applet.height);
+            ImageUtil.imageVollbildZeichnen(applet, lastFrame);
             return;
         }
 
-        applet.image(frame, 0, 0, applet.width, applet.height);
+        ImageUtil.imageVollbildZeichnen(applet, frame);
         lastFrame = frame;
 
         if (finished) {

@@ -1,7 +1,7 @@
 package herdergames.video;
 
+import herdergames.util.ImageUtil;
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PImage;
 
 public final class LoopVideoPlayer {
@@ -21,28 +21,26 @@ public final class LoopVideoPlayer {
 
         frames = new PImage[video.frames()];
         for (int frame = startFrame; frame < video.frames(); frame++) {
-            frames[frame] = applet.requestImage(video.getFramePath(applet, frame));
+            frames[frame] = applet.requestImage(video.getFramePath(frame));
         }
         for (int frame = 0; frame < startFrame; frame++) {
-            frames[frame] = applet.requestImage(video.getFramePath(applet, frame));
+            frames[frame] = applet.requestImage(video.getFramePath(frame));
         }
 
         currentFrame = startFrame;
     }
 
     public void draw() {
-        applet.imageMode(PConstants.CORNER);
-
         PImage frame = frames[(int) currentFrame];
         if (frame.width == 0) {
             if (lastFrame == null) {
                 return;
             }
-            applet.image(lastFrame, 0, 0, applet.width, applet.height);
+            ImageUtil.imageVollbildZeichnen(applet, lastFrame);
             return;
         }
 
-        applet.image(frame, 0, 0, applet.width, applet.height);
+        ImageUtil.imageVollbildZeichnen(applet, frame);
         lastFrame = frame;
 
         currentFrame += speed;
