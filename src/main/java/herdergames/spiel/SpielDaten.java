@@ -7,6 +7,7 @@ import herdergames.harry_potter_quiz.HarryPotterQuiz;
 import herdergames.latein.Latein;
 import herdergames.pacman.PacmanSpiel;
 import herdergames.perfektion.Perfektion;
+import herdergames.pong.Pong;
 import herdergames.rain_catcher.RainCatcher;
 import herdergames.schach.Schach;
 import herdergames.schiffe_versenken.SchiffeVersenken;
@@ -130,6 +131,11 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
             new SpielDaten(
                     "Schiffe Versenken",
                     (SpielerGegenSpielerSpiel.Factory) SchiffeVersenken::new,
+                    SpielUebergang.UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Pong",
+                    (SpielerGegenSpielerSpiel.Factory) Pong::new,
                     SpielUebergang.UEBERGANG_1
             )
     );
