@@ -18,3 +18,6 @@ Ein Multiplayer Spiel mit vielen Minigames für 1 bis 4 Spieler in Processing
 ![Rain Catcher](fotos/raincatcher.png)
 ![Pacman](fotos/pacman.png)
 ![Harry Potter Quit](fotos/harry-potter-quiz.png)
+![Schiffe Versenken](fotos/schiffe-versenken.png)
+![Pong](fotos/pong.png)
+![Perfektion](fotos/perfektion.png)
