@@ -34,4 +34,13 @@ class RechteckTest {
     void testGetYMitte() {
         assertEquals(new Rechteck(0, 0, 0.5f, 0.5f).getYMitte(), 0.25f);
     }
+
+    @Test
+    void testIstDrinnen() {
+        assertTrue(new Rechteck(100, 100, 100, 100).istDrinnen(150, 150));
+        assertTrue(new Rechteck(-400, 100, 100, 500).istDrinnen(-350.2f, 300));
+        assertTrue(new Rechteck(1, 1, 1, 1).istDrinnen(1, 1));
+        assertFalse(new Rechteck(1, 1, 1, 1).istDrinnen(2.1f, 2.1f));
+        assertFalse(new Rechteck(1, 1, 1, 1).istDrinnen(0.9f, 0.9f));
+    }
 }

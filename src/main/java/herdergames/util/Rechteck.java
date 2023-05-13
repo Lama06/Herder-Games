@@ -38,4 +38,8 @@ public record Rechteck(float x, float y, float breite, float hoehe) {
     public float getYMitte() {
         return y + hoehe / 2;
     }
+
+    public boolean istDrinnen(float x, float y) {
+        return x >= this.x && x <= this.x + breite && y >= this.y && y <= this.y+hoehe;
+    }
 }

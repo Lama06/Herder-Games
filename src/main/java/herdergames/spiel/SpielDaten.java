@@ -9,6 +9,7 @@ import herdergames.pacman.PacmanSpiel;
 import herdergames.perfektion.Perfektion;
 import herdergames.rain_catcher.RainCatcher;
 import herdergames.schach.Schach;
+import herdergames.schiffe_versenken.SchiffeVersenken;
 import herdergames.snake.Snake;
 import herdergames.stapeln.Stapeln;
 import herdergames.tetris.Tetris;
@@ -124,6 +125,11 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
             new SpielDaten(
                     "Perfektion",
                     (MehrspielerSpiel.Factory) Perfektion::new,
+                    SpielUebergang.UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Schiffe Versenken",
+                    (SpielerGegenSpielerSpiel.Factory) SchiffeVersenken::new,
                     SpielUebergang.UEBERGANG_1
             )
     );
