@@ -1,7 +1,7 @@
 # Dokumentation
 
 Ich war in HerderGames für diese Spiele zuständig: Dame, Schach, Vier Gewinnt, Tic Tac Toe, Bälle, Flappy Oinky, Pacman,
-Snake, Tetris, Stapeln, Latein Formen, Rain Catcher, Harry Potter Quiz, Bälle.
+Snake, Tetris, Stapeln, Latein Formen, Rain Catcher, Harry Potter Quiz, Bälle, Perfektion.
 Ich habe auch das Hauptmenü verwaltet.
 Außerdem habe ich die folgenden Klassen verwaltet, die jeweils von mehreren anderen Spielen benutzt werden:
 - AI
@@ -27,6 +27,12 @@ ich mich aber dagegen entschieden, diese zu verwenden:
 - Die Bibliothek kann Videos nicht rückwärts abspielen, was essentziel für unser Spiel ist
 
 Statt diese Bibliothek zu verwenden, sind die Videos als einzelne Frames gespeichert, die nacheinander angezeigt werden.
+
+## Aufbau des Projekts
+Es gibt 3 abstrakte Klassen, von denen jedes Spiel genau eine vererbt: EinzelspielerSpiel, SpielerGegenSpielerSpiel und MehrspielerSpiel.
+Jedes Spiel ist ein eigenes Package zum Beispiel herdergames.schach, damit das Projekt übersichtlicher ist. 
+Das Hauptmenü befindet sich im Package herdergames. Außerdem gibt es ein paar Packages, wie herdergames.ai oder herdergames.util, die Klassen
+enthalten, die von mehreren anderen Spielen verwendet werden.
 
 ## AI
 In HerderGames gibt es 4 Spiele, die man gegen eine AI spielen kann: Dame, Schach, VierGewinnt und TicTacToe.
