@@ -4,6 +4,7 @@ import herdergames.baelle.Baelle;
 import herdergames.break_out.BreakOut;
 import herdergames.flappy_oinky.FlappyOinky;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
+import herdergames.kirschbaeume.KirschbaumSpiel;
 import herdergames.latein.Latein;
 import herdergames.pacman.PacmanSpiel;
 import herdergames.perfektion.Perfektion;
@@ -137,6 +138,12 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     "Pong",
                     (SpielerGegenSpielerSpiel.Factory) Pong::new,
                     SpielUebergang.UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Kirschbäume",
+                    (EinzelspielerSpiel.Factory) KirschbaumSpiel::new,
+                    SpielUebergang.UEBERGANG_1,
+                    KirschbaumSpiel::init
             )
     );
 
