@@ -51,7 +51,14 @@ public final class HerderGames {
             applet.popStyle();
         }
 
-        fliege.draw();
+        applet.pushStyle();
+        try {
+            fliege.draw();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        } finally {
+            applet.popStyle();
+        }
     }
 
     public void mousePressed() {
