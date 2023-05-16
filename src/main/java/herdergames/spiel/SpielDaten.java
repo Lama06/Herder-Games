@@ -2,6 +2,7 @@ package herdergames.spiel;
 
 import herdergames.baelle.Baelle;
 import herdergames.break_out.BreakOut;
+import herdergames.crossy_road.CrossyRoad;
 import herdergames.flappy_oinky.FlappyOinky;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
 import herdergames.kirschbaeume.KirschbaumSpiel;
@@ -144,6 +145,11 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     (EinzelspielerSpiel.Factory) KirschbaumSpiel::new,
                     SpielUebergang.UEBERGANG_1,
                     KirschbaumSpiel::init
+            ),
+            new SpielDaten(
+                    "Crossy Road",
+                    (MehrspielerSpiel.Factory) CrossyRoad::new,
+                    SpielUebergang.UEBERGANG_1
             )
     );
 

@@ -20,7 +20,7 @@ public final class GewichteteListe {
         int verbleibendeGewichtung = applet.choice(gewichtungGesamt);
         for (Eintrag<? extends T> eintrag : liste) {
             verbleibendeGewichtung -= eintrag.gewichtung;
-            if (verbleibendeGewichtung <= 0) {
+            if (verbleibendeGewichtung < 0) {
                 return eintrag.wert;
             }
         }
