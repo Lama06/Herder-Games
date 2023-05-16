@@ -21,3 +21,5 @@ Ein Multiplayer Spiel mit vielen Minigames für 1 bis 4 Spieler in Processing
 ![Schiffe Versenken](fotos/schiffe-versenken.png)
 ![Pong](fotos/pong.png)
 ![Perfektion](fotos/perfektion.png)
+![Kirschbäume](fotos/kirschbaeume.png)
+![Crossy Road](fotos/crossy-road.png)
