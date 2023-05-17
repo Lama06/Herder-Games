@@ -13,8 +13,8 @@ final class Huhn {
     private final PApplet applet;
     final Spieler spieler;
     private final int farbe;
-    private int feldX =  CrossyRoad.BREITE / 2;
-    private int feldY = CrossyRoad.HOEHE - 1;
+    int feldX =  CrossyRoad.BREITE / 2;
+    int feldY = CrossyRoad.HOEHE - 1;
 
     Huhn(CrossyRoad spiel, Spieler spieler) {
         this.spiel = spiel;

@@ -40,7 +40,7 @@ public final class CrossyRoad extends MehrspielerSpiel {
         applet.pushMatrix();
 
         applet.translate(getAbstandX(), getAbstandY());
-        applet.translate(0, (scroll += SCROLL_SPEED) * getFeldSize());
+        applet.translate(0, (scroll += getScrollSpeed()) * getFeldSize());
         applet.scale(getFeldSize());
 
         ListIterator<Zeile> zeileIterator = zeilen.listIterator();
@@ -99,6 +99,18 @@ public final class CrossyRoad extends MehrspielerSpiel {
 
     private float getAbstandY() {
         return (applet.height - getFeldSize() * HOEHE) / 2f;
+    }
+
+    private float getScrollSpeed() {
+        if (huehner.stream().allMatch(huhn -> {
+            float yStart = -scroll;
+            float screenY = huhn.feldY - yStart;
+            return screenY < (float) HOEHE / 2;
+        })) {
+            return SCROLL_SPEED * 4;
+        }
+
+        return SCROLL_SPEED;
     }
 
     boolean istObenWeg(float y, float hoehe) {
