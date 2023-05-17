@@ -5,6 +5,7 @@ import herdergames.spiel.Spieler;
 import herdergames.video.LoopVideoPlayer;
 import herdergames.video.Video;
 import processing.core.PConstants;
+import processing.core.PImage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,11 +19,7 @@ final class SpielAuswahlScreen extends Screen {
     private final Set<SpielKnopf> spielKnoepfe = new HashSet<>();
     private final Set<SpielerStatus> spielerStatuse = new HashSet<>();
 
-    SpielAuswahlScreen(HerderGames herderGames, int startFrame) {
-        super(herderGames);
-
-        video = new LoopVideoPlayer(applet, Video.LOOP_VIDEO, 0.5f, startFrame);
-
+    {
         int zeile = SpielKnopf.ZEILEN - (SpielDaten.SPIELE.size() / SpielKnopf.SPALTEN) - 1;
         int spalte = 0;
         for (SpielDaten spiel : SpielDaten.SPIELE) {
@@ -37,6 +34,16 @@ final class SpielAuswahlScreen extends Screen {
         for (Spieler.Id spielerId : Spieler.Id.values()) {
             spielerStatuse.add(new SpielerStatus(spielerId));
         }
+    }
+
+    SpielAuswahlScreen(HerderGames herderGames, int startFrame) {
+        super(herderGames);
+        video = new LoopVideoPlayer(applet, Video.LOOP_VIDEO, startFrame);
+    }
+
+    SpielAuswahlScreen(HerderGames herderGames, PImage[] frames) {
+        super(herderGames);
+        video = new LoopVideoPlayer(applet, Video.LOOP_VIDEO, frames, 0);
     }
 
     @Override

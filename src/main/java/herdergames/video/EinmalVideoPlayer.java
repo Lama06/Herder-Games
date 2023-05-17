@@ -6,6 +6,7 @@ import processing.core.PImage;
 
 public final class EinmalVideoPlayer {
     private final PApplet applet;
+    private final Video video;
     private final float speed;
     private final int destination;
     private final PImage[] frames;
@@ -27,6 +28,7 @@ public final class EinmalVideoPlayer {
         }
 
         this.applet = applet;
+        this.video = video;
         this.speed = speed;
         this.destination = destination;
 
@@ -45,8 +47,8 @@ public final class EinmalVideoPlayer {
         currentFrame = startFrame;
     }
 
-    public EinmalVideoPlayer(PApplet applet, Video video, float speed) {
-        this(applet, video, speed, 0, video.frames() - 1);
+    public EinmalVideoPlayer(PApplet applet, Video video) {
+        this(applet, video, 1, 0, video.frames() - 1);
     }
 
     public EinmalVideoPlayer(LoopVideoPlayer loopVideoPlayer, float speed, int destination) {
@@ -57,6 +59,7 @@ public final class EinmalVideoPlayer {
         }
 
         applet = loopVideoPlayer.getApplet();
+        video = loopVideoPlayer.getVideo();
         this.speed = speed;
         this.destination = destination;
         currentFrame = loopVideoPlayer.getCurrentFrame();
@@ -80,13 +83,13 @@ public final class EinmalVideoPlayer {
         }
 
         if (currentFrame < destination) {
-            currentFrame += speed;
+            currentFrame += ((float) video.fps() / 60f) * speed;
             if (currentFrame >= destination) {
                 currentFrame = destination;
                 finished = true;
             }
         } else if (currentFrame > destination) {
-            currentFrame -= speed;
+            currentFrame -= ((float) video.fps() / 60f) * speed;
             if (currentFrame <= destination) {
                 currentFrame = destination;
                 finished = true;

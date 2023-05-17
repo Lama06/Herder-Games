@@ -2,7 +2,7 @@ package herdergames.video;
 
 import java.util.Objects;
 
-public record Video(String path, int frames) {
+public record Video(String path, int frames, int fps) {
     public static final Video LOOP_VIDEO = new Video("titlescreen/loop", 504);
     public static final Video UEBERGANG_1 = new Video("titlescreen/uebergaenge/1", 351);
 
@@ -12,6 +12,14 @@ public record Video(String path, int frames) {
         if (frames <= 0) {
             throw new IllegalArgumentException();
         }
+
+        if (fps <= 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public Video(String path, int frames) {
+        this(path, frames, 30);
     }
 
     public String getFramePath(int frame) {

@@ -6,18 +6,18 @@ import processing.core.PImage;
 
 public final class LoopVideoPlayer {
     private final PApplet applet;
-    private final float speed;
+    private final Video video;
     private final PImage[] frames;
     private float currentFrame;
     private PImage lastFrame;
 
-    public LoopVideoPlayer(PApplet applet, Video video, float speed, int startFrame) {
-        if (startFrame < 0 || startFrame >= video.frames() || speed <= 0) {
+    public LoopVideoPlayer(PApplet applet, Video video, int startFrame) {
+        if (startFrame < 0 || startFrame >= video.frames()) {
             throw new IllegalArgumentException();
         }
 
         this.applet = applet;
-        this.speed = speed;
+        this.video = video;
 
         frames = new PImage[video.frames()];
         for (int frame = startFrame; frame < video.frames(); frame++) {
@@ -27,6 +27,17 @@ public final class LoopVideoPlayer {
             frames[frame] = applet.requestImage(video.getFramePath(frame));
         }
 
+        currentFrame = startFrame;
+    }
+
+    public LoopVideoPlayer(PApplet applet, Video video, PImage[] frames, int startFrame) {
+        if (startFrame < 0 || startFrame >= frames.length || video.frames() != frames.length) {
+            throw new IllegalArgumentException();
+        }
+
+        this.applet = applet;
+        this.video = video;
+        this.frames = frames;
         currentFrame = startFrame;
     }
 
@@ -43,7 +54,7 @@ public final class LoopVideoPlayer {
         ImageUtil.imageVollbildZeichnen(applet, frame);
         lastFrame = frame;
 
-        currentFrame += speed;
+        currentFrame += (float) video.fps() / 60f;
         if (currentFrame >= frames.length) {
             currentFrame = 0;
         }
@@ -55,6 +66,10 @@ public final class LoopVideoPlayer {
 
     PApplet getApplet() {
         return applet;
+    }
+
+    Video getVideo() {
+        return video;
     }
 
     PImage[] getFrames() {

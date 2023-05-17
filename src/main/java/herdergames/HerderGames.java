@@ -36,7 +36,7 @@ public final class HerderGames {
             }
         }
 
-        currentScreen = new SpielAuswahlScreen(this, 0);
+        currentScreen = new LadeScreen(this);
         fliege = new Fliege(applet);
     }
 

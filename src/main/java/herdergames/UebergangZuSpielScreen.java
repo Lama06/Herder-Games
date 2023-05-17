@@ -10,7 +10,7 @@ final class UebergangZuSpielScreen extends Screen {
     UebergangZuSpielScreen(HerderGames herderGames, SpielDaten spiel) {
         super(herderGames);
         this.spiel = spiel;
-        video = new EinmalVideoPlayer(applet, spiel.uebergang().video(), 0.5f);
+        video = new EinmalVideoPlayer(applet, spiel.uebergang().video());
     }
 
     @Override
