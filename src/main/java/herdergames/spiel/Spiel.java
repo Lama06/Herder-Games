@@ -11,6 +11,8 @@ public abstract sealed class Spiel permits EinzelspielerSpiel, SpielerGegenSpiel
 
     public void mousePressed() { }
 
+    public void mouseReleased() { }
+
     public void keyPressed() { }
 
     public void keyReleased() { }

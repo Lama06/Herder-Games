@@ -2,6 +2,7 @@ package herdergames.spiel;
 
 import herdergames.baelle.Baelle;
 import herdergames.break_out.BreakOut;
+import herdergames.cookie_clicker.CookieClicker;
 import herdergames.crossy_road.CrossyRoad;
 import herdergames.flappy_oinky.FlappyOinky;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
@@ -149,6 +150,11 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
             new SpielDaten(
                     "Crossy Road",
                     (MehrspielerSpiel.Factory) CrossyRoad::new,
+                    SpielUebergang.UEBERGANG_1
+            ),
+            new SpielDaten(
+                    "Cookie Clicker",
+                    (EinzelspielerSpiel.Factory) CookieClicker::new,
                     SpielUebergang.UEBERGANG_1
             )
     );

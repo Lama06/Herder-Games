@@ -70,6 +70,15 @@ public final class HerderGames {
         }
     }
 
+    public void mouseReleased() {
+        try {
+            currentScreen.mouseReleased();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            currentScreen = new SpielAuswahlScreen(this, 0);
+        }
+    }
+
     public void keyPressed() {
         try {
             currentScreen.keyPressed();

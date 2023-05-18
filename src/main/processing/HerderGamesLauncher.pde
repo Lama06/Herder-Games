@@ -18,6 +18,10 @@ void mousePressed() {
     herderGames.mousePressed();
 }
 
+void mouseReleased() {
+    herderGames.mouseReleased();
+}
+
 void keyPressed() {
    herderGames.keyPressed();
 }

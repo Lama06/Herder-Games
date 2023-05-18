@@ -18,4 +18,6 @@ abstract class Screen {
     void keyReleased() { }
 
     void mousePressed() { }
+
+    void mouseReleased() { }
 }

@@ -83,6 +83,11 @@ final class SpielScreen extends Screen {
         spiel.mousePressed();
     }
 
+    @Override
+    void mouseReleased() {
+        spiel.mouseReleased();
+    }
+
     private void drawEinzelspielerSpiel() {
         EinzelspielerSpiel einzelspielerSpiel = (EinzelspielerSpiel) spiel;
         Optional<EinzelspielerSpiel.Ergebnis> ergebnis = einzelspielerSpiel.draw();
