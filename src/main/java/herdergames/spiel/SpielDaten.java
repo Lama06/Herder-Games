@@ -28,134 +28,134 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
             new SpielDaten(
                     "Dame",
                     (SpielerGegenSpielerSpiel.Factory) herdergames.dame.SpielerGegenSpielerSpiel::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B008
             ),
             new SpielDaten(
                     "Dame AI",
                     (EinzelspielerSpiel.Factory) herdergames.dame.SpielerGegenAISpiel::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B008
             ),
 
             new SpielDaten(
                     "Vier Gewinnt",
                     (SpielerGegenSpielerSpiel.Factory) herdergames.vier_gewinnt.SpielerGegenSpielerSpiel::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B107
             ),
             new SpielDaten(
                     "Vier Gewinnt AI",
                     (EinzelspielerSpiel.Factory) herdergames.vier_gewinnt.SpielerGegenAISpiel::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B107
             ),
 
             new SpielDaten(
                     "Schach",
                     (SpielerGegenSpielerSpiel.Factory) herdergames.schach.SpielerGegenSpielerSpiel::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.E202,
                     Schach::init
             ),
             new SpielDaten(
                     "Schach AI",
                     (EinzelspielerSpiel.Factory) herdergames.schach.SpielerGegenAISpiel::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.E202
             ),
 
             new SpielDaten(
                     "Tic Tac Toe",
                     (SpielerGegenSpielerSpiel.Factory) herdergames.tic_tac_toe.SpielerGegenSpielerSpiel::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.E901
             ),
             new SpielDaten(
                     "Tic Tac Toe AI",
                     (EinzelspielerSpiel.Factory) herdergames.tic_tac_toe.SpielerGegenAISpiel::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.E901
             ),
 
             new SpielDaten(
                     "Flappy Oinky",
                     (MehrspielerSpiel.Factory) FlappyOinky::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.F106,
                     FlappyOinky::init
             ),
             new SpielDaten(
                     "Bälle",
                     (MehrspielerSpiel.Factory) Baelle::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.F109
             ),
             new SpielDaten(
                     "Snake",
                     (MehrspielerSpiel.Factory) Snake::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.BANK,
                     Snake::init
             ),
             new SpielDaten(
                     "Tetris",
                     (MehrspielerSpiel.Factory) Tetris::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B008
             ),
             new SpielDaten(
                     "Stapeln",
                     (MehrspielerSpiel.Factory) Stapeln::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B107
             ),
             new SpielDaten(
                     "Rain Catcher",
                     (MehrspielerSpiel.Factory) RainCatcher::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.E202,
                     RainCatcher::init
             ),
             new SpielDaten(
                     "Pacman",
                     (MehrspielerSpiel.Factory) PacmanSpiel::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.E901,
                     PacmanSpiel::init
             ),
             new SpielDaten(
                     "Harry Potter Trivia",
                     (MehrspielerSpiel.Factory) HarryPotterQuiz::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.F106,
                     HarryPotterQuiz::init
             ),
             new SpielDaten(
                     "Latein Formen",
                     (MehrspielerSpiel.Factory) Latein::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.F109,
                     Latein::init
             ),
             new SpielDaten(
                     "Breakout",
                     (MehrspielerSpiel.Factory) BreakOut::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.BANK
             ),
             new SpielDaten(
                     "Perfektion",
                     (MehrspielerSpiel.Factory) Perfektion::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B008
             ),
             new SpielDaten(
                     "Schiffe Versenken",
                     (SpielerGegenSpielerSpiel.Factory) SchiffeVersenken::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.B107
             ),
             new SpielDaten(
                     "Pong",
                     (SpielerGegenSpielerSpiel.Factory) Pong::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.E202
             ),
             new SpielDaten(
                     "Kirschbäume",
                     (EinzelspielerSpiel.Factory) KirschbaumSpiel::new,
-                    SpielUebergang.UEBERGANG_1,
+                    SpielUebergang.E901,
                     KirschbaumSpiel::init
             ),
             new SpielDaten(
                     "Crossy Road",
                     (MehrspielerSpiel.Factory) CrossyRoad::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.F106
             ),
             new SpielDaten(
                     "Cookie Clicker",
                     (EinzelspielerSpiel.Factory) CookieClicker::new,
-                    SpielUebergang.UEBERGANG_1
+                    SpielUebergang.F109
             )
     );
 
