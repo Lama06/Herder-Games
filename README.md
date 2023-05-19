@@ -23,3 +23,4 @@ Ein Multiplayer Spiel mit vielen Minigames für 1 bis 4 Spieler in Processing
 ![Perfektion](fotos/perfektion.png)
 ![Kirschbäume](fotos/kirschbaeume.png)
 ![Crossy Road](fotos/crossy-road.png)
+![Bowling](fotos/bowling.png)
