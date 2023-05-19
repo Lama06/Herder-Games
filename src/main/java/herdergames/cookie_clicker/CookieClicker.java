@@ -4,13 +4,20 @@ import herdergames.spiel.EinzelspielerSpiel;
 import herdergames.spiel.Spieler;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PImage;
 
+import java.nio.file.Files;
 import java.util.Optional;
 
 public final class CookieClicker extends EinzelspielerSpiel {
-    private float kekse = 0;
-    private float kekseProSekunde = 0;
-    private boolean mausTasteNeuGedrueckt = true;
+    private static PImage keksBild;
+
+    public static void init(PApplet applet) {
+        keksBild = applet.loadImage("cookie_clicker/keks.png");
+    }
+
+    private long kekse = 0;
+    private long kekseProSekunde = 0;
     private final Upgrade[] upgrades = {
             new Upgrade("Keks Bäcker 1", 15, 1),
             new Upgrade("Keks Bäcker 2", 100, 5),
@@ -23,18 +30,31 @@ public final class CookieClicker extends EinzelspielerSpiel {
             new Upgrade("Keks Bäcker 9", 500_000, 10_000),
             new Upgrade("Keks Bäcker 10", 1_000_000, 50_000)
     };
+    private final Cookie[] cookies = new Cookie[500];
+    private boolean mausTasteNeuGedrueckt = true;
 
     public CookieClicker(PApplet applet, Spieler spieler) {
         super(applet);
+
+        for (int i = 0; i < cookies.length; i++) {
+            cookies[i] = new Cookie(applet);
+        }
+
+        if (Files.exists(applet.sketchFile("cookie_clicker/save.txt").toPath())) {
+            String[] speicherStand = applet.loadStrings("cookie_clicker/save.txt");
+            kekse = Long.parseLong(speicherStand[0]);
+        }
     }
 
     public Optional<Ergebnis> draw() {
         hintergrund();
+        keksRegen();
         keks();
         displayUpgrades();
 
         if (applet.frameCount % 60 == 0) {
             kekse += kekseProSekunde;
+            applet.saveStrings("cookie_clicker/save.txt", new String[]{ Long.toString(kekse) });
         }
 
         return Optional.empty();
@@ -62,7 +82,21 @@ public final class CookieClicker extends EinzelspielerSpiel {
         return false;
     }
 
-    private String numberToK(int anzahl) {
+    private boolean knopf(float x, float y, float breite, float hoehe, PImage bild) {
+        applet.imageMode(PConstants.CORNER);
+        applet.image(bild, x, y, breite, hoehe);
+        if (applet.mousePressed && mausTasteNeuGedrueckt) {
+            if (applet.mouseX >= x && applet.mouseX <= x + breite) {
+                if (applet.mouseY >= y && applet.mouseY <= y + hoehe) {
+                    mausTasteNeuGedrueckt = false;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private String numberToK(long anzahl) {
         if (anzahl < 1000) {
             return String.valueOf(anzahl);
         } else if (anzahl < 1000000) {
@@ -81,10 +115,10 @@ public final class CookieClicker extends EinzelspielerSpiel {
         applet.textAlign(PConstants.LEFT);
         applet.textSize(applet.height / 20f);
 
-        applet.text("Kekse: " + numberToK((int) kekse), applet.width / 20f, applet.height / 20f);
-        applet.text("Kekse pro Sekunde: " + (int) kekseProSekunde, applet.width / 20f, applet.height / 10f);
+        applet.text("Kekse: " + numberToK(kekse), applet.width / 20f, applet.height / 20f);
+        applet.text("Kekse pro Sekunde: " + kekseProSekunde, applet.width / 20f, applet.height / 10f);
 
-        if (knopf(applet.width / 8f, applet.height / 4f, applet.width / 4f, applet.height / 2f, 2, 20, 20)) {
+        if (knopf(applet.width / 8f, applet.height / 4f, applet.width / 4f, applet.height / 2f, keksBild)) {
             kekse++;
         }
     }
@@ -129,21 +163,17 @@ public final class CookieClicker extends EinzelspielerSpiel {
         }
     }
 
-    private static class Upgrade {
-        private final String name;
-        private float price;
-        private int amount;
-        private final int cookiesPerSecond;
-        private final float priceIncrease = 1.15f;
+    private void keksRegen() {
+        for (int i = 0; i < cookies.length; i++) {
+            applet.image(keksBild, cookies[i].x, cookies[i].y, cookies[i].size, cookies[i].size);
+            cookies[i].y += cookies[i].speed;
 
-        private Upgrade(String name, int price, int cookiesPerSecond) {
-            this.name = name;
-            this.price = price;
-            this.cookiesPerSecond = cookiesPerSecond;
-        }
-
-        private String getDescription() {
-            return name + " kostet " + (int) price + " Kekse und gibt " + cookiesPerSecond + " Kekse pro Sekunde und du hast " + amount + " davon";
+            if (cookies[i].y > applet.height) {
+                cookies[i].y = 0;
+                cookies[i].x = applet.random(0, applet.width / 2f);
+                cookies[i].speed = applet.random(applet.height / 800f, applet.height / 200f);
+                cookies[i].size = applet.random(applet.height / 80f, applet.height / 40f);
+            }
         }
     }
 }

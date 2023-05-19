@@ -156,7 +156,8 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
             new SpielDaten(
                     "Cookie Clicker",
                     (EinzelspielerSpiel.Factory) CookieClicker::new,
-                    SpielUebergang.F109
+                    SpielUebergang.F109,
+                    CookieClicker::init
             ),
             new SpielDaten(
                     "Bowling",
