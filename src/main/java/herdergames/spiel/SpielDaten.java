@@ -1,6 +1,7 @@
 package herdergames.spiel;
 
 import herdergames.baelle.Baelle;
+import herdergames.bowling.Bowling;
 import herdergames.break_out.BreakOut;
 import herdergames.cookie_clicker.CookieClicker;
 import herdergames.crossy_road.CrossyRoad;
@@ -156,6 +157,12 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     "Cookie Clicker",
                     (EinzelspielerSpiel.Factory) CookieClicker::new,
                     SpielUebergang.F109
+            ),
+            new SpielDaten(
+                    "Bowling",
+                    (MehrspielerSpiel.Factory) Bowling::new,
+                    SpielUebergang.BANK,
+                    Bowling::init
             )
     );
 

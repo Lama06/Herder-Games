@@ -41,23 +41,23 @@ public final class HerderGames {
     }
 
     public void draw() {
-        applet.pushStyle();
+        applet.push();
         try {
             currentScreen.draw();
         } catch (RuntimeException e) {
             e.printStackTrace();
             currentScreen = new SpielAuswahlScreen(this, 0);
         } finally {
-            applet.popStyle();
+            applet.pop();
         }
 
-        applet.pushStyle();
+        applet.push();
         try {
             fliege.draw();
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
-            applet.popStyle();
+            applet.pop();
         }
     }
 
