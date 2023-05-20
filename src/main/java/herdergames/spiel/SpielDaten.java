@@ -1,5 +1,6 @@
 package herdergames.spiel;
 
+import herdergames.ampel.AmpelSpiel;
 import herdergames.baelle.Baelle;
 import herdergames.bowling.Bowling;
 import herdergames.break_out.BreakOut;
@@ -164,6 +165,12 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     (MehrspielerSpiel.Factory) Bowling::new,
                     SpielUebergang.BANK,
                     Bowling::init
+            ),
+            new SpielDaten(
+                    "Ampel",
+                    (MehrspielerSpiel.Factory) AmpelSpiel::new,
+                    SpielUebergang.E202,
+                    AmpelSpiel::init
             )
     );
 
