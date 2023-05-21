@@ -7,6 +7,7 @@ import herdergames.break_out.BreakOut;
 import herdergames.cookie_clicker.CookieClicker;
 import herdergames.crossy_road.CrossyRoad;
 import herdergames.flappy_oinky.FlappyOinky;
+import herdergames.hangman.Hangman;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
 import herdergames.kirschbaeume.KirschbaumSpiel;
 import herdergames.latein.Latein;
@@ -171,6 +172,11 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     (MehrspielerSpiel.Factory) AmpelSpiel::new,
                     SpielUebergang.E202,
                     AmpelSpiel::init
+            ),
+            new SpielDaten(
+                    "Hangman",
+                    (EinzelspielerSpiel.Factory) Hangman::new,
+                    SpielUebergang.B008
             )
     );
 
