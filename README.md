@@ -24,3 +24,4 @@ Ein Multiplayer Spiel mit vielen Minigames für 1 bis 4 Spieler in Processing
 ![Kirschbäume](fotos/kirschbaeume.png)
 ![Crossy Road](fotos/crossy-road.png)
 ![Bowling](fotos/bowling.png)
+![Hangman](fotos/hangman.png)
