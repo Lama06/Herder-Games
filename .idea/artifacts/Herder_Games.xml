@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact build-on-make="true" name="Processing Launcher">
-    <output-path>$PROJECT_DIR$/out/artifacts/Processing_Launcher</output-path>
+  <artifact build-on-make="true" name="Herder Games">
+    <output-path>$PROJECT_DIR$/out/artifacts/Herder_Games</output-path>
     <root id="root">
       <element id="directory" name="code">
         <element id="archive" name="Herder-Games.jar">
