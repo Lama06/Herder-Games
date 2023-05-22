@@ -6,7 +6,7 @@ import processing.core.PConstants;
 import processing.core.PImage;
 
 final class CreditsScreen extends Screen {
-    private static final String CREDITS_FILE = "titlescreen/credits.txt";
+    private static final String CREDITS_FILE = "credits.txt";
     private static final float TEXT_SIZE = 0.05f;
     private static final float TEXT_ABSTAND = TEXT_SIZE / 2;
     private static final float SCROLL_GESCHWINDIGKEIT = -0.001f;
