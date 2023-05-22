@@ -19,7 +19,7 @@ public final class ReaktionsZeit extends MehrspielerSpiel {
     private static final float WAHRSCHEINLICHKEIT_NICHT_REAGIEREN = WAHRSCHEINLICHKEIT_REAGIEREN / 2f;
     private static final int ANZAHL_RUNDEN = 7;
     private static final int NICHT_REAGIEREN_ZEIT = 4 * 60;
-    private static final int STRFZEIT = 30;
+    private static final int STRAFZEIT = 30;
 
     private static PImage michaelKippBild;
 
@@ -181,7 +181,7 @@ public final class ReaktionsZeit extends MehrspielerSpiel {
                         continue;
                     }
 
-                    spielerReaktionsZeitGesamt.put(spieler, spielerReaktionsZeitGesamt.get(spieler) + STRFZEIT);
+                    spielerReaktionsZeitGesamt.put(spieler, spielerReaktionsZeitGesamt.get(spieler) + STRAFZEIT);
                 }
             }
         }
