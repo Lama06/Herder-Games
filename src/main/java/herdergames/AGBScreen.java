@@ -12,7 +12,7 @@ final class AGBScreen extends Screen {
     private static final float TITLE_Y = 0.04f;
     private static final float TITLE_TEXT_SIZE = 0.07f;
 
-    private static final String HEADER_TEXT = "Zum Akzeptieren Space drücken, zum Ablehnen bis nach unten scrollen";
+    private static final String HEADER_TEXT = "Zum Akzeptieren Maustaste drücken, zum Ablehnen bis nach unten scrollen";
     private static final float HEADER_Y = TITLE_Y + TITLE_TEXT_SIZE + 0.03f;
     private static final float HEADER_TEXT_SIZE = 0.04f;
 
@@ -54,19 +54,23 @@ final class AGBScreen extends Screen {
 
     @Override
     void keyPressed() {
-        switch (applet.key) {
-            case ' ' -> herderGames.openScreen(new LadeScreen(herderGames));
-            case PConstants.CODED -> {
-                switch (applet.keyCode) {
-                    case PConstants.UP -> {
-                        if (zeile != 0) {
-                            zeile--;
-                        }
-                    }
-                    case PConstants.DOWN -> zeile++;
+        if (applet.key != PConstants.CODED) {
+            return;
+        }
+
+        switch (applet.keyCode) {
+            case PConstants.UP -> {
+                if (zeile != 0) {
+                    zeile--;
                 }
             }
+            case PConstants.DOWN -> zeile++;
         }
+    }
+
+    @Override
+    void mousePressed() {
+        herderGames.openScreen(new LadeScreen(herderGames));
     }
 
     @Override
