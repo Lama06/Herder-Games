@@ -15,6 +15,7 @@ import herdergames.pacman.PacmanSpiel;
 import herdergames.perfektion.Perfektion;
 import herdergames.pong.Pong;
 import herdergames.rain_catcher.RainCatcher;
+import herdergames.reaktions_zeit.ReaktionsZeit;
 import herdergames.schach.Schach;
 import herdergames.schiffe_versenken.SchiffeVersenken;
 import herdergames.snake.Snake;
@@ -179,6 +180,12 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     "Hangman",
                     (EinzelspielerSpiel.Factory) Hangman::new,
                     SpielUebergang.B008
+            ),
+            new SpielDaten(
+                    "Reaktions-Zeit",
+                    (MehrspielerSpiel.Factory) ReaktionsZeit::new,
+                    SpielUebergang.E901,
+                    ReaktionsZeit::init
             )
     ));
 
