@@ -28,12 +28,15 @@ public final class HerderGames {
     public void setup() {
         applet.getSurface().setTitle("Herder Games");
 
-        for (SpielDaten spielDaten : SpielDaten.SPIELE) {
+        Iterator<SpielDaten> spieleIterator = SpielDaten.SPIELE.iterator();
+        while (spieleIterator.hasNext()) {
+            SpielDaten spielDaten = spieleIterator.next();
             try {
                 spielDaten.init().accept(applet);
             } catch (RuntimeException e) {
                 PApplet.println("Fehler beim initialisieren des Spiels %s".formatted(spielDaten.name()));
                 e.printStackTrace();
+                spieleIterator.remove();
             }
         }
 
@@ -47,7 +50,7 @@ public final class HerderGames {
             currentScreen.draw();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            currentScreen = new SpielAuswahlScreen(this, 0);
+            currentScreen = new ErrorScreen(this, e);
         } finally {
             applet.pop();
         }
@@ -67,7 +70,7 @@ public final class HerderGames {
             currentScreen.mousePressed();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            currentScreen = new SpielAuswahlScreen(this, 0);
+            currentScreen = new ErrorScreen(this, e);
         }
     }
 
@@ -76,7 +79,7 @@ public final class HerderGames {
             currentScreen.mouseReleased();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            currentScreen = new SpielAuswahlScreen(this, 0);
+            currentScreen = new ErrorScreen(this, e);
         }
     }
 
@@ -85,7 +88,7 @@ public final class HerderGames {
             currentScreen.mouseWheel(event);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            currentScreen = new SpielAuswahlScreen(this, 0);
+            currentScreen = new ErrorScreen(this, e);
         }
     }
 
@@ -94,7 +97,11 @@ public final class HerderGames {
             currentScreen.keyPressed();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            currentScreen = new SpielAuswahlScreen(this, 0);
+            currentScreen = new ErrorScreen(this, e);
+        } finally {
+            if (applet.key == PConstants.ESC) {
+                applet.key = 0; // Verhindern, dass das Fenster geschlossen wird
+            }
         }
     }
 
@@ -103,7 +110,7 @@ public final class HerderGames {
             currentScreen.keyReleased();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            currentScreen = new SpielAuswahlScreen(this, 0);
+            currentScreen = new ErrorScreen(this, e);
         }
     }
 

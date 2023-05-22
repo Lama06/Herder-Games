@@ -54,8 +54,6 @@ final class CreditsScreen extends Screen {
             return;
         }
 
-        applet.key = 0;
-
         herderGames.openScreen(new SpielAuswahlScreen(herderGames, currentFrame));
     }
 

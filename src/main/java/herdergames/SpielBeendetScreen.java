@@ -31,7 +31,6 @@ final class SpielBeendetScreen extends Screen {
         }
 
         if (applet.key == PConstants.ESC) {
-            applet.key = 0;
             herderGames.openScreen(new UebergangVonSpielScreen(herderGames, spiel));
         }
     }

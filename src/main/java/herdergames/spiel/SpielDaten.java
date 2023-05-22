@@ -22,12 +22,14 @@ import herdergames.stapeln.Stapeln;
 import herdergames.tetris.Tetris;
 import processing.core.PApplet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebergang, Consumer<PApplet> init) {
-    public static final List<SpielDaten> SPIELE = List.of(
+    // Muss mutable sein, weil Spiele entfernt werden, die nicht initialisiert werden können
+    public static final List<SpielDaten> SPIELE = new ArrayList<>(List.of(
             new SpielDaten(
                     "Dame",
                     (SpielerGegenSpielerSpiel.Factory) herdergames.dame.SpielerGegenSpielerSpiel::new,
@@ -178,7 +180,7 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     (EinzelspielerSpiel.Factory) Hangman::new,
                     SpielUebergang.B008
             )
-    );
+    ));
 
     public SpielDaten {
         Objects.requireNonNull(name);

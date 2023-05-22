@@ -60,7 +60,6 @@ final class SpielScreen extends Screen {
     @Override
     void keyPressed() {
         if (applet.key == PConstants.ESC) {
-            applet.key = 0;
             herderGames.openScreen(new UebergangVonSpielScreen(herderGames, spielDaten));
             return;
         }
