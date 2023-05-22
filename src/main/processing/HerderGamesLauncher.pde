@@ -22,6 +22,10 @@ void mouseReleased() {
     herderGames.mouseReleased();
 }
 
+void mouseWheel(MouseEvent event) {
+    herderGames.mouseWheel(event);
+}
+
 void keyPressed() {
    herderGames.keyPressed();
 }

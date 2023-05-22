@@ -3,6 +3,7 @@ package herdergames;
 import herdergames.spiel.*;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.event.MouseEvent;
 
 import java.util.*;
 
@@ -36,7 +37,7 @@ public final class HerderGames {
             }
         }
 
-        currentScreen = new LadeScreen(this);
+        currentScreen = new AGBScreen(this);
         fliege = new Fliege(applet);
     }
 
@@ -73,6 +74,15 @@ public final class HerderGames {
     public void mouseReleased() {
         try {
             currentScreen.mouseReleased();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            currentScreen = new SpielAuswahlScreen(this, 0);
+        }
+    }
+
+    public void mouseWheel(MouseEvent event) {
+        try {
+            currentScreen.mouseWheel(event);
         } catch (RuntimeException e) {
             e.printStackTrace();
             currentScreen = new SpielAuswahlScreen(this, 0);
