@@ -16,11 +16,13 @@ final class LadeScreen extends Screen {
 
     LadeScreen(HerderGames herderGames) {
         super(herderGames);
+        applet.cursor(PConstants.WAIT);
     }
 
     @Override
     void draw() {
         if (frames.size() == Video.LOOP_VIDEO.frames()) {
+            applet.cursor(PConstants.ARROW);
             herderGames.openScreen(new SpielAuswahlScreen(herderGames, frames.toArray(PImage[]::new)));
             return;
         }
@@ -45,6 +47,7 @@ final class LadeScreen extends Screen {
             return;
         }
 
+        applet.cursor(PConstants.ARROW);
         herderGames.openScreen(new SpielAuswahlScreen(herderGames, 0));
     }
 
