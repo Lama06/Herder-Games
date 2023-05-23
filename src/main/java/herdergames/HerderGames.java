@@ -27,6 +27,7 @@ public final class HerderGames {
 
     public void setup() {
         applet.getSurface().setTitle("Herder Games");
+        applet.getSurface().setIcon(applet.loadImage("icon.png"));
 
         Iterator<SpielDaten> spieleIterator = SpielDaten.SPIELE.iterator();
         while (spieleIterator.hasNext()) {
