@@ -11,6 +11,7 @@ import herdergames.hangman.Hangman;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
 import herdergames.kirschbaeume.KirschbaumSpiel;
 import herdergames.latein.Latein;
+import herdergames.minesweeper.Minesweeper;
 import herdergames.pacman.PacmanSpiel;
 import herdergames.perfektion.Perfektion;
 import herdergames.pong.Pong;
@@ -186,6 +187,11 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     (MehrspielerSpiel.Factory) ReaktionsZeit::new,
                     SpielUebergang.E901,
                     ReaktionsZeit::init
+            ),
+            new SpielDaten(
+                    "Minesweeper",
+                    (EinzelspielerSpiel.Factory) Minesweeper::new,
+                    SpielUebergang.F106
             )
     ));
 

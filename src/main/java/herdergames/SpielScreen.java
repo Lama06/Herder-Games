@@ -16,6 +16,12 @@ final class SpielScreen extends Screen {
         super(herderGames);
         this.spielDaten = spielDaten;
 
+        // Spiele sollten keine Mausklicks handlen, die gedrückt wurden, bevor das Spiel gestartet worden ist,
+        // aber zum Zeitpunkt des Starts des Spiels noch nicht released worden sind.
+        // Wenn man zum Beispiel ansonsten Minesweeper öffnet, indem man die Animation mit der Maus an der Stelle überspringt,
+        // wo auch der Knopf für eine Schwierigkeit ist, wird die sofort ausgewählt.
+        applet.mousePressed = false;
+
         List<SpielerDaten> aktivierteSpielerDaten = herderGames.getAktivierteSpielerDaten();
 
         if (spielDaten.factory() instanceof EinzelspielerSpiel.Factory einzelspielerFactory) {
