@@ -119,12 +119,7 @@ public final class Perfektion extends MehrspielerSpiel {
         }
 
         private Optional<Form> getAusgewaehlteForm() {
-            return getKollidierendeForm()
-                    .filter(form -> steuerung.istLinksGedrueckt() &&
-                            steuerung.istRechtsGedrueckt() &&
-                            steuerung.istObenGedrueckt() &&
-                            steuerung.istUntenGedrueckt()
-                    );
+            return getKollidierendeForm().filter(form -> steuerung.istLinksGedrueckt() && steuerung.istRechtsGedrueckt());
         }
 
         private void bewegen() {
