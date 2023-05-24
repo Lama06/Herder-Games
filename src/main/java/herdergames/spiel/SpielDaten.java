@@ -6,6 +6,7 @@ import herdergames.bowling.Bowling;
 import herdergames.break_out.BreakOut;
 import herdergames.cookie_clicker.CookieClicker;
 import herdergames.crossy_road.CrossyRoad;
+import herdergames.dino.Dino;
 import herdergames.flappy_oinky.FlappyOinky;
 import herdergames.hangman.Hangman;
 import herdergames.harry_potter_quiz.HarryPotterQuiz;
@@ -192,6 +193,12 @@ public record SpielDaten(String name, Spiel.Factory factory, SpielUebergang uebe
                     "Minesweeper",
                     (EinzelspielerSpiel.Factory) Minesweeper::new,
                     SpielUebergang.F106
+            ),
+            new SpielDaten(
+                    "Dino",
+                    (MehrspielerSpiel.Factory) Dino::new,
+                    SpielUebergang.E202,
+                    Dino::init
             )
     ));
 
