@@ -123,6 +123,7 @@ final class SpielAuswahlScreen extends Screen {
         private static final float INNER_WIDTH = WIDTH * (2f / 3f);
         private static final float MARGIN_X = (WIDTH - INNER_WIDTH) / 2;
         private static final float MARGIN_Y = (HEIGHT - INNER_HEIGHT) / 2;
+        private static final float TEXT_SIZE = 0.02f;
         private static final float MAX_SPEED = 0.015f;
 
         private final SpielDaten spiel;
@@ -189,6 +190,7 @@ final class SpielAuswahlScreen extends Screen {
             );
 
             applet.textAlign(PConstants.CENTER, PConstants.CENTER);
+            applet.textSize(TEXT_SIZE * applet.height);
             applet.fill(applet.color(0));
             applet.text(
                     spiel.name(),
