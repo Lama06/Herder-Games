@@ -1,4 +1,6 @@
-package herdergames.dino;
+// Dieser Code ist komisch, aber was nicht kaputt ist, kann man nicht reparieren 🦖
+
+package herdergames.oinky_run;
 
 import herdergames.spiel.MehrspielerSpiel;
 import herdergames.spiel.Spieler;
@@ -11,20 +13,19 @@ import java.util.Set;
 
 import static processing.core.PConstants.*;
 
-public final class Dino extends MehrspielerSpiel {
+public final class OinkyRun extends MehrspielerSpiel {
     static PImage oinky;
     static PImage herbert;
     static PImage wolke;
 
     public static void init(PApplet applet) {
-        oinky = applet.loadImage("dino/oinky.png");
-        herbert = applet.loadImage("dino/herbert.png");
-        wolke = applet.loadImage("dino/wolke.png");
+        oinky = applet.loadImage("oinky_run/oinky.png");
+        herbert = applet.loadImage("oinky_run/herbert.png");
+        wolke = applet.loadImage("oinky_run/wolke.png");
     }
 
     int cPrimary = applet.color(18, 20, 5);
     int cPriB = applet.color(134, 209, 87);
-    int cAccent = applet.color(87, 209);
 
     Player player1;
     Player player2;
@@ -37,7 +38,7 @@ public final class Dino extends MehrspielerSpiel {
     int counter = 0;
     int lastSpeedBoost = 0;
 
-    public Dino(PApplet applet, Set<Spieler> alleSpieler) {
+    public OinkyRun(PApplet applet, Set<Spieler> alleSpieler) {
         super(applet);
         player1 = new Player(applet.width/10, alleSpieler.stream().anyMatch(spieler -> spieler.id() == Spieler.Id.SPIELER_1));
         player2 = new Player(applet.width/10 + (applet.width/10) * 1, alleSpieler.stream().anyMatch(spieler -> spieler.id() == Spieler.Id.SPIELER_2));
@@ -98,7 +99,7 @@ public final class Dino extends MehrspielerSpiel {
         applet.textSize(applet.height*0.1f);
         applet.textAlign(CENTER);
         applet.fill(cPriB);
-        applet.text("DINOGAME", applet.width*0.5f, applet.height*0.1f);
+        applet.text("OINKYRUN", applet.width*0.5f, applet.height*0.1f);
         info();
 
         player1.zeichnen();
@@ -111,7 +112,7 @@ public final class Dino extends MehrspielerSpiel {
         applet.textSize(applet.height*0.03f);
         applet.textAlign(CORNER);
         applet.fill(cPrimary);
-        applet.text("DINOGAME", applet.width*0.05f, applet.height*0.2f);
+        applet.text("OINKYRUN", applet.width*0.05f, applet.height*0.2f);
         applet.text("Counter: " + counter, applet.width*0.05f, applet.height*0.25f);
         applet.text("Speed: " + speed, applet.width*0.05f, applet.height*0.3f);
     }
@@ -141,7 +142,7 @@ public final class Dino extends MehrspielerSpiel {
                 counter++;
             }
 
-            applet.rectMode(CORNER);
+            applet.imageMode(CORNER);
             applet.image(herbert, obstacle[i][0] - applet.height/16f, applet.height-obstacle[i][1], applet.height/4f, applet.height/4f);
             if (counter%3 == 0 && !(lastSpeedBoost == counter)) {
                 lastSpeedBoost = counter;
@@ -168,13 +169,7 @@ public final class Dino extends MehrspielerSpiel {
                 y = applet.height - applet.height/3;
             }
 
-            applet.rectMode(CORNER);
-            if (alive) {
-                applet.fill(cAccent);
-            } else {
-                applet.fill(cPrimary);
-            }
-
+            applet.imageMode(CORNER);
             if (!alive) {
                 applet.tint(40);
             }
@@ -182,6 +177,7 @@ public final class Dino extends MehrspielerSpiel {
                 applet.image(oinky, x, y, applet.height/7f, applet.height/7f);
             }
             applet.noTint();
+
             y += speedY;
             if (y < applet.height-applet.height/3) {
                 speedY += 0.0025f*applet.height;
